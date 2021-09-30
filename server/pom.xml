@@ -28,7 +28,7 @@
     <name>seata-server ${project.version}</name>
 
     <properties>
-        <spring-boot.version>2.3.10.RELEASE</spring-boot.version>
+        <spring-boot.version>2.5.5</spring-boot.version>
 
         <!-- logback-appenders -->
         <logstash-logback-encoder.version>6.5</logstash-logback-encoder.version>
@@ -39,7 +39,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-parent</artifactId>
+                <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
@@ -189,6 +189,7 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+            <!--
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
@@ -228,16 +229,16 @@
                             <jvmFlag>-XX:-UseAdaptiveSizePolicy</jvmFlag>
                             <jvmFlag>-XX:+HeapDumpOnOutOfMemoryError</jvmFlag>
                             <jvmFlag>-XX:HeapDumpPath=/var/log/seata_heapdump.hprof</jvmFlag>
-                            <!--gc-->
+
                             <jvmFlag>-XX:+DisableExplicitGC</jvmFlag>
                             <jvmFlag>-XX:+CMSParallelRemarkEnabled</jvmFlag>
                             <jvmFlag>-XX:+UseCMSInitiatingOccupancyOnly</jvmFlag>
                             <jvmFlag>-XX:CMSInitiatingOccupancyFraction=75</jvmFlag>
                             <jvmFlag>-Xloggc:/var/log/seata_gc.log</jvmFlag>
                             <jvmFlag>-verbose:gc</jvmFlag>
-                            <!--netty-->
+
                             <jvmFlag>-Dio.netty.leakDetectionLevel=advanced</jvmFlag>
-                            <!--log-->
+
                             <jvmFlag>-Dlogback.color.disable-for-bat=true</jvmFlag>
                         </jvmFlags>
                         <labels>
@@ -264,6 +265,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
 
