@@ -37,6 +37,20 @@
         <dependency>
             <groupId>com.alibaba.edas</groupId>
             <artifactId>edas-sdk</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>LightApi</artifactId>
+                    <groupId>com.alibaba.hsf</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>commons-io</artifactId>
+                    <groupId>commons-io</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>com.taobao.csp</artifactId>
+                    <groupId>sentinel</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

@@ -21,7 +21,7 @@
 
     <groupId>io.seata</groupId>
     <artifactId>seata-all</artifactId>
-    <version>1.4.0.B</version>
+    <version>1.5.0.B</version>
 
     <name>Seata All-in-one ${project.version}</name>
     <url>http://seata.io</url>
@@ -430,6 +430,20 @@
         <dependency>
             <groupId>com.alibaba.edas</groupId>
             <artifactId>edas-sdk</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>LightApi</artifactId>
+                    <groupId>com.alibaba.hsf</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>commons-io</artifactId>
+                    <groupId>commons-io</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>com.taobao.csp</artifactId>
+                    <groupId>sentinel</groupId>
+                </exclusion>
+            </exclusions>
             <scope>provided</scope>
         </dependency>
         <dependency>
