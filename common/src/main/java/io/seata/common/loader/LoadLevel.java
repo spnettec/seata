@@ -46,7 +46,7 @@ public @interface LoadLevel {
 
     /**
      * Scope enum.
-     * @return
+     * @return Scope
      */
     Scope scope() default Scope.SINGLETON;
 }

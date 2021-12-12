@@ -26,7 +26,7 @@ public class StringFormatUtils {
     /**
      * camelTo underline format
      *
-     * @param param
+     * @param param param
      * @return formatted string
      */
     public static String camelToUnderline(String param) {
@@ -50,7 +50,7 @@ public class StringFormatUtils {
     /**
      * underline to camel
      *
-     * @param param
+     * @param param param
      * @return formatted string
      */
     public static String underlineToCamel(String param) {
@@ -60,7 +60,7 @@ public class StringFormatUtils {
     /**
      * minus to camel
      *
-     * @param param
+     * @param param param
      * @return formatted string
      */
     public static String minusToCamel(String param) {
@@ -70,7 +70,7 @@ public class StringFormatUtils {
     /**
      * dot to camel
      *
-     * @param param
+     * @param param param
      * @return formatted string
      */
     public static String dotToCamel(String param) {
@@ -80,8 +80,8 @@ public class StringFormatUtils {
     /**
      * format camel
      *
-     * @param param
-     * @param sign
+     * @param param param
+     * @param sign sign
      * @return formatted string
      */
     private static String formatCamel(String param, char sign) {

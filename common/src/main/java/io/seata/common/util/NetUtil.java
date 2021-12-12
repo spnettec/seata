@@ -117,6 +117,7 @@ public class NetUtil {
     /**
      * Gets local ip.
      *
+     * @param preferredNetworks preferredNetworks
      * @return the local ip
      */
     public static String getLocalIp(String... preferredNetworks) {
@@ -230,7 +231,7 @@ public class NetUtil {
     /**
      * is valid IP
      *
-     * @param ip
+     * @param ip ip
      * @param validLocalAndAny Are 127.0.0.1 and 0.0.0.0 valid IPs?
      * @return true if the given IP is valid
      */

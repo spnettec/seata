@@ -27,7 +27,9 @@
         <module>bom</module>
         <module>common</module>
         <module>config</module>
+        <module>console</module>
         <module>core</module>
+        <module>dependencies</module>
         <module>discovery</module>
         <module>distribution</module>
         <module>integration/dubbo</module>
@@ -36,9 +38,9 @@
         <module>integration/motan</module>
         <module>integration/grpc</module>
         <module>integration/http</module>
+        <module>integration/hsf</module>
         <module>rm</module>
         <module>rm-datasource</module>
-        <module>server</module>
         <module>spring</module>
         <module>tcc</module>
         <module>test</module>
@@ -46,9 +48,12 @@
         <module>metrics</module>
         <module>serializer</module>
         <module>seata-spring-boot-starter</module>
+        <module>seata-spring-autoconfigure</module>
         <module>compressor</module>
         <module>saga</module>
         <module>sqlparser</module>
+        <module>server</module>
+        <module>ext/apm-seata-skywalking-plugin</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -92,8 +97,8 @@
         <revision>1.5.0.B</revision>
 
         <!-- Compiler settings properties -->
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Maven plugins -->
@@ -103,8 +108,8 @@
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
 <!--        <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>-->
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
-        <p3c-pmd.version>1.3.6</p3c-pmd.version>
-        <maven-pmd-plugin.version>3.8</maven-pmd-plugin.version>
+        <p3c-pmd.version>2.1.1</p3c-pmd.version>
+        <maven-pmd-plugin.version>3.15.0</maven-pmd-plugin.version>
         <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
         <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
@@ -112,10 +117,10 @@
         <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
 
         <!-- for test -->
-        <junit-jupiter.version>5.8.1</junit-jupiter.version>
-        <mockito.version>4.0.0</mockito.version>
+        <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <mockito.version>4.1.0</mockito.version>
         <assertj-core.version>3.21.0</assertj-core.version>
-        <junit-platform-launcher.version>1.8.1</junit-platform-launcher.version>
+        <junit-platform-launcher.version>1.8.2</junit-platform-launcher.version>
 
         <!-- for docker image-->
         <image.publish.skip>true</image.publish.skip>
@@ -126,6 +131,7 @@
         <!-- for jdbc driver when package  -->
         <mysql.jdbc.version>5.1.35</mysql.jdbc.version>
         <mysql8.jdbc.version>8.0.19</mysql8.jdbc.version>
+        <doclint>none</doclint>
     </properties>
 
     <!--test-->
@@ -145,6 +151,12 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
+            <version>${junit-platform-launcher.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-commons</artifactId>
             <version>${junit-platform-launcher.version}</version>
             <scope>test</scope>
         </dependency>
@@ -171,12 +183,11 @@
         <dependencies>
             <dependency>
                 <groupId>io.seata</groupId>
-                <artifactId>seata-bom</artifactId>
+                <artifactId>seata-dependencies</artifactId>
                 <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
     <repositories>
@@ -445,6 +456,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
@@ -488,6 +500,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -533,6 +546,7 @@
                     <execution>
                         <id>flatten</id>
                         <phase>process-resources</phase>
+
                         <goals>
                             <goal>flatten</goal>
                         </goals>

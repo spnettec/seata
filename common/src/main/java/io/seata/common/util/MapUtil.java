@@ -30,8 +30,8 @@ public class MapUtil {
     /**
      * obj convert to Map
      *
-     * @param object
-     * @return Map<String,Object>
+     * @param object object
+     * @return Map&lt;String,Object&gt;
      */
     public static Map<String, Object> asMap(Object object) {
         // YAML can have numbers as keys
@@ -61,8 +61,8 @@ public class MapUtil {
     /**
      * get flattened Map
      *
-     * @param source
-     * @return Map<String,Object>
+     * @param source source
+     * @return Map&lt;String,Object&gt;
      */
     public static Map<String, Object> getFlattenedMap(Map<String, Object> source) {
         Map<String, Object> result = new LinkedHashMap<>();

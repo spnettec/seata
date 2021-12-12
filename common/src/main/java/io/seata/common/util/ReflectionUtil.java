@@ -616,6 +616,7 @@ public final class ReflectionUtil {
      *
      * @param annotation the annotation
      * @throws NoSuchFieldException the no such field exception
+     * @return Map&lt;String, Object&gt;
      */
     public static Map<String, Object> getAnnotationValues(Annotation annotation) throws NoSuchFieldException {
         InvocationHandler h = Proxy.getInvocationHandler(annotation);

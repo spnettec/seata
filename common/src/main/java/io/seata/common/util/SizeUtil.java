@@ -23,10 +23,10 @@ public class SizeUtil {
     /**
      * case size to byte length
      * example:
-     *   2k => 2 * 1024
-     *   2m => 2 * 1024 * 1024
-     *   2g => 2 * 1024 * 1024 * 1024
-     *   2t => 2 * 1024 * 1024 * 1024 * 1024
+     *   2k =&gt; 2 * 1024
+     *   2m =&gt; 2 * 1024 * 1024
+     *   2g =&gt; 2 * 1024 * 1024 * 1024
+     *   2t =&gt; 2 * 1024 * 1024 * 1024 * 1024
      * @param size the string size with unit
      * @return the byte length
      */

@@ -146,6 +146,9 @@ public class MethodDescTest {
      */
     @GlobalTransactional(name = "MockClassAnnotation")
     private static class MockClassAnnotation {
+        public MockClassAnnotation() {
+        }
+
         public String doBiz(String msg) {
             return "hello " + msg;
         }
