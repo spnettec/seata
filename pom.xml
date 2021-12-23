@@ -132,6 +132,8 @@
         <mysql.jdbc.version>5.1.35</mysql.jdbc.version>
         <mysql8.jdbc.version>8.0.19</mysql8.jdbc.version>
         <doclint>none</doclint>
+        <!-- for kotlin  -->
+        <kotlin.version>1.4.0</kotlin.version>
     </properties>
 
     <!--test-->
