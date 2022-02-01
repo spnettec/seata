@@ -17,53 +17,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <groupId>io.seata</groupId>
-    <artifactId>seata-dependencies</artifactId>
-    <version>1.5.0.B</version>
-
+    <parent>
+        <groupId>io.seata</groupId>
+        <artifactId>seata-build</artifactId>
+        <version>${revision}</version>
+        <relativePath>../build/pom.xml</relativePath>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>seata-dependencies</artifactId>
     <packaging>pom</packaging>
 
     <name>Seata dependencies ${project.version}</name>
     <description>Seata dependencies</description>
 
-    <url>http://seata.io</url>
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <developers>
-        <developer>
-            <id>Seata</id>
-            <name>Seata</name>
-            <url>http://seata.io</url>
-        </developer>
-    </developers>
-
-    <organization>
-        <name>Seata</name>
-        <url>https://github.com/seata</url>
-    </organization>
-
-    <issueManagement>
-        <system>github</system>
-        <url>https://github.com/seata/seata/issues</url>
-    </issueManagement>
-
-    <scm>
-        <url>git@github.com:seata/seata.git</url>
-        <connection>scm:git@github.com:seata/seata.git</connection>
-        <developerConnection>scm:git@github.com:seata/seata.git</developerConnection>
-    </scm>
-
     <properties>
         <spring.version>5.3.14</spring.version>
         <netty4.version>4.1.72.Final</netty4.version>
         <dubbo.version>2.7.4</dubbo.version>
+        <brpc.version>2.5.9</brpc.version>
         <hsf.version>1.8.3</hsf.version>
         <dubbo.alibaba.version>2.6.5</dubbo.alibaba.version>
         <sofa.rpc.version>5.5.3</sofa.rpc.version>
@@ -116,8 +88,8 @@
         <lz4.version>1.7.1</lz4.version>
 
         <!-- Compiler settings properties -->
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <protobuf.version>3.18.0</protobuf.version>
         <grpc.version>1.28.1</grpc.version>
@@ -222,6 +194,11 @@
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo</artifactId>
                 <version>${dubbo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baidu</groupId>
+                <artifactId>brpc-java</artifactId>
+                <version>${brpc.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>

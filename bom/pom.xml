@@ -17,48 +17,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <groupId>io.seata</groupId>
-    <artifactId>seata-bom</artifactId>
-    <version>1.5.0.B</version>
-
+    <parent>
+        <groupId>io.seata</groupId>
+        <artifactId>seata-build</artifactId>
+        <version>${revision}</version>
+        <relativePath>../build/pom.xml</relativePath>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>seata-bom</artifactId>
     <packaging>pom</packaging>
 
     <name>Seata bom ${project.version}</name>
     <description>Seata bom</description>
-
-    <url>http://seata.io</url>
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <developers>
-        <developer>
-            <id>Seata</id>
-            <name>Seata</name>
-            <url>http://seata.io</url>
-        </developer>
-    </developers>
-
-    <organization>
-        <name>Seata</name>
-        <url>https://github.com/seata</url>
-    </organization>
-
-    <issueManagement>
-        <system>github</system>
-        <url>https://github.com/seata/seata/issues</url>
-    </issueManagement>
-
-    <scm>
-        <url>git@github.com:seata/seata.git</url>
-        <connection>scm:git@github.com:seata/seata.git</connection>
-        <developerConnection>scm:git@github.com:seata/seata.git</developerConnection>
-    </scm>
 
     <dependencyManagement>
         <dependencies>
@@ -170,6 +141,11 @@
             <dependency>
                 <groupId>io.seata</groupId>
                 <artifactId>seata-discovery-sofa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.seata</groupId>
+                <artifactId>seata-brpc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
