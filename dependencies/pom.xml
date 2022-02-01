@@ -32,8 +32,8 @@
     <description>Seata dependencies</description>
 
     <properties>
-        <spring.version>5.3.14</spring.version>
-        <netty4.version>4.1.72.Final</netty4.version>
+        <spring.version>5.3.15</spring.version>
+        <netty4.version>4.1.73.Final</netty4.version>
         <dubbo.version>2.7.4</dubbo.version>
         <brpc.version>2.5.9</brpc.version>
         <hsf.version>1.8.3</hsf.version>

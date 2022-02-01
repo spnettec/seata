@@ -13,7 +13,7 @@
     <name>seata-console ${project.version}</name>
 
     <properties>
-        <spring-boot.version>2.6.2</spring-boot.version>
+        <spring-boot.version>2.6.3</spring-boot.version>
         <jwt.version>0.10.5</jwt.version>
     </properties>
 
