@@ -43,11 +43,12 @@
         <protostuff.version>1.5.9</protostuff.version>
         <config.version>1.2.1</config.version>
         <slf4j-api.version>1.7.22</slf4j-api.version>
-        <logback-classic.version>1.2.0</logback-classic.version>
+        <logback-classic.version>1.2.10</logback-classic.version>
         <commons-lang.version>2.6</commons-lang.version>
-        <commons-pool2.version>2.9.0</commons-pool2.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons-pool2.version>2.11.1</commons-pool2.version>
         <commons-pool.version>1.6</commons-pool.version>
-        <commons-dbcp2.version>2.8.0</commons-dbcp2.version>
+        <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
         <hikari.version>3.4.3</hikari.version>
         <cglib.version>3.1</cglib.version>
         <aopalliance.version>1.0</aopalliance.version>
@@ -77,7 +78,7 @@
         <mysql.client.version>5.1.35</mysql.client.version>
         <postgres.client.version>42.2.24</postgres.client.version>
         <h2.version>1.4.181</h2.version>
-        <motan.version>1.0.0</motan.version>
+        <motan.version>1.1.10</motan.version>
         <jackson.version>2.9.9</jackson.version>
         <jcommander.version>1.72</jcommander.version>
         <annotation.api.version>1.2</annotation.api.version>
@@ -175,6 +176,12 @@
                 <artifactId>commons-lang</artifactId>
                 <version>${commons-lang.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-pool2</artifactId>
@@ -419,6 +426,10 @@
                         <artifactId>slf4j-log4j12</artifactId>
                         <groupId>org.slf4j</groupId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-lang3</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -429,6 +440,10 @@
                     <exclusion>
                         <artifactId>slf4j-log4j12</artifactId>
                         <groupId>org.slf4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-lang3</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -553,138 +568,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <repositories>
-        <repository>
-            <id>central-repos1</id>
-            <name>Central Repository 2</name>
-            <url>https://repo1.maven.org/maven2/</url>
-        </repository>
-        <!--阿里云主仓库，代理了maven central和jcenter仓库-->
-        <repository>
-            <id>aliyun</id>
-            <name>aliyun</name>
-            <url>https://maven.aliyun.com/repository/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>fis-release</id>
-            <url>http://10.70.19.94:8081/repository/yofc-release/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>fis-snapshot</id>
-            <url>http://10.70.19.94:8081/repository/yofc-snapshot/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    <distributionManagement>
-        <snapshotRepository>
-            <!-- 这里的ID一定要在maven setting文件中存在于server下的ID -->
-            <id>yofc-snapshot-repo</id>
-            <name>Nexus Repository</name>
-            <url>http://admin:admin@10.70.19.94:8081/repository/yofc-snapshot/</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-        <repository>
-            <id>yofc-release-release</id>
-            <url>http://admin:admin@10.70.19.94:8081/repository/yofc-release/</url>
-            <uniqueVersion>false</uniqueVersion>
-        </repository>
-    </distributionManagement>
-
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.4</version>
-                        <configuration>
-                            <charset>${project.build.sourceEncoding}</charset>
-                            <failOnError>false</failOnError>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- GPG -->
-                    <!--
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>oss_seata</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-                    -->
-                    <!--
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                                <configuration>
-                                    <keyname>A1C4DAB9B220DBA0C277E945D6A1420D747D1EE0</keyname>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-enforcer-plugin</artifactId>
-                        <version>3.0.0-M3</version>
-                        <executions>
-                            <execution>
-                                <id>enforce-maven</id>
-                                <goals>
-                                    <goal>enforce</goal>
-                                </goals>
-                                <configuration>
-                                    <rules>
-                                        <requireMavenVersion>
-                                            <version>[3.6.0,)</version>
-                                        </requireMavenVersion>
-                                    </rules>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 </project>

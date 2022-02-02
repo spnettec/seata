@@ -30,8 +30,8 @@ public class MapUtil {
     /**
      * obj convert to Map
      *
-     * @param object object
-     * @return Map&lt;String,Object&gt;
+     * @param object
+     * @return Map<String,Object>
      */
     public static Map<String, Object> asMap(Object object) {
         // YAML can have numbers as keys
