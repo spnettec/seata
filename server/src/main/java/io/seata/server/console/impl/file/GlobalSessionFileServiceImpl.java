@@ -21,20 +21,16 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import io.seata.common.exception.InvalidParamException;
-import io.seata.core.console.param.GlobalSessionParam;
-import io.seata.core.console.result.PageResult;
-import io.seata.core.console.vo.GlobalSessionVO;
+import io.seata.server.console.param.GlobalSessionParam;
+import io.seata.console.result.PageResult;
+import io.seata.server.console.vo.GlobalSessionVO;
 import io.seata.server.console.service.GlobalSessionService;
 import io.seata.server.session.GlobalSession;
 import io.seata.server.session.SessionHolder;
 import io.seata.server.storage.SessionConverter;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
-import static io.seata.common.util.CollectionUtils.isEmpty;
-import static io.seata.common.util.CollectionUtils.isNotEmpty;
 import static io.seata.common.util.StringUtils.isBlank;
 import static java.util.Objects.isNull;
 
@@ -52,7 +48,7 @@ public class GlobalSessionFileServiceImpl implements GlobalSessionService {
     @Override
     public PageResult<GlobalSessionVO> query(GlobalSessionParam param) {
         if (param.getPageSize() <= 0 || param.getPageNum() <= 0) {
-            throw new InvalidParamException("wrong pageSize or pageNum");
+            throw new IllegalArgumentException("wrong pageSize or pageNum");
         }
 
         final Collection<GlobalSession> allSessions = SessionHolder.getRootSessionManager().allSessions();
@@ -62,7 +58,7 @@ public class GlobalSessionFileServiceImpl implements GlobalSessionService {
                 .filter(obtainPredicate(param))
                 .collect(Collectors.toList());
 
-        return PageResult.build(SessionConverter.convert(filteredSessions), param.getPageNum(), param.getPageSize());
+        return PageResult.build(SessionConverter.convertGlobalSession(filteredSessions), param.getPageNum(), param.getPageSize());
     }
 
 
@@ -93,16 +89,12 @@ public class GlobalSessionFileServiceImpl implements GlobalSessionService {
                 (isBlank(param.getTransactionName()) || session.getTransactionName().contains(param.getTransactionName()))
 
                 &&
-                // withBranch
-                (param.isWithBranch() ? isNotEmpty(session.getBranchSessions()) : isEmpty(session.getBranchSessions()))
-
-                &&
                 // timeStart
-                (isNull(param.getTimeStart()) || param.getTimeStart().getTime() <= session.getBeginTime())
+                (isNull(param.getTimeStart()) || param.getTimeStart() <= session.getBeginTime())
 
                 &&
                 // timeEnd
-                (isNull(param.getTimeEnd()) || param.getTimeEnd().getTime() >= session.getBeginTime());
+                (isNull(param.getTimeEnd()) || param.getTimeEnd() >= session.getBeginTime());
 
         };
     }

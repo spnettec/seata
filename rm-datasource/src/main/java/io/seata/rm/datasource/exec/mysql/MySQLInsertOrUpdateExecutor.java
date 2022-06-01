@@ -103,8 +103,11 @@ public class MySQLInsertOrUpdateExecutor extends MySQLInsertExecutor implements 
             beforeImage = TableRecords.empty(getTableMeta());
         }
         Object result = statementCallback.execute(statementProxy.getTargetStatement(), args);
-        TableRecords afterImage = afterImage(beforeImage);
-        prepareUndoLogAll(beforeImage, afterImage);
+        int updateCount = statementProxy.getUpdateCount();
+        if (updateCount > 0) {
+            TableRecords afterImage = afterImage(beforeImage);
+            prepareUndoLogAll(beforeImage, afterImage);
+        }
         return result;
     }
 
@@ -138,13 +141,13 @@ public class MySQLInsertOrUpdateExecutor extends MySQLInsertExecutor implements 
             return;
         }
         List<Row> beforeImageRows = beforeImage.getRows();
-        List<String> befrePrimaryValues = new ArrayList<>();
+        List<String> beforePrimaryValues = new ArrayList<>();
         for (Row r : beforeImageRows) {
             String primaryValue = "";
             for (Field f: r.primaryKeys()) {
                 primaryValue = primaryValue + f.getValue() + COLUMN_SEPARATOR;
             }
-            befrePrimaryValues.add(primaryValue);
+            beforePrimaryValues.add(primaryValue);
         }
         List<Row> insertRows = new ArrayList<>();
         List<Row> updateRows = new ArrayList<>();
@@ -154,7 +157,7 @@ public class MySQLInsertOrUpdateExecutor extends MySQLInsertExecutor implements 
             for (Field f: r.primaryKeys()) {
                 primaryValue = primaryValue + f.getValue()  + COLUMN_SEPARATOR;
             }
-            if (befrePrimaryValues.contains(primaryValue)) {
+            if (beforePrimaryValues.contains(primaryValue)) {
                 updateRows.add(r);
             } else {
                 insertRows.add(r);

@@ -194,6 +194,8 @@
             <groupId>io.seata</groupId>
             <artifactId>seata-sqlparser-antlr</artifactId>
             <version>${project.version}</version>
+            <!-- Slimming down for 'seata-all.jar' -->
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.seata</groupId>
@@ -230,10 +232,17 @@
             <groupId>io.seata</groupId>
             <artifactId>seata-serializer-protobuf</artifactId>
             <version>${project.version}</version>
+            <!-- Slimming down for 'seata-all.jar' -->
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.seata</groupId>
             <artifactId>seata-grpc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-hsf</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -544,6 +553,12 @@
             <groupId>io.grpc</groupId>
             <artifactId>grpc-netty</artifactId>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.netty</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
@@ -719,19 +734,29 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Flatten -->
+            <!-- Easyj -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
+                <groupId>icu.easyj.maven.plugins</groupId>
+                <artifactId>easyj-maven-plugin</artifactId>
                 <executions>
+                    <!-- Use this goal to recreate the '.flattened-pom.xml' after shade. -->
                     <execution>
-                        <id>flatten</id>
+                        <id>create-pom-file</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>flatten</goal>
+                            <goal>create-pom-file</goal>
                         </goals>
                     </execution>
                 </executions>
+                <!-- the config of the 'simplify-pom' plugin -->
+                <configuration>
+                    <keepProvidedDependencies>true</keepProvidedDependencies>
+                    <keepOptionalDependencies>true</keepOptionalDependencies>
+                    <excludeDependencies>
+                        <!-- Exclude dependencies that need to be shaded. -->
+                        <dependency>io.seata:*</dependency>
+                    </excludeDependencies>
+                </configuration>
             </plugin>
             <!-- Dependency -->
             <plugin>
