@@ -37,7 +37,7 @@
         <hsf.version>1.8.3</hsf.version>
         <dubbo.alibaba.version>2.6.5</dubbo.alibaba.version>
         <sofa.rpc.version>5.5.3</sofa.rpc.version>
-        <fastjson.version>1.2.83</fastjson.version>
+        <fastjson2.version>2.0.7</fastjson2.version>
         <protostuff.version>1.5.9</protostuff.version>
         <config.version>1.2.1</config.version>
         <commons-logging.version>1.2</commons-logging.version>
@@ -66,13 +66,11 @@
         <ant.version>1.10.6</ant.version>
         <lz4.version>1.7.1</lz4.version>
 
-        <protobuf.version>3.18.0</protobuf.version>
-        <grpc.version>1.28.1</grpc.version>
         <kryo.version>4.0.2</kryo.version>
         <kryo-serializers.version>0.42</kryo-serializers.version>
         <hessian.version>4.0.63</hessian.version>
         <fst.version>2.57</fst.version>
-        <groovy.version>3.0.10</groovy.version>
+        <groovy.version>2.4.21</groovy.version>
         <zstd.version>1.5.0-4</zstd.version>
         <xstream.version>1.4.19</xstream.version>
 
@@ -104,30 +102,28 @@
         <!-- # for kotlin -->
         <kotlin.version>1.4.32</kotlin.version>
         <kotlin-coroutines.version>1.4.3</kotlin-coroutines.version>
-
-        <!-- # for test -->
-        <junit-jupiter.version>5.8.2</junit-jupiter.version>
-        <junit-platform.version>1.8.2</junit-platform.version>
-        <mockito.version>2.23.4</mockito.version>
-        <assertj-core.version>3.12.2</assertj-core.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!-- spring  -->
+            <!-- spring-boot -->
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-framework-bom</artifactId>
-                <version>${spring.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
             <!-- the 3rd part -->
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.antlr</groupId>
@@ -314,6 +310,11 @@
                 <version>${nacos-client.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-api</artifactId>
+                <version>${nacos-client.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.ctrip.framework.apollo</groupId>
                 <artifactId>apollo-client</artifactId>
                 <version>${apollo-client.version}</version>
@@ -373,6 +374,10 @@
                     <exclusion>
                         <groupId>com.google.guava</groupId>
                         <artifactId>guava</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.grpc</groupId>
+                        <artifactId>grpc-grpclb</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>

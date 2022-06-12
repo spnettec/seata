@@ -17,7 +17,7 @@ package io.seata.server.session.redis;
 
 import javax.annotation.Resource;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import io.seata.console.result.PageResult;
 import io.seata.server.console.param.GlobalLockParam;
 import io.seata.server.console.param.GlobalSessionParam;

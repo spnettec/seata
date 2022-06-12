@@ -61,8 +61,8 @@ public class MapUtil {
     /**
      * get flattened Map
      *
-     * @param source source
-     * @return Map&lt;String,Object&gt;
+     * @param source
+     * @return Map<String,Object>
      */
     public static Map<String, Object> getFlattenedMap(Map<String, Object> source) {
         Map<String, Object> result = new LinkedHashMap<>();

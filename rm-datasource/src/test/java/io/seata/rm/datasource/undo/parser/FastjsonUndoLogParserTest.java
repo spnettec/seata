@@ -21,9 +21,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.alibaba.fastjson.serializer.ValueFilter;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.filter.ValueFilter;
 
 import io.seata.common.loader.EnhancedServiceLoader;
 import io.seata.rm.datasource.sql.struct.Field;
@@ -57,8 +56,7 @@ public class FastjsonUndoLogParserTest extends BaseUndoLogParserTest {
     public void testTimestampEncodeAndDecode() {
         Timestamp encodeStamp = new Timestamp(System.currentTimeMillis());
         encodeStamp.setNanos(999999);
-        SerializeConfig.getGlobalInstance().addFilter(Timestamp.class, new TimestampSerializer());
-        byte[] encode = JSON.toJSONString(encodeStamp, SerializeConfig.getGlobalInstance()).getBytes();
+        byte[] encode = JSON.toJSONString(encodeStamp, new TimestampSerializer()).getBytes();
     }
 
     @Test
@@ -105,13 +103,12 @@ public class FastjsonUndoLogParserTest extends BaseUndoLogParserTest {
         Object value1 = decode.getSqlUndoLogs().get(0).getAfterImage().getRows().get(0).getFields().get(0).getValue();
         Object value2 = decode.getSqlUndoLogs().get(0).getAfterImage().getRows().get(0).getFields().get(1).getValue();
         Assertions.assertTrue(value1 instanceof Long);
-        Assertions.assertTrue(value2 instanceof BigDecimal);
+        Assertions.assertTrue(value2 instanceof Integer);
     }
 
-    private class TimestampSerializer implements ValueFilter {
-
+    private static class TimestampSerializer implements ValueFilter {
         @Override
-        public Object process(Object object, String name, Object value) {
+        public Object apply(Object object, String name, Object value) {
             return null;
         }
     }

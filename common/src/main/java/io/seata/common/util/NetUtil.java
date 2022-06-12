@@ -117,7 +117,6 @@ public class NetUtil {
     /**
      * Gets local ip.
      *
-     * @param preferredNetworks preferredNetworks
      * @return the local ip
      */
     public static String getLocalIp(String... preferredNetworks) {

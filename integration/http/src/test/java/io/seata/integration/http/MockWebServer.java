@@ -15,7 +15,8 @@
  */
 package io.seata.integration.http;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import io.seata.common.util.StringUtils;
 import io.seata.core.context.RootContext;
 
@@ -113,7 +114,7 @@ public class MockWebServer {
         else if ("post".equals(myRequest.getMethod())) {
             params = getBodyParams(myRequest.getBody());
         }
-        return JSONObject.parseObject(JSONObject.toJSONString(params), HttpTest.Person.class);
+        return JSONObject.parseObject(JSON.toJSONString(params), HttpTest.Person.class);
     }
 
     private Map<String, String> getBodyParams(String body) {

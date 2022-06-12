@@ -15,9 +15,9 @@
  */
 package io.seata.saga.statelang.parser.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.Feature;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
+import com.alibaba.fastjson2.JSONWriter;
 import io.seata.common.loader.LoadLevel;
 import io.seata.saga.statelang.parser.JsonParser;
 
@@ -29,21 +29,15 @@ import io.seata.saga.statelang.parser.JsonParser;
 @LoadLevel(name = FastjsonParser.NAME)
 public class FastjsonParser implements JsonParser {
 
-    private static final SerializerFeature[] SERIALIZER_FEATURES = new SerializerFeature[] {
-        SerializerFeature.DisableCircularReferenceDetect,
-        SerializerFeature.WriteDateUseDateFormat,
-        SerializerFeature.WriteClassName };
+    private static final JSONWriter.Feature[] SERIALIZER_FEATURES = new JSONWriter.Feature[] {
+            JSONWriter.Feature.WriteClassName};
 
-    private static final SerializerFeature[] SERIALIZER_FEATURES_PRETTY = new SerializerFeature[] {
-        SerializerFeature.DisableCircularReferenceDetect,
-        SerializerFeature.WriteDateUseDateFormat,
-        SerializerFeature.WriteClassName,
-        SerializerFeature.PrettyFormat };
+    private static final JSONWriter.Feature[] SERIALIZER_FEATURES_PRETTY = new JSONWriter.Feature[] {
+            JSONWriter.Feature.WriteClassName,
+            JSONWriter.Feature.PrettyFormat };
 
-    private static final SerializerFeature[] FEATURES_PRETTY = new SerializerFeature[] {
-        SerializerFeature.DisableCircularReferenceDetect,
-        SerializerFeature.WriteDateUseDateFormat,
-        SerializerFeature.PrettyFormat };
+    private static final JSONWriter.Feature[] FEATURES_PRETTY = new JSONWriter.Feature[] {
+            JSONWriter.Feature.PrettyFormat };
 
     public static final String NAME = "fastjson";
 
@@ -80,10 +74,10 @@ public class FastjsonParser implements JsonParser {
     @Override
     public <T> T parse(String json, Class<T> type, boolean ignoreAutoType) {
         if (ignoreAutoType) {
-            return JSON.parseObject(json, type, Feature.IgnoreAutoType, Feature.OrderedField);
+            return JSON.parseObject(json, type);
         }
         else {
-            return JSON.parseObject(json, type, Feature.SupportAutoType, Feature.OrderedField);
+            return JSON.parseObject(json, type, JSONReader.Feature.SupportAutoType);
         }
     }
 }

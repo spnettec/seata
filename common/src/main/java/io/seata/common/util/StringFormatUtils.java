@@ -26,7 +26,7 @@ public class StringFormatUtils {
     /**
      * camelTo underline format
      *
-     * @param param param
+     * @param param
      * @return formatted string
      */
     public static String camelToUnderline(String param) {

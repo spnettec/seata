@@ -15,7 +15,8 @@
  */
 package io.seata.core.protocol;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -43,30 +44,6 @@ public class MessageFutureTest {
     private static final HashMap<String, String> HEAD_FIELD = new HashMap<>();
     private static final long TIME_OUT_FIELD = 100L;
 
-    /**
-     * Test field set get.
-     */
-    @Test
-    public void testFieldSetGet() {
-        String fromJson = "{\n" +
-            "\t\"requestMessage\":{\n" +
-            "\t\t\"body\":\"" + BODY_FIELD + "\",\n" +
-            "\t\t\"codec\":" + CODEC_FIELD + ",\n" +
-            "\t\t\"compressor\":" + COMPRESS_FIELD + ",\n" +
-            "\t\t\"headMap\":" + HEAD_FIELD + ",\n" +
-            "\t\t\"id\":" + ID_FIELD + ",\n" +
-            "\t\t\"messageType\":" + MSG_TYPE_FIELD + "\n" +
-            "\t},\n" +
-            "\t\"timeout\":" + TIME_OUT_FIELD + "\n" +
-            "}";
-        MessageFuture fromJsonFuture = JSON.parseObject(fromJson, MessageFuture.class);
-        assertThat(fromJsonFuture.getTimeout()).isEqualTo(TIME_OUT_FIELD);
-        MessageFuture toJsonFuture = new MessageFuture();
-        toJsonFuture.setRequestMessage(buildRepcMessage());
-        toJsonFuture.setTimeout(TIME_OUT_FIELD);
-        String toJson = JSON.toJSONString(toJsonFuture, true);
-        assertThat(toJson).isEqualTo(fromJson);
-    }
 
     /**
      * Test is time out.
