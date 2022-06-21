@@ -73,8 +73,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- The version of spring-boot for 'spring-boot-dependencies' and 'spring-boot-maven-plugin' -->
-        <spring-boot.version>2.4.13</spring-boot.version>
-
+        <spring-boot.version>2.7.0</spring-boot.version>
+        <netty.version>4.1.77.Final</netty.version>
         <!-- Maven plugin versions -->
         <!-- Build -->
         <easyj-maven-plugin.version>0.5.6</easyj-maven-plugin.version>
@@ -82,7 +82,7 @@
         <!-- Compiler -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <protobuf.version>3.21.1</protobuf.version>
-        <grpc.version>1.44.1</grpc.version>
+        <grpc.version>1.46.0</grpc.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <kotlin-maven-plugin.version>1.6.10</kotlin-maven-plugin.version>
         <!-- Check -->
@@ -123,7 +123,6 @@
         <checkstyle.skip>true</checkstyle.skip>
         <license.skip>true</license.skip>
         <maven.test.skip>false</maven.test.skip>
-        <maven.surefire.argLine></maven.surefire.argLine>
         <gpg.keyname>A1C4DAB9B220DBA0C277E945D6A1420D747D1EE0</gpg.keyname>
 
         <!-- For docker image-->
