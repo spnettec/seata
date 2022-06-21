@@ -73,8 +73,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- The version of spring-boot for 'spring-boot-dependencies' and 'spring-boot-maven-plugin' -->
-        <spring-boot.version>2.7.0</spring-boot.version>
-        <netty.version>4.1.77.Final</netty.version>
+        <spring-boot.version>2.4.13</spring-boot.version>
+
         <!-- Maven plugin versions -->
         <!-- Build -->
         <easyj-maven-plugin.version>0.5.6</easyj-maven-plugin.version>
