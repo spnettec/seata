@@ -81,8 +81,8 @@
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <!-- Compiler -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <protobuf.version>3.21.1</protobuf.version>
-        <grpc.version>1.46.0</grpc.version>
+        <protobuf.version>3.21.4</protobuf.version>
+        <grpc.version>1.48.0</grpc.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <kotlin-maven-plugin.version>1.6.10</kotlin-maven-plugin.version>
         <!-- Check -->
@@ -333,6 +333,7 @@
                         </configuration>
                     </plugin>
                     <!-- GPG -->
+                    <!--
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -354,6 +355,7 @@
                             </execution>
                         </executions>
                     </plugin>
+                    -->
                 </plugins>
             </build>
             <!-- distribution management -->

@@ -180,7 +180,6 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -278,16 +277,16 @@
                             <jvmFlag>-XX:-UseAdaptiveSizePolicy</jvmFlag>
                             <jvmFlag>-XX:+HeapDumpOnOutOfMemoryError</jvmFlag>
                             <jvmFlag>-XX:HeapDumpPath=/var/log/seata_heapdump.hprof</jvmFlag>
-
+                            <!--gc-->
                             <jvmFlag>-XX:+DisableExplicitGC</jvmFlag>
                             <jvmFlag>-XX:+CMSParallelRemarkEnabled</jvmFlag>
                             <jvmFlag>-XX:+UseCMSInitiatingOccupancyOnly</jvmFlag>
                             <jvmFlag>-XX:CMSInitiatingOccupancyFraction=75</jvmFlag>
                             <jvmFlag>-Xloggc:/var/log/seata_gc.log</jvmFlag>
                             <jvmFlag>-verbose:gc</jvmFlag>
-
+                            <!--netty-->
                             <jvmFlag>-Dio.netty.leakDetectionLevel=advanced</jvmFlag>
-
+                            <!--log-->
                             <jvmFlag>-Dlogback.color.disable-for-bat=true</jvmFlag>
                         </jvmFlags>
                         <labels>
@@ -314,7 +313,6 @@
                     </execution>
                 </executions>
             </plugin>
-            -->
         </plugins>
     </build>
 
