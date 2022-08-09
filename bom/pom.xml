@@ -380,41 +380,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>fis-release</id>
-            <url>http://10.70.19.94:8081/repository/yofc-release/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>fis-snapshot</id>
-            <url>http://10.70.19.94:8081/repository/yofc-snapshot/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
     </repositories>
-    <distributionManagement>
-        <snapshotRepository>
-            <!-- 这里的ID一定要在maven setting文件中存在于server下的ID -->
-            <id>yofc-snapshot-repo</id>
-            <name>Nexus Repository</name>
-            <url>http://admin:admin@10.70.19.94:8081/repository/yofc-snapshot/</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-        <repository>
-            <id>yofc-release-release</id>
-            <url>http://admin:admin@10.70.19.94:8081/repository/yofc-release/</url>
-            <uniqueVersion>false</uniqueVersion>
-        </repository>
-    </distributionManagement>
 
     <profiles>
         <profile>
