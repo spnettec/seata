@@ -13,7 +13,7 @@ jobs:
       matrix:
         java: [ 8, 11, 17 ]
         springboot: [
-          2.7.2          -Dspring-framework.version=5.3.22,
+          2.7.3          -Dspring-framework.version=5.3.22,
           2.6.10         -Dspring-framework.version=5.3.22,
           2.5.14         -Dspring-framework.version=5.3.20,
           2.4.13         -Dspring-framework.version=5.3.13,
