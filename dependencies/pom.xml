@@ -36,7 +36,7 @@
         <brpc.version>2.5.9</brpc.version>
         <hsf.version>1.8.3</hsf.version>
         <dubbo.alibaba.version>2.6.5</dubbo.alibaba.version>
-        <sofa.rpc.version>5.5.3</sofa.rpc.version>
+        <sofa.rpc.version>5.8.7</sofa.rpc.version>
         <fastjson2.version>2.0.12</fastjson2.version>
         <protostuff.version>1.5.9</protostuff.version>
         <config.version>1.2.1</config.version>
@@ -58,8 +58,8 @@
         <guava.version>30.1-jre</guava.version>
         <javax-inject.version>1</javax-inject.version>
         <archaius-core.version>0.7.6</archaius-core.version>
-        <sofa.registry.version>5.2.0</sofa.registry.version>
-        <motan.version>1.1.10</motan.version>
+        <sofa.registry.version>5.4.3</sofa.registry.version>
+        <motan.version>1.1.12</motan.version>
         <jcommander.version>1.72</jcommander.version>
         <xz.version>1.8</xz.version>
         <commons-compress.version>1.19</commons-compress.version>
@@ -170,6 +170,12 @@
                 <groupId>com.alipay.sofa</groupId>
                 <artifactId>sofa-rpc-all</artifactId>
                 <version>${sofa.rpc.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.grpc</groupId>
+                        <artifactId>grpc-netty-shaded</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.protostuff</groupId>
