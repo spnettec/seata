@@ -35,7 +35,7 @@
         <dubbo-seata.version>1.0.0</dubbo-seata.version>
         <brpc.version>2.5.9</brpc.version>
         <hsf.version>1.8.3</hsf.version>
-        <dubbo.alibaba.version>2.6.5</dubbo.alibaba.version>
+        <dubbo.alibaba.version>2.6.12</dubbo.alibaba.version>
         <sofa.rpc.version>5.8.7</sofa.rpc.version>
         <fastjson2.version>2.0.12</fastjson2.version>
         <protostuff.version>1.5.9</protostuff.version>
@@ -62,13 +62,13 @@
         <motan.version>1.1.12</motan.version>
         <jcommander.version>1.72</jcommander.version>
         <xz.version>1.8</xz.version>
-        <commons-compress.version>1.19</commons-compress.version>
-        <ant.version>1.10.6</ant.version>
+        <commons-compress.version>1.21</commons-compress.version>
+        <ant.version>1.10.12</ant.version>
         <lz4.version>1.7.1</lz4.version>
 
         <kryo.version>4.0.2</kryo.version>
         <kryo-serializers.version>0.42</kryo-serializers.version>
-        <hessian.version>4.0.63</hessian.version>
+        <hessian.version>4.0.66</hessian.version>
         <fst.version>2.57</fst.version>
         <groovy.version>2.4.21</groovy.version>
         <zstd.version>1.5.0-4</zstd.version>
