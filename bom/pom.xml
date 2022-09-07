@@ -368,6 +368,10 @@
         </dependencies>
     </dependencyManagement>
     <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
         <!--阿里云主仓库，代理了maven central和jcenter仓库-->
         <repository>
             <id>aliyun</id>

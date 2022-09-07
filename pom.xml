@@ -29,7 +29,10 @@
     <packaging>pom</packaging>
     <name>Seata Parent POM ${project.version}</name>
     <description>parent for Seata built with Maven</description>
-
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
     <modules>
         <module>build</module>
         <module>all</module>
