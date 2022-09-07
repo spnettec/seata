@@ -295,6 +295,7 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <compilerVersion>${maven.compiler.source}</compilerVersion>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <parameters>true</parameters>
                 </configuration>
