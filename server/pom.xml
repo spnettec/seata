@@ -73,11 +73,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>seata-discovery-all</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>seata-serializer-all</artifactId>
@@ -126,6 +122,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <version>42.4.1</version>
         </dependency>
         <!-- Copyright restrictions, do not reference this dependency.
              You can add this dependency to the '/seata/lib' directory of the seata-server when necessary.

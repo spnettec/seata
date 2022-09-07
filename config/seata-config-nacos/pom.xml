@@ -33,11 +33,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.nacos</groupId>
+            <groupId>com.github.heyoulin.nacos</groupId>
             <artifactId>nacos-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.nacos</groupId>
+            <groupId>com.github.heyoulin.nacos</groupId>
             <artifactId>nacos-api</artifactId>
         </dependency>
     </dependencies>

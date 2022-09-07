@@ -15,9 +15,25 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.seata</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>seata-spring-autoconfigure-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-sqlparser-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-tcc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-saga-engine</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 </project>

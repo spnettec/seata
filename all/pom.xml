@@ -453,7 +453,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.nacos</groupId>
+            <groupId>com.github.heyoulin.nacos</groupId>
             <artifactId>nacos-client</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -611,6 +611,10 @@
         </dependency>
     </dependencies>
     <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
         <repository>
             <id>central-repos1</id>
             <name>Central Repository 2</name>

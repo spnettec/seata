@@ -60,7 +60,7 @@
         <archaius-core.version>0.7.6</archaius-core.version>
         <sofa.registry.version>5.4.3</sofa.registry.version>
         <motan.version>1.1.12</motan.version>
-        <jcommander.version>1.72</jcommander.version>
+        <jcommander.version>1.74</jcommander.version>
         <xz.version>1.8</xz.version>
         <commons-compress.version>1.21</commons-compress.version>
         <ant.version>1.10.12</ant.version>
@@ -312,12 +312,12 @@
                 <version>${spring-context-support.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.nacos</groupId>
+                <groupId>com.github.heyoulin.nacos</groupId>
                 <artifactId>nacos-client</artifactId>
                 <version>${nacos-client.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.nacos</groupId>
+                <groupId>com.github.heyoulin.nacos</groupId>
                 <artifactId>nacos-api</artifactId>
                 <version>${nacos-client.version}</version>
             </dependency>
