@@ -22,8 +22,8 @@ import javax.annotation.Nullable;
 
 import io.seata.common.loader.LoadLevel;
 import io.seata.spring.annotation.ScannerChecker;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 /**

@@ -98,8 +98,8 @@ public class PostgresqlInsertExecutor extends BaseInsertExecutor implements Sequ
         ColumnMeta pkMeta = pkMetaMap.values().iterator().next();
         String columnDef = pkMeta.getColumnDef();
         // sample: nextval('test_id_seq'::regclass)
-        String seq = org.apache.commons.lang.StringUtils.substringBetween(columnDef, "'", "'");
-        String function = org.apache.commons.lang.StringUtils.substringBetween(columnDef, "", "(");
+        String seq = org.apache.commons.lang3.StringUtils.substringBetween(columnDef, "'", "'");
+        String function = org.apache.commons.lang3.StringUtils.substringBetween(columnDef, "", "(");
         if (StringUtils.isBlank(seq)) {
             throw new ShouldNeverHappenException("get primary key value failed, cause columnDef is " + columnDef);
         }
@@ -120,8 +120,8 @@ public class PostgresqlInsertExecutor extends BaseInsertExecutor implements Sequ
         ColumnMeta pkMeta = pkMetaMap.values().iterator().next();
         String columnDef = pkMeta.getColumnDef();
         // sample: nextval('test_id_seq'::regclass)
-        String seq = org.apache.commons.lang.StringUtils.substringBetween(columnDef, "'", "'");
-        String function = org.apache.commons.lang.StringUtils.substringBetween(columnDef, "", "(");
+        String seq = org.apache.commons.lang3.StringUtils.substringBetween(columnDef, "'", "'");
+        String function = org.apache.commons.lang3.StringUtils.substringBetween(columnDef, "", "(");
         if (StringUtils.isBlank(seq)) {
             throw new ShouldNeverHappenException("get primary key value failed, cause columnDef is " + columnDef);
         }

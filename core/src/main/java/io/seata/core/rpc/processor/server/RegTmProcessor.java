@@ -26,7 +26,7 @@ import io.seata.core.rpc.netty.ChannelManager;
 import io.seata.core.rpc.RemotingServer;
 import io.seata.core.rpc.RegisterCheckAuthHandler;
 import io.seata.core.rpc.processor.RemotingProcessor;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

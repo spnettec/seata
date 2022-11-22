@@ -18,13 +18,13 @@ package io.seata.discovery.registry.etcd;
 import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.Watch;
-import io.etcd.jetcd.launcher.junit4.EtcdClusterResource;
 import io.etcd.jetcd.options.DeleteOption;
 import io.etcd.jetcd.options.GetOption;
+import io.etcd.jetcd.test.EtcdClusterExtension;
 import io.etcd.jetcd.watch.WatchResponse;
+import io.seata.discovery.registry.RegistryService;
 import io.seata.discovery.registry.etcd3.EtcdRegistryProvider;
 import io.seata.discovery.registry.etcd3.EtcdRegistryServiceImpl;
-import io.seata.discovery.registry.RegistryService;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -44,18 +44,20 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Disabled
 public class EtcdRegistryServiceImplTest {
+
     private static final String REGISTRY_KEY_PREFIX = "registry-seata-";
     private static final String CLUSTER_NAME = "default";
     @Rule
-    private final static EtcdClusterResource etcd = new EtcdClusterResource(CLUSTER_NAME, 1);
+    private final static EtcdClusterExtension etcd = EtcdClusterExtension.builder().withClusterName(CLUSTER_NAME)
+            .withNodes(1).build();
 
-    private final Client client = Client.builder().endpoints(etcd.getClientEndpoints()).build();
+    private final Client client = Client.builder().endpoints(etcd.clientEndpoints()).build();
     private final static String HOST = "127.0.0.1";
     private final static int PORT = 8091;
 
     @BeforeAll
     public static void beforeClass() throws Exception {
-        System.setProperty(EtcdRegistryServiceImpl.TEST_ENDPONT, etcd.getClientEndpoints().get(0).toString());
+        System.setProperty(EtcdRegistryServiceImpl.TEST_ENDPONT, etcd.clientEndpoints().get(0).toString());
     }
 
     @AfterAll
@@ -71,13 +73,13 @@ public class EtcdRegistryServiceImplTest {
         registryService.register(inetSocketAddress);
         //2.get instance information
         GetOption getOption = GetOption.newBuilder().withPrefix(buildRegistryKeyPrefix()).build();
-        long count = client.getKVClient().get(buildRegistryKeyPrefix(), getOption).get().getKvs().stream().filter(keyValue -> {
-            String[] instanceInfo = keyValue.getValue().toString(UTF_8).split(":");
-            return HOST.equals(instanceInfo[0]) && PORT == Integer.parseInt(instanceInfo[1]);
-        }).count();
+        long count = client.getKVClient().get(buildRegistryKeyPrefix(), getOption).get().getKvs().stream()
+                .filter(keyValue -> {
+                    String[] instanceInfo = keyValue.getValue().toString(UTF_8).split(":");
+                    return HOST.equals(instanceInfo[0]) && PORT == Integer.parseInt(instanceInfo[1]);
+                }).count();
         assertThat(count).isEqualTo(1);
     }
-
 
     @Test
     public void testUnregister() throws Exception {
@@ -87,21 +89,22 @@ public class EtcdRegistryServiceImplTest {
         registryService.register(inetSocketAddress);
         //2.get instance information
         GetOption getOption = GetOption.newBuilder().withPrefix(buildRegistryKeyPrefix()).build();
-        long count = client.getKVClient().get(buildRegistryKeyPrefix(), getOption).get().getKvs().stream().filter(keyValue -> {
-            String[] instanceInfo = keyValue.getValue().toString(UTF_8).split(":");
-            return HOST.equals(instanceInfo[0]) && PORT == Integer.parseInt(instanceInfo[1]);
-        }).count();
+        long count = client.getKVClient().get(buildRegistryKeyPrefix(), getOption).get().getKvs().stream()
+                .filter(keyValue -> {
+                    String[] instanceInfo = keyValue.getValue().toString(UTF_8).split(":");
+                    return HOST.equals(instanceInfo[0]) && PORT == Integer.parseInt(instanceInfo[1]);
+                }).count();
         assertThat(count).isEqualTo(1);
         //3.unregister
         registryService.unregister(inetSocketAddress);
         //4.again get instance information
         getOption = GetOption.newBuilder().withPrefix(buildRegistryKeyPrefix()).build();
-        count = client.getKVClient().get(buildRegistryKeyPrefix(), getOption).get().getKvs().stream().filter(keyValue -> {
-            String[] instanceInfo = keyValue.getValue().toString(UTF_8).split(":");
-            return HOST.equals(instanceInfo[0]) && PORT == Integer.parseInt(instanceInfo[1]);
-        }).count();
+        count = client.getKVClient().get(buildRegistryKeyPrefix(), getOption).get().getKvs().stream()
+                .filter(keyValue -> {
+                    String[] instanceInfo = keyValue.getValue().toString(UTF_8).split(":");
+                    return HOST.equals(instanceInfo[0]) && PORT == Integer.parseInt(instanceInfo[1]);
+                }).count();
         assertThat(count).isEqualTo(0);
-
 
     }
 
@@ -166,6 +169,7 @@ public class EtcdRegistryServiceImplTest {
      * etcd listener
      */
     private static class EtcdListener implements Watch.Listener {
+
         private boolean notified = false;
 
         @Override

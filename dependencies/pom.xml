@@ -66,8 +66,8 @@
         <ant.version>1.10.12</ant.version>
         <lz4.version>1.7.1</lz4.version>
 
-        <kryo.version>4.0.2</kryo.version>
-        <kryo-serializers.version>0.42</kryo-serializers.version>
+        <kryo.version>5.3.0</kryo.version>
+        <kryo-serializers.version>0.45</kryo-serializers.version>
         <hessian.version>4.0.66</hessian.version>
         <fst.version>2.57</fst.version>
         <groovy.version>2.4.21</groovy.version>
@@ -425,6 +425,17 @@
                 <groupId>io.etcd</groupId>
                 <artifactId>jetcd-launcher</artifactId>
                 <version>${etcd-client-v3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.etcd</groupId>
+                <artifactId>jetcd-test</artifactId>
+                <version>${etcd-client-v3.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.grpc</groupId>
+                        <artifactId>grpc-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.testcontainers</groupId>

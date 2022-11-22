@@ -38,7 +38,7 @@ import io.seata.common.util.NetUtil;
 import io.seata.config.Configuration;
 import io.seata.config.ConfigurationFactory;
 import io.seata.discovery.registry.RegistryService;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import static io.seata.config.ConfigurationKeys.FILE_CONFIG_SPLIT_CHAR;
 import static io.seata.config.ConfigurationKeys.FILE_ROOT_REGISTRY;

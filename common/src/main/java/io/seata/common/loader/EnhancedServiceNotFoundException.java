@@ -15,14 +15,14 @@
  */
 package io.seata.common.loader;
 
-import org.apache.commons.lang.exception.NestableRuntimeException;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 
 /**
  * The type Enhanced service not found exception.
  *
  * @author slievrly
  */
-public class EnhancedServiceNotFoundException extends NestableRuntimeException {
+public class EnhancedServiceNotFoundException extends ContextedRuntimeException {
     private static final long serialVersionUID = 7748438218914409019L;
 
     /**

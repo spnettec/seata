@@ -30,7 +30,7 @@ import io.seata.core.rpc.Disposable;
 import io.seata.rm.tcc.TCCFenceHandler;
 import io.seata.rm.tcc.exception.TCCFenceException;
 import io.seata.rm.tcc.store.db.TCCFenceStoreDataBaseDAO;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;

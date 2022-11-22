@@ -177,7 +177,7 @@ public class TCCFenceStoreDataBaseDAO implements TCCFenceStore {
     public int deleteTCCFenceDO(Connection conn, List<String> xids) {
         PreparedStatement ps = null;
         try {
-            String paramsPlaceHolder = org.apache.commons.lang.StringUtils.repeat("?", ",", xids.size());
+            String paramsPlaceHolder = org.apache.commons.lang3.StringUtils.repeat("?", ",", xids.size());
             String sql = TCCFenceStoreSqls.getDeleteSQLByXids(logTableName, paramsPlaceHolder);
             ps = conn.prepareStatement(sql);
             for (int i = 0; i < xids.size(); i++) {

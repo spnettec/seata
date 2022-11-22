@@ -18,7 +18,7 @@ package io.seata.core.protocol;
 import java.io.Serializable;
 
 import io.seata.common.util.NetUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import static io.seata.core.constants.ConfigurationKeys.EXTRA_DATA_SPLIT_CHAR;
 

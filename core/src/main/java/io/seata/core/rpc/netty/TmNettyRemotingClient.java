@@ -41,7 +41,7 @@ import io.seata.core.protocol.RegisterTMRequest;
 import io.seata.core.protocol.RegisterTMResponse;
 import io.seata.core.rpc.processor.client.ClientHeartbeatProcessor;
 import io.seata.core.rpc.processor.client.ClientOnResponseProcessor;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

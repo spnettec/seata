@@ -40,7 +40,7 @@ import io.seata.server.console.vo.GlobalSessionVO;
 import io.seata.server.storage.file.session.FileSessionManager;
 import io.seata.server.store.StoreConfig.SessionMode;
 import io.seata.server.util.StoreUtil;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
