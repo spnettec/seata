@@ -57,7 +57,7 @@
         <testcontainers.version>1.11.2</testcontainers.version>
         <guava.version>30.1-jre</guava.version>
         <javax-inject.version>1</javax-inject.version>
-        <archaius-core.version>0.7.6</archaius-core.version>
+        <archaius-core.version>0.7.7</archaius-core.version>
         <sofa.registry.version>5.4.3</sofa.registry.version>
         <motan.version>1.1.12</motan.version>
         <jcommander.version>1.74</jcommander.version>
@@ -76,8 +76,8 @@
 
         <jwt.version>0.10.5</jwt.version>
         <prometheus.client.version>0.6.0</prometheus.client.version>
-        <logback.version>1.2.9</logback.version>
-        <logstash-logback-encoder.version>6.5</logstash-logback-encoder.version>
+        <logback.version>1.4.5</logback.version>
+        <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
         <kafka-appender.version>0.2.0-RC2</kafka-appender.version>
 
         <!-- redis -->
@@ -91,11 +91,11 @@
         <h2.version>2.1.214</h2.version>
         <mariadb.version>2.7.6</mariadb.version>
         <!-- db connection pool -->
-        <druid.version>1.2.11</druid.version>
+        <druid.version>1.2.15</druid.version>
         <commons-dbcp2.version>2.7.0</commons-dbcp2.version>
         <hikari.version>5.0.1</hikari.version>
         <!-- sql parser -->
-        <antlr4.version>4.10.1</antlr4.version>
+        <antlr4.version>4.11.1</antlr4.version>
         <!-- for jdbc driver when package -->
         <mysql5.version>${mysql.version}</mysql5.version>
         <mysql8.version>8.0.27</mysql8.version>

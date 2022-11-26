@@ -72,7 +72,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- The version of spring-boot for 'spring-boot-dependencies' and 'spring-boot-maven-plugin' -->
-        <spring-boot.version>2.7.5</spring-boot.version>
+        <spring-boot.version>2.7.6</spring-boot.version>
         <netty.version>4.1.85.Final</netty.version>
         <!-- Maven plugin versions -->
         <!-- Build -->
@@ -81,7 +81,7 @@
         <!-- Compiler -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <protobuf.version>3.21.9</protobuf.version>
-        <grpc.version>1.50.2</grpc.version>
+        <grpc.version>1.51.0</grpc.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <kotlin-maven-plugin.version>1.6.10</kotlin-maven-plugin.version>
         <!-- Check -->
@@ -112,11 +112,11 @@
         <os-maven-plugin.version>1.7.0</os-maven-plugin.version>
 
         <!-- # for test -->
-        <junit-jupiter.version>5.8.2</junit-jupiter.version>
-        <junit-platform.version>1.8.2</junit-platform.version>
-        <mockito.version>2.23.4</mockito.version>
-        <slf4j-simple.version>1.7.36</slf4j-simple.version>
-        <assertj-core.version>3.12.2</assertj-core.version>
+        <junit-jupiter.version>5.9.1</junit-jupiter.version>
+        <junit-platform.version>1.9.1</junit-platform.version>
+        <mockito.version>4.9.0</mockito.version>
+        <slf4j-simple.version>2.0.5</slf4j-simple.version>
+        <assertj-core.version>3.23.1</assertj-core.version>
 
         <!-- Default values of the Maven plugins -->
         <checkstyle.skip>true</checkstyle.skip>
