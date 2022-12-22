@@ -37,7 +37,7 @@
         <hsf.version>1.8.3</hsf.version>
         <dubbo.alibaba.version>2.6.12</dubbo.alibaba.version>
         <sofa.rpc.version>5.8.7</sofa.rpc.version>
-        <fastjson2.version>2.0.17</fastjson2.version>
+        <fastjson2.version>2.0.21</fastjson2.version>
         <protostuff.version>1.8.0</protostuff.version>
         <config.version>1.2.1</config.version>
         <commons-logging.version>1.2</commons-logging.version>
@@ -318,13 +318,8 @@
                 <version>${spring-context-support.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.heyoulin.nacos</groupId>
+                <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-client</artifactId>
-                <version>${nacos-client.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.heyoulin.nacos</groupId>
-                <artifactId>nacos-api</artifactId>
                 <version>${nacos-client.version}</version>
             </dependency>
             <dependency>
@@ -350,10 +345,6 @@
                     <exclusion>
                         <groupId>javax.servlet</groupId>
                         <artifactId>servlet-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.github.andrewoma.dexx</groupId>
-                        <artifactId>dexx-collections</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -446,6 +437,21 @@
                 <groupId>javax.inject</groupId>
                 <artifactId>javax.inject</artifactId>
                 <version>${javax-inject.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>${javax.annotation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${jakarta.servlet-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.weibo</groupId>
@@ -648,48 +654,6 @@
 
 
             <!-- test -->
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>${junit-jupiter.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-api</artifactId>
-                <version>${junit-jupiter.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
-                <version>${junit-jupiter.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-params</artifactId>
-                <version>${junit-jupiter.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-commons</artifactId>
-                <version>${junit-platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-engine</artifactId>
-                <version>${junit-platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-launcher</artifactId>
-                <version>${junit-platform.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>

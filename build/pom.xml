@@ -73,7 +73,7 @@
 
         <!-- The version of spring-boot for 'spring-boot-dependencies' and 'spring-boot-maven-plugin' -->
         <spring-boot.version>2.7.6</spring-boot.version>
-        <netty.version>4.1.85.Final</netty.version>
+        <netty.version>4.1.86.Final</netty.version>
         <!-- Maven plugin versions -->
         <!-- Build -->
         <easyj-maven-plugin.version>1.0.5</easyj-maven-plugin.version>
