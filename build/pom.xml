@@ -73,6 +73,7 @@
 
         <!-- The version of spring-boot for 'spring-boot-dependencies' and 'spring-boot-maven-plugin' -->
         <spring-boot.version>2.7.6</spring-boot.version>
+        <spring-framework.version>5.3.24</spring-framework.version>
         <netty.version>4.1.86.Final</netty.version>
         <!-- Maven plugin versions -->
         <!-- Build -->
