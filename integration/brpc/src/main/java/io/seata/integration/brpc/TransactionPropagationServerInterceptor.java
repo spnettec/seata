@@ -56,7 +56,7 @@ public class TransactionPropagationServerInterceptor extends AbstractInterceptor
     }
 
     @Override
-    public void aroundProcess(Request brpcRequest, Response brpcResponse, InterceptorChain chain) throws Exception {
+    public void aroundProcess(Request brpcRequest, Response brpcResponse, InterceptorChain chain) {
 
         try {
             chain.intercept(brpcRequest, brpcResponse);

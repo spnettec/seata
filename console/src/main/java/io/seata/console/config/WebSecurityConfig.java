@@ -26,14 +26,18 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Spring security config
@@ -41,8 +45,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * @author jameslcj
  */
 @Configuration(proxyBeanMethods = false)
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity
+public class WebSecurityConfig {
 
     /**
      * The constant AUTHORIZATION_HEADER.
@@ -64,51 +68,41 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     public static final String TOKEN_PREFIX = "Bearer ";
 
-    @Autowired
-    private CustomUserDetailsServiceImpl userDetailsService;
-
-    @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
-
-    @Autowired
-    private JwtTokenUtils tokenProvider;
-
-    @Autowired
-    private Environment env;
-
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer(Environment env) {
+        return (web) -> {
+            String ignoreURLs = env.getProperty("seata.security.ignore.urls", "/**");
+            for (String ignoreURL : ignoreURLs.trim().split(SECURITY_IGNORE_URLS_SPILT_CHAR)) {
+                web.ignoring().requestMatchers(AntPathRequestMatcher.antMatcher(ignoreURL.trim()));
+            }
+        };
     }
 
-    @Override
-    public void configure(WebSecurity web) {
-        String ignoreURLs = env.getProperty("seata.security.ignore.urls", "/**");
-        for (String ignoreURL : ignoreURLs.trim().split(SECURITY_IGNORE_URLS_SPILT_CHAR)) {
-            web.ignoring().antMatchers(ignoreURL.trim());
-        }
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest().authenticated().and()
-            // custom token authorize exception handler
-            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-            // since we use jwt, session is not necessary
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            // since we use jwt, csrf is not necessary
-            .csrf().disable();
+    @Bean
+    public SecurityFilterChain authFilterChain(HttpSecurity http,
+                                               JwtTokenUtils tokenProvider,
+                                               CustomUserDetailsServiceImpl userDetailsService,
+                                               JwtAuthenticationEntryPoint unauthorizedHandler) throws Exception {
+        http.authorizeHttpRequests().anyRequest().authenticated().and()
+                // custom token authorize exception handler
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                // since we use jwt, session is not necessary
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                // since we use jwt, csrf is not necessary
+                .csrf().disable();
         http.addFilterBefore(new JwtAuthenticationTokenFilter(tokenProvider),
-            UsernamePasswordAuthenticationFilter.class);
+                UsernamePasswordAuthenticationFilter.class);
 
         // disable cache
         http.headers().cacheControl();
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        return http.build();
     }
 
     /**

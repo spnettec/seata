@@ -36,14 +36,14 @@ public class CompressUtilTest {
 
 
     @Test
-    @DisabledOnJre(JRE.JAVA_17)
+    @DisabledOnJre({JRE.JAVA_17,JRE.JAVA_19})
     public void testCompress() throws IOException {
         Assertions.assertArrayEquals(compressedBytes1,
                 CompressUtil.compress(originBytes));
     }
 
     @Test
-    @EnabledOnJre(JRE.JAVA_17)
+    @EnabledOnJre({JRE.JAVA_17,JRE.JAVA_19})
     public void testCompressForJava17() throws IOException {
         Assertions.assertArrayEquals(compressedBytes2,
                 CompressUtil.compress(originBytes));

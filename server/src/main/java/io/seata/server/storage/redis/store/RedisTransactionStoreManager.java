@@ -470,7 +470,7 @@ public class RedisTransactionStoreManager extends AbstractTransactionStoreManage
         // queryCount
         final long queryCount = Math.min(logQueryLimit, countGlobalSessions);
         try (Jedis jedis = JedisPooledFactory.getJedisInstance()) {
-            Set<String> values =
+            List<String> values =
                 jedis.zrangeByScore(REDIS_SEATA_BEGIN_TRANSACTIONS_KEY, 0, System.currentTimeMillis(), 0,
                         (int) queryCount);
             List<Map<String, String>> rep;

@@ -37,7 +37,7 @@ public class TransactionPropagationClientInterceptor extends AbstractInterceptor
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionPropagationClientInterceptor.class);
 
     @Override
-    public void aroundProcess(Request brpcRequest, Response brpcResponse, InterceptorChain chain) throws Exception {
+    public void aroundProcess(Request brpcRequest, Response brpcResponse, InterceptorChain chain) {
 
         String xid = RootContext.getXID();
         String rpcXid = getRpcXid();

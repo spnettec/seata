@@ -124,7 +124,7 @@ public class StringUtilsTest {
         //case: Charset
         Assertions.assertEquals("UTF-8", StringUtils.toString(StandardCharsets.UTF_8));
         //case: Thread
-        Assertions.assertEquals("Thread[main,5,main]", StringUtils.toString(Thread.currentThread()));
+        Assertions.assertEquals("Thread[#1,main,5,main]", StringUtils.toString(Thread.currentThread()));
 
         //case: Date
         Date date = new Date(2021 - 1900, 6 - 1, 15);

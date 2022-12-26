@@ -329,7 +329,7 @@ public final class ReflectionUtil {
         // remove the `final` keyword from the field
         if (Modifier.isFinal(staticField.getModifiers())) {
             // In java17, can't get the field `modifiers` from class `java.lang.reflect.Field`.
-            Field modifiers = staticField.getClass().getDeclaredField("modifiers");
+            Field modifiers = getModifiersField();
             modifiers.setAccessible(true);
             modifiers.setInt(staticField, staticField.getModifiers() & ~Modifier.FINAL);
         }
@@ -338,7 +338,34 @@ public final class ReflectionUtil {
         staticField.setAccessible(true);
         staticField.set(staticField.getDeclaringClass(), newValue);
     }
+    public static Field getModifiersField() throws IllegalAccessException, NoSuchFieldException {
+        Field modifiersField = null;
+        try {
+            modifiersField = Field.class.getDeclaredField("modifiers");
+        } catch (NoSuchFieldException e) {
+            try {
+                Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
+                boolean accessibleBeforeSet = getDeclaredFields0.canAccess(Class.class);
+                getDeclaredFields0.setAccessible(true);
+                Field[] fields = (Field[]) getDeclaredFields0.invoke(Field.class, false);
+                getDeclaredFields0.setAccessible(accessibleBeforeSet);
+                for (Field field : fields) {
+                    if ("modifiers".equals(field.getName())) {
+                        modifiersField = field;
+                        break;
+                    }
+                }
+                if (modifiersField == null) {
+                    throw e;
+                }
 
+            } catch (NoSuchMethodException | InvocationTargetException ex) {
+                e.addSuppressed(ex);
+                throw e;
+            }
+        }
+        return modifiersField;
+    }
     /**
      * modify `static` or `static final` field value
      *

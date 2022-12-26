@@ -30,8 +30,8 @@
     <name>Seata Parent POM ${project.version}</name>
     <description>parent for Seata built with Maven</description>
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
     <modules>
         <module>build</module>
@@ -203,7 +203,7 @@
                 <image.tags>latest</image.tags>
                 <dependencies.copy.skip>false</dependencies.copy.skip>
                 <mysql.jdbc.version>5.1.35</mysql.jdbc.version>
-                <mysql8.jdbc.version>8.0.27</mysql8.jdbc.version>
+                <mysql8.jdbc.version>8.0.31</mysql8.jdbc.version>
             </properties>
         </profile>
         <!-- profile: release-image -->
