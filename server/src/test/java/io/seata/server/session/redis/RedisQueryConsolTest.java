@@ -26,6 +26,7 @@ import io.seata.server.console.service.GlobalSessionService;
 import io.seata.server.console.vo.GlobalLockVO;
 import io.seata.server.console.vo.GlobalSessionVO;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
@@ -55,10 +56,10 @@ public class RedisQueryConsolTest {
               port: 6879
      *!!!!!!!when you test finish,please restore the modified configuration!!!!!!!!
      */
-    @Resource
+    @Autowired
     private GlobalSessionService globalSessionService;
 
-    @Resource
+    @Autowired
     private GlobalLockService globalLockService;
 
     @Test

@@ -34,7 +34,7 @@ public class ParameterParserTest {
      * init
      */
     @BeforeEach
-    private void init() {
+    void init() {
         String[] args = new String[] {"-h", "127.0.0.1", "-p", "8088", "-m", "file","-e","test"};
         parameterParser = new ParameterParser(args);
     }

@@ -40,7 +40,7 @@ public abstract class AbstractServerTest {
 
     private static NettyRemotingServer nettyServer;
     private static final ThreadPoolExecutor workingThreads = new ThreadPoolExecutor(100, 500, 500, TimeUnit.SECONDS,
-            new LinkedBlockingQueue(20000), new ThreadPoolExecutor.CallerRunsPolicy());
+            new LinkedBlockingQueue<>(20000), new ThreadPoolExecutor.CallerRunsPolicy());
 
     protected static void startSeataServer() throws InterruptedException {
         (new Thread(new Runnable() {
@@ -50,7 +50,7 @@ public abstract class AbstractServerTest {
                     file.delete();
                 }
 
-                ParameterParser parameterParser = new ParameterParser(new String[]{});
+                ParameterParser parameterParser = new ParameterParser();
 
                 //initialize the metrics
                 MetricsManager.get().init();

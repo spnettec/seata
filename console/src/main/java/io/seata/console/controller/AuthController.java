@@ -41,10 +41,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
-    @Autowired
-    private JwtTokenUtils jwtTokenUtils;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final JwtTokenUtils jwtTokenUtils;
+    private final AuthenticationManager authenticationManager;
+
+    public AuthController(JwtTokenUtils jwtTokenUtils, AuthenticationManager authenticationManager) {
+        this.jwtTokenUtils = jwtTokenUtils;
+        this.authenticationManager = authenticationManager;
+    }
 
     /**
      * Whether the Seata is in broken states or not, and cannot recover except by being restarted

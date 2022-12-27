@@ -40,7 +40,7 @@ public class TmNettyClientTest extends AbstractServerTest {
 
     public static ThreadPoolExecutor initMessageExecutor() {
         return new ThreadPoolExecutor(100, 500, 500, TimeUnit.SECONDS,
-                new LinkedBlockingQueue(20000), new ThreadPoolExecutor.CallerRunsPolicy());
+                new LinkedBlockingQueue<>(20000), new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     /**

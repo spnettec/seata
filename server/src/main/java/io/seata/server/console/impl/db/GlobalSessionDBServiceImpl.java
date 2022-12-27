@@ -43,6 +43,7 @@ import io.seata.server.console.service.BranchSessionService;
 import io.seata.server.console.service.GlobalSessionService;
 import io.seata.server.console.vo.BranchSessionVO;
 import io.seata.server.console.vo.GlobalSessionVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
@@ -65,10 +66,9 @@ public class GlobalSessionDBServiceImpl implements GlobalSessionService {
 
     private DataSource dataSource;
 
-    @Resource(type = BranchSessionService.class)
-    private BranchSessionService branchSessionService;
+    private final BranchSessionService branchSessionService;
 
-    public GlobalSessionDBServiceImpl() {
+    public GlobalSessionDBServiceImpl(BranchSessionService branchSessionService) {
         Configuration configuration = ConfigurationFactory.getInstance();
         globalTable = configuration.getConfig(ConfigurationKeys.STORE_DB_GLOBAL_TABLE, DEFAULT_STORE_DB_GLOBAL_TABLE);
         dbType = configuration.getConfig(ConfigurationKeys.STORE_DB_TYPE);
@@ -80,6 +80,7 @@ public class GlobalSessionDBServiceImpl implements GlobalSessionService {
             throw new IllegalArgumentException(ConfigurationKeys.STORE_DB_DATASOURCE_TYPE + " should not be blank");
         }
         dataSource = EnhancedServiceLoader.load(DataSourceProvider.class, dbDataSource).provide();
+        this.branchSessionService = branchSessionService;
     }
 
     @Override

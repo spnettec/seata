@@ -31,8 +31,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    @Autowired
-    private CustomUserDetailsServiceImpl userDetailsService;
+    private final CustomUserDetailsServiceImpl userDetailsService;
+
+    public CustomAuthenticationProvider(CustomUserDetailsServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

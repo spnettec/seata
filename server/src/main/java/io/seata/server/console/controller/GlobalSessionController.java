@@ -21,6 +21,7 @@ import io.seata.server.console.param.GlobalSessionParam;
 import io.seata.console.result.PageResult;
 import io.seata.server.console.vo.GlobalSessionVO;
 import io.seata.server.console.service.GlobalSessionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,8 +35,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/console/globalSession")
 public class GlobalSessionController {
 
-    @Resource(type = GlobalSessionService.class)
-    private GlobalSessionService globalSessionService;
+    private final GlobalSessionService globalSessionService;
+
+    public GlobalSessionController(GlobalSessionService globalSessionService) {
+        this.globalSessionService = globalSessionService;
+    }
 
     /**
      * Query all globalSession

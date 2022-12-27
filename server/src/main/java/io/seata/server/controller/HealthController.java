@@ -31,9 +31,11 @@ public class HealthController {
     private static final String OK = "ok";
     private static final String NOT_OK = "not_ok";
 
-    @Autowired
-    private ServerRunner serverRunner;
+    private final ServerRunner serverRunner;
 
+    public HealthController(ServerRunner serverRunner) {
+        this.serverRunner = serverRunner;
+    }
 
     @RequestMapping("/health")
     @ResponseBody
