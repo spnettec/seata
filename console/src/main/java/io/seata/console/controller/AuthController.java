@@ -15,7 +15,7 @@
  */
 package io.seata.console.controller;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import io.seata.console.config.WebSecurityConfig;
 import io.seata.console.constant.Code;

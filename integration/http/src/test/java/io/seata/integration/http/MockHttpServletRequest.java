@@ -17,20 +17,9 @@ package io.seata.integration.http;
 
 import io.seata.core.context.RootContext;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.DispatcherType;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpUpgradeHandler;
-import javax.servlet.http.Part;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.Principal;
@@ -90,6 +79,11 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
+    public HttpServletMapping getHttpServletMapping() {
+        return HttpServletRequest.super.getHttpServletMapping();
+    }
+
+    @Override
     public String getMethod() {
         return null;
     }
@@ -102,6 +96,11 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @Override
     public String getPathTranslated() {
         return null;
+    }
+
+    @Override
+    public PushBuilder newPushBuilder() {
+        return HttpServletRequest.super.newPushBuilder();
     }
 
     @Override
@@ -171,11 +170,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public boolean isRequestedSessionIdFromURL() {
-        return false;
-    }
-
-    @Override
-    public boolean isRequestedSessionIdFromUrl() {
         return false;
     }
 
@@ -298,12 +292,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public RequestDispatcher getRequestDispatcher(String path) {
         return null;
     }
-
-    @Override
-    public String getRealPath(String path) {
-        return null;
-    }
-
     @Override
     public int getRemotePort() {
         return 0;
@@ -360,6 +348,16 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
+    public Map<String, String> getTrailerFields() {
+        return HttpServletRequest.super.getTrailerFields();
+    }
+
+    @Override
+    public boolean isTrailerFieldsReady() {
+        return HttpServletRequest.super.isTrailerFieldsReady();
+    }
+
+    @Override
     public long getContentLengthLong() {
         return 0;
     }
@@ -396,6 +394,21 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public DispatcherType getDispatcherType() {
+        return null;
+    }
+
+    @Override
+    public String getRequestId() {
+        return null;
+    }
+
+    @Override
+    public String getProtocolRequestId() {
+        return null;
+    }
+
+    @Override
+    public ServletConnection getServletConnection() {
         return null;
     }
 }

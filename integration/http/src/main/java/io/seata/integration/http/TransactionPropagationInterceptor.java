@@ -15,8 +15,8 @@
  */
 package io.seata.integration.http;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import io.seata.common.util.StringUtils;
 import io.seata.core.context.RootContext;
