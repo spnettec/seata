@@ -37,7 +37,7 @@
         <hsf.version>1.8.3</hsf.version>
         <dubbo.alibaba.version>2.6.12</dubbo.alibaba.version>
         <sofa.rpc.version>5.8.7</sofa.rpc.version>
-        <fastjson2.version>2.0.21</fastjson2.version>
+        <fastjson2.version>2.0.23</fastjson2.version>
         <protostuff.version>1.8.0</protostuff.version>
         <config.version>1.2.1</config.version>
         <commons-logging.version>1.2</commons-logging.version>
@@ -78,6 +78,7 @@
 
         <jwt.version>0.10.5</jwt.version>
         <prometheus.client.version>0.6.0</prometheus.client.version>
+        <jackson.databind.version>2.14.2</jackson.databind.version>
         <logback.version>1.4.5</logback.version>
         <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
         <kafka-appender.version>0.2.0-RC2</kafka-appender.version>
@@ -117,11 +118,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-all</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
+
             <!-- the 3rd part -->
             <dependency>
                 <groupId>com.alibaba.fastjson2</groupId>
@@ -634,6 +631,11 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt-jackson</artifactId>
                 <version>${jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.databind.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.prometheus</groupId>

@@ -72,9 +72,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- The version of spring-boot for 'spring-boot-dependencies' and 'spring-boot-maven-plugin' -->
-        <spring-boot.version>3.0.1</spring-boot.version>
-        <spring-framework.version>6.0.3</spring-framework.version>
-        <netty.version>4.1.86.Final</netty.version>
+        <spring-boot.version>3.0.2</spring-boot.version>
+        <spring-framework.version>6.0.4</spring-framework.version>
+        <netty.version>4.1.87.Final</netty.version>
         <!-- Maven plugin versions -->
         <!-- Build -->
         <easyj-maven-plugin.version>1.0.5</easyj-maven-plugin.version>
@@ -82,7 +82,7 @@
         <!-- Compiler -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <protobuf.version>3.21.12</protobuf.version>
-        <grpc.version>1.51.1</grpc.version>
+        <grpc.version>1.52.1</grpc.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <kotlin-maven-plugin.version>1.6.10</kotlin-maven-plugin.version>
         <!-- Check -->
@@ -401,6 +401,8 @@
 
                     --add-opens java.sql/java.sql=ALL-UNNAMED
                     --add-opens java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED
+
+                    --illegal-access=permit
                     -Dillegal-access=permit
                 </maven.surefire.argLine>
             </properties>
