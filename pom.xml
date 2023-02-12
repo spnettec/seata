@@ -269,7 +269,6 @@
                                 <configuration>
                                     <configLocation>${user.dir}/style/seata_checkstyle.xml</configLocation>
                                     <suppressionsLocation>${user.dir}/style/seata_suppressions.xml</suppressionsLocation>
-                                    <encoding>UTF-8</encoding>
                                     <consoleOutput>true</consoleOutput>
                                     <failsOnError>true</failsOnError>
                                 </configuration>
