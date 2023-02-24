@@ -18,7 +18,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>io.seata</groupId>
+        <groupId>com.github.heyoulin.seata</groupId>
         <artifactId>seata-parent</artifactId>
         <version>${revision}</version>
     </parent>
@@ -53,32 +53,32 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.seata</groupId>
+            <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-http</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.seata</groupId>
+            <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-http-jakarta</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.seata</groupId>
+            <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-spring</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.seata</groupId>
+            <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-saga-engine</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.seata</groupId>
+            <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-saga-engine-store</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.seata</groupId>
+            <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-config-spring-cloud</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

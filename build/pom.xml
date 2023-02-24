@@ -19,7 +19,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.seata</groupId>
+    <groupId>com.github.heyoulin.seata</groupId>
     <artifactId>seata-build</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
@@ -72,19 +72,19 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- The version of spring-boot for 'spring-boot-dependencies' and 'spring-boot-maven-plugin' -->
-        <spring-boot.version>3.0.2</spring-boot.version>
-        <spring-framework.version>6.0.4</spring-framework.version>
-        <netty.version>4.1.88.Final</netty.version>
+        <spring-boot.version>3.0.3</spring-boot.version>
+        <spring-framework.version>6.0.5</spring-framework.version>
+        <netty.version>4.1.89.Final</netty.version>
         <!-- Maven plugin versions -->
         <!-- Build -->
         <easyj-maven-plugin.version>1.1.2</easyj-maven-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <!-- Compiler -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <protobuf.version>3.21.12</protobuf.version>
-        <grpc.version>1.52.1</grpc.version>
+        <protobuf.version>3.22.0</protobuf.version>
+        <grpc.version>1.53.0</grpc.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
-        <kotlin-maven-plugin.version>1.6.10</kotlin-maven-plugin.version>
+        <kotlin-maven-plugin.version>1.8.10</kotlin-maven-plugin.version>
         <!-- Check -->
         <maven-pmd-plugin.version>3.8</maven-pmd-plugin.version>
         <maven.surefire.version>2.22.2</maven.surefire.version>
@@ -195,6 +195,14 @@
                         <simplifiedPomFileName>.flattened-pom.xml</simplifiedPomFileName>
                         <useTabIndent>true</useTabIndent>
                     </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.codehaus.plexus</groupId>
+                            <artifactId>plexus-utils</artifactId>
+                            <version>3.5.0</version>
+                        </dependency>
+                    </dependencies>
+
                 </plugin>
             </plugins>
         </pluginManagement>
