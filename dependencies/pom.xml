@@ -32,7 +32,7 @@
     <description>dependencies for Seata built with Maven</description>
 
     <properties>
-        <dubbo-seata.version>1.0.0</dubbo-seata.version>
+        <dubbo-seata.version>1.0.2</dubbo-seata.version>
         <brpc.version>3.0.5</brpc.version>
         <hsf.version>1.8.3</hsf.version>
         <dubbo.alibaba.version>2.6.12</dubbo.alibaba.version>
@@ -88,7 +88,7 @@
 
         <!-- # for database -->
         <!-- db -->
-        <mysql.version>5.1.35</mysql.version>
+        <mysql.version>5.1.42</mysql.version>
         <ojdbc.version>19.3.0.0</ojdbc.version>
         <postgresql.version>42.4.1</postgresql.version>
         <h2.version>2.1.214</h2.version>
