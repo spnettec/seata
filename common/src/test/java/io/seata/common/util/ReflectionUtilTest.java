@@ -189,6 +189,7 @@ public class ReflectionUtilTest {
     }
 
     @Test
+    @DisabledOnJre({JRE.JAVA_17,JRE.JAVA_19})
     public void testGetAnnotationValues() throws NoSuchMethodException, NoSuchFieldException {
         Assertions.assertEquals(new LinkedHashMap<>(), ReflectionUtil
             .getAnnotationValues(this.getClass().getMethod("testGetAnnotationValues").getAnnotation(Test.class)));

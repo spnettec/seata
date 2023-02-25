@@ -15,7 +15,7 @@
  */
 package io.seata.rm.tcc.json;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 
 import io.seata.common.Constants;
 import io.seata.common.loader.LoadLevel;

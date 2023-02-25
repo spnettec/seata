@@ -27,7 +27,7 @@ import io.seata.common.thread.NamedThreadFactory;
 import io.seata.core.rpc.Disposable;
 import io.seata.integration.tx.api.fence.DefaultCommonFenceHandler;
 import io.seata.integration.tx.api.fence.store.db.CommonFenceStoreDataBaseDAO;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -65,7 +65,7 @@ import io.seata.server.session.SessionCondition;
 import io.seata.server.session.SessionHelper;
 import io.seata.server.session.SessionHolder;
 import io.seata.server.store.StoreConfig;
-import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
