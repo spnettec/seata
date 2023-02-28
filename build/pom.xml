@@ -114,9 +114,9 @@
         <os-maven-plugin.version>1.7.0</os-maven-plugin.version>
 
         <!-- # for test -->
-        <junit-jupiter.version>5.9.1</junit-jupiter.version>
+        <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <junit-platform.version>1.9.1</junit-platform.version>
-        <mockito.version>4.9.0</mockito.version>
+        <mockito.version>5.1.1</mockito.version>
         <slf4j-simple.version>2.0.5</slf4j-simple.version>
         <assertj-core.version>3.23.1</assertj-core.version>
 
