@@ -63,7 +63,7 @@
 
     <properties>
         <!-- seata version -->
-        <revision>2.0.0.B</revision>
+        <revision>2.0.1.B</revision>
 
         <!-- Compiler settings properties -->
         <maven.compiler.source>17</maven.compiler.source>

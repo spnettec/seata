@@ -52,7 +52,7 @@
         <mock-jedis.version>0.3.0</mock-jedis.version>
         <eureka-clients.version>1.10.17</eureka-clients.version>
         <consul-clients.version>1.4.5</consul-clients.version>
-        <nacos-client.version>2.2.3.B</nacos-client.version>
+        <nacos-client.version>2.2.4.B</nacos-client.version>
         <etcd-client-v3.version>0.7.3</etcd-client-v3.version>
         <testcontainers.version>1.11.2</testcontainers.version>
         <guava.version>30.1-jre</guava.version>
