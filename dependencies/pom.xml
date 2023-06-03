@@ -37,7 +37,7 @@
         <hsf.version>1.8.3</hsf.version>
         <dubbo.alibaba.version>2.6.12</dubbo.alibaba.version>
         <sofa.rpc.version>5.8.7</sofa.rpc.version>
-        <fastjson2.version>2.0.29</fastjson2.version>
+        <fastjson2.version>2.0.33</fastjson2.version>
         <protostuff.version>1.8.0</protostuff.version>
         <config.version>1.2.1</config.version>
         <commons-logging.version>1.2</commons-logging.version>
@@ -94,7 +94,7 @@
         <h2.version>2.1.214</h2.version>
         <mariadb.version>2.7.6</mariadb.version>
         <!-- db connection pool -->
-        <druid.version>1.2.15</druid.version>
+        <druid.version>1.2.18</druid.version>
         <commons-dbcp2.version>2.7.0</commons-dbcp2.version>
         <hikari.version>5.0.1</hikari.version>
         <!-- sql parser -->
