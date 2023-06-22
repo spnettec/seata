@@ -25,8 +25,6 @@ import io.seata.rm.datasource.xa.DataSourceProxyXA;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mariadb.jdbc.MariaDbConnection;
-import org.mariadb.jdbc.MariaXaConnection;
 import org.mockito.Mockito;
 
 import javax.sql.DataSource;
@@ -94,10 +92,10 @@ public class DataSourceProxyXATest {
     @Test
     public void testGetMariaXaConnection() throws SQLException {
         // Mock
-        Driver driver = Mockito.mock(Driver.class);
-        MariaDbConnection connection = Mockito.mock(MariaDbConnection.class);
+        org.mariadb.jdbc.Driver driver = Mockito.mock(org.mariadb.jdbc.Driver.class);
+        org.mariadb.jdbc.Connection connection = Mockito.mock(org.mariadb.jdbc.Connection.class);
         Mockito.when(connection.getAutoCommit()).thenReturn(true);
-        DatabaseMetaData metaData = Mockito.mock(DatabaseMetaData.class);
+        org.mariadb.jdbc.DatabaseMetaData metaData = Mockito.mock(org.mariadb.jdbc.DatabaseMetaData.class);
         Mockito.when(metaData.getURL()).thenReturn("jdbc:mariadb:xxx");
         Mockito.when(connection.getMetaData()).thenReturn(metaData);
         Mockito.when(driver.connect(any(), any())).thenReturn(connection);
@@ -121,7 +119,7 @@ public class DataSourceProxyXATest {
 
         XAConnection xaConnection = connectionProxyXA.getWrappedXAConnection();
         Connection connectionInXA = xaConnection.getConnection();
-        Assertions.assertTrue(connectionInXA instanceof MariaDbConnection);
+        Assertions.assertTrue(connectionInXA instanceof org.mariadb.jdbc.Connection);
         tearDown();
     }
 
