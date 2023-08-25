@@ -37,7 +37,7 @@
         <hsf.version>1.8.3</hsf.version>
         <dubbo.alibaba.version>2.6.12</dubbo.alibaba.version>
         <sofa.rpc.version>5.8.7</sofa.rpc.version>
-        <fastjson2.version>2.0.37</fastjson2.version>
+        <fastjson2.version>2.0.39</fastjson2.version>
         <protostuff.version>1.8.0</protostuff.version>
         <config.version>1.2.1</config.version>
         <commons-logging.version>1.2</commons-logging.version>
@@ -55,7 +55,7 @@
         <nacos-client.version>2.2.4.B</nacos-client.version>
         <etcd-client-v3.version>0.7.3</etcd-client-v3.version>
         <testcontainers.version>1.11.2</testcontainers.version>
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>32.1.2-jre</guava.version>
         <javax-inject.version>1</javax-inject.version>
         <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
         <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
@@ -79,8 +79,8 @@
         <jwt.version>0.10.5</jwt.version>
         <prometheus.client.version>0.6.0</prometheus.client.version>
         <jackson.databind.version>2.15.0</jackson.databind.version>
-        <logback.version>1.4.8</logback.version>
-        <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
+        <logback.version>1.4.11</logback.version>
+        <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <kafka-appender.version>0.2.0-RC2</kafka-appender.version>
 
         <!-- redis -->
