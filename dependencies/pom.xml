@@ -286,6 +286,10 @@
                         <groupId>com.alipay.sofa.lookout</groupId>
                         <artifactId>lookout-api</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>com.alipay.sofa</groupId>
+                        <artifactId>hessian</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -349,6 +353,10 @@
                     <exclusion>
                         <groupId>jakarta.servlet</groupId>
                         <artifactId>jakarta.servlet-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>com.github.andrewoma.dexx</groupId>
