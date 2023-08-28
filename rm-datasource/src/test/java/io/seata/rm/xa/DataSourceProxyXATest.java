@@ -22,6 +22,7 @@ import io.seata.core.context.RootContext;
 import io.seata.rm.datasource.mock.MockDataSource;
 import io.seata.rm.datasource.xa.ConnectionProxyXA;
 import io.seata.rm.datasource.xa.DataSourceProxyXA;
+import io.seata.sqlparser.util.JdbcConstants;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -67,6 +68,7 @@ public class DataSourceProxyXATest {
         Mockito.when(driver.connect(any(), any())).thenReturn(connection);
 
         DruidDataSource druidDataSource = new DruidDataSource();
+        druidDataSource.setUrl("jdbc:mysql:xxx");
         druidDataSource.setDriver(driver);
         DataSourceProxyXA dataSourceProxyXA = new DataSourceProxyXA(druidDataSource);
         Connection connFromDataSourceProxyXA = dataSourceProxyXA.getConnection();
@@ -101,6 +103,7 @@ public class DataSourceProxyXATest {
         Mockito.when(driver.connect(any(), any())).thenReturn(connection);
 
         DruidDataSource druidDataSource = new DruidDataSource();
+        druidDataSource.setUrl("jdbc:mariadb:xxx");
         druidDataSource.setDriver(driver);
         DataSourceProxyXA dataSourceProxyXA = new DataSourceProxyXA(druidDataSource);
         Connection connFromDataSourceProxyXA = dataSourceProxyXA.getConnection();

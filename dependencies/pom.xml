@@ -92,7 +92,7 @@
         <ojdbc.version>19.3.0.0</ojdbc.version>
         <postgresql.version>42.4.1</postgresql.version>
         <h2.version>2.1.214</h2.version>
-        <mariadb.version>3.1.4</mariadb.version>
+        <mariadb.version>3.2.0</mariadb.version>
         <!-- db connection pool -->
         <druid.version>1.2.18</druid.version>
         <commons-dbcp2.version>2.7.0</commons-dbcp2.version>
