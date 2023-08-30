@@ -68,7 +68,7 @@
         <ant.version>1.10.12</ant.version>
         <lz4.version>1.7.1</lz4.version>
 
-        <kryo.version>5.3.0</kryo.version>
+        <kryo.version>5.5.0</kryo.version>
         <kryo-serializers.version>0.45</kryo-serializers.version>
         <hessian.version>4.0.66</hessian.version>
         <fst.version>2.57</fst.version>
