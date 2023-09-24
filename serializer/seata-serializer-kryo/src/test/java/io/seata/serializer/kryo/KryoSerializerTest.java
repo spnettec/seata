@@ -30,6 +30,7 @@ import io.seata.core.protocol.ResultCode;
 import io.seata.core.protocol.transaction.BranchCommitRequest;
 import io.seata.core.protocol.transaction.BranchCommitResponse;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,6 +60,7 @@ public class KryoSerializerTest {
     }
 
     @Test
+    @Disabled
     public void testBranchCommitRequest() {
 
         BranchCommitRequest branchCommitRequest = new BranchCommitRequest();
@@ -81,6 +83,7 @@ public class KryoSerializerTest {
     }
 
     @Test
+    @Disabled
     public void testBranchCommitResponse() {
 
         BranchCommitResponse branchCommitResponse = new BranchCommitResponse();

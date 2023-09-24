@@ -124,7 +124,7 @@ public class ReflectionUtilTest {
     }
 
     @Test
-    @DisabledOnJre(JRE.JAVA_17) // `ReflectionUtil.modifyStaticFinalField` does not supported java17
+    @EnabledOnJre({JRE.JAVA_8, JRE.JAVA_11}) // `ReflectionUtil.modifyStaticFinalField` does not supported java17 and above versions
     public void testModifyStaticFinalField() throws NoSuchFieldException, IllegalAccessException {
         Assertions.assertEquals("hello", testValue);
         ReflectionUtil.modifyStaticFinalField(ReflectionUtilTest.class, "testValue", "hello world");
