@@ -105,6 +105,7 @@
         <!-- # for kotlin -->
         <kotlin.version>1.4.32</kotlin.version>
         <kotlin-coroutines.version>1.4.3</kotlin-coroutines.version>
+        <native-lib-loader.version>2.4.0</native-lib-loader.version>
     </properties>
 
     <dependencyManagement>
@@ -447,6 +448,17 @@
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers</artifactId>
                 <version>${testcontainers.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.scijava</groupId>
+                        <artifactId>native-lib-loader</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.scijava</groupId>
+                <artifactId>native-lib-loader</artifactId>
+                <version>${native-lib-loader.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.inject</groupId>
@@ -691,26 +703,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <profiles>
-        <profile>
-            <id>dependencies-for-springboot3-1-or-above</id>
-            <properties>
-                <httpcore.version>4.4.16</httpcore.version>
-                <httpclient.version>4.5.14</httpclient.version>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpcore</artifactId>
-                    <version>${httpcore.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
-                    <version>${httpclient.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 </project>
