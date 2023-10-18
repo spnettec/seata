@@ -42,7 +42,7 @@
         <config.version>1.2.1</config.version>
         <commons-logging.version>1.2</commons-logging.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
-        <bytebuddy.version>1.12.13</bytebuddy.version>
+        <bytebuddy.version>1.12.17</bytebuddy.version>
         <aopalliance.version>1.0</aopalliance.version>
         <zkclient.version>0.11</zkclient.version>
         <apache-zookeeper.version>3.5.9</apache-zookeeper.version>
@@ -89,6 +89,7 @@
         <!-- db -->
         <mysql.version>5.1.42</mysql.version>
         <ojdbc.version>19.3.0.0</ojdbc.version>
+        <dm.version>8.1.2.192</dm.version>
         <postgresql.version>42.4.1</postgresql.version>
         <h2.version>2.1.214</h2.version>
         <mariadb.version>3.2.0</mariadb.version>
@@ -159,6 +160,11 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dameng</groupId>
+                <artifactId>DmJdbcDriver18</artifactId>
+                <version>${dm.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mariadb.jdbc</groupId>
