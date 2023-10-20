@@ -27,10 +27,7 @@ import io.seata.config.ConfigurationFactory;
 import io.seata.common.ConfigurationKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisSentinelPool;
+import redis.clients.jedis.*;
 import redis.clients.jedis.util.Pool;
 
 import static io.seata.common.DefaultValues.DEFAULT_REDIS_MAX_IDLE;
@@ -59,7 +56,7 @@ public class JedisPooledFactory {
 
     /**
      * get the RedisPool instance (singleton)
-     * 
+     *
      * @return redisPool
      */
     @SafeVarargs
@@ -98,8 +95,10 @@ public class JedisPooledFactory {
                             }
                             Set<String> sentinels = new HashSet<>(SENTINEL_HOST_NUMBER);
                             String[] sentinelHosts = CONFIGURATION.getConfig(ConfigurationKeys.STORE_REDIS_SENTINEL_HOST).split(",");
-                            sentinels.addAll(Arrays.asList(sentinelHosts));
-                            tempJedisPool = new JedisSentinelPool(masterName, sentinels, poolConfig, 60000, password, CONFIGURATION.getInt(ConfigurationKeys.STORE_REDIS_DATABASE, DATABASE));
+                            Arrays.asList(sentinelHosts).forEach(sentinelHost -> sentinels.add(sentinelHost));
+                            tempJedisPool = new JedisSentinelPool(masterName, sentinels, poolConfig, 60000, 60000, password, CONFIGURATION.getInt(
+                                    io.seata.core.constants.ConfigurationKeys.STORE_REDIS_DATABASE, DATABASE),
+                                    null, Protocol.DEFAULT_TIMEOUT, Protocol.DEFAULT_TIMEOUT, CONFIGURATION.getConfig(ConfigurationKeys.STORE_REDIS_SENTINEL_PASSWORD), null);
                         } else if (mode.equals(ConfigurationKeys.REDIS_SINGLE_MODE)) {
                             String host = CONFIGURATION.getConfig(ConfigurationKeys.STORE_REDIS_SINGLE_HOST);
                             host = StringUtils.isBlank(host) ? CONFIGURATION.getConfig(ConfigurationKeys.STORE_REDIS_HOST, HOST) : host;
@@ -122,7 +121,7 @@ public class JedisPooledFactory {
 
     /**
      * get an instance of Jedis (connection) from the connection pool
-     * 
+     *
      * @return jedis
      */
     public static Jedis getJedisInstance() {
