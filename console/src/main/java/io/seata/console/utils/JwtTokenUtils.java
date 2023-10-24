@@ -99,7 +99,7 @@ public class JwtTokenUtils {
         /**
          *  parse the payload of token
          */
-        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parser().setSigningKey(secretKey).build().parseSignedClaims(token).getPayload();
 
         List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(
             (String)claims.get(AUTHORITIES_KEY));
@@ -116,7 +116,7 @@ public class JwtTokenUtils {
      */
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(secretKey).build().parseSignedClaims(token);
             return true;
         } catch (SignatureException e) {
             LOGGER.warn("Invalid JWT signature.");
