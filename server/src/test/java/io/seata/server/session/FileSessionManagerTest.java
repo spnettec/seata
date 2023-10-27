@@ -50,9 +50,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
+
+import static io.seata.common.DefaultValues.DEFAULT_SESSION_STORE_FILE_DIR;
 import static io.seata.common.DefaultValues.DEFAULT_TX_GROUP;
 import static io.seata.server.session.SessionHolder.CONFIG;
-import static io.seata.server.session.SessionHolder.DEFAULT_SESSION_STORE_FILE_DIR;
 /**
  * The type File based session manager test.
  *
@@ -67,9 +68,6 @@ public class FileSessionManagerTest {
 
     @Autowired
     private GlobalSessionService globalSessionService;
-
-    private static String sessionStorePath = CONFIG.getConfig(ConfigurationKeys.STORE_FILE_DIR,
-            DEFAULT_SESSION_STORE_FILE_DIR);
 
     @BeforeAll
     public static void setUp(ApplicationContext context) {

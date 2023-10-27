@@ -66,7 +66,7 @@
         <commons-compress.version>1.24.0</commons-compress.version>
         <ant.version>1.10.14</ant.version>
         <lz4.version>1.8.0</lz4.version>
-
+        <jraft.version>1.3.22.B</jraft.version>
         <kryo.version>5.5.0</kryo.version>
         <kryo-serializers.version>0.45</kryo-serializers.version>
         <hessian.version>4.0.66</hessian.version>
@@ -618,6 +618,11 @@
                         <artifactId>junit-platform-launcher</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.github.heyoulin.sofa-jraft</groupId>
+                <artifactId>jraft-core</artifactId>
+                <version>${jraft.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.luben</groupId>

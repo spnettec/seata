@@ -145,6 +145,11 @@
             </dependency>
             <dependency>
                 <groupId>com.github.heyoulin.seata</groupId>
+                <artifactId>seata-discovery-raft</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.heyoulin.seata</groupId>
                 <artifactId>seata-brpc</artifactId>
                 <version>${project.version}</version>
             </dependency>
