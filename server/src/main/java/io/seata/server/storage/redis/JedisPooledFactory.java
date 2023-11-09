@@ -24,7 +24,7 @@ import io.seata.common.util.ConfigTools;
 import io.seata.common.util.StringUtils;
 import io.seata.config.Configuration;
 import io.seata.config.ConfigurationFactory;
-import io.seata.common.ConfigurationKeys;
+import io.seata.core.constants.ConfigurationKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.JedisPool;
@@ -33,7 +33,6 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisSentinelPool;
 import redis.clients.jedis.Protocol;
 import redis.clients.jedis.Jedis;
-
 import static io.seata.common.DefaultValues.DEFAULT_REDIS_MAX_IDLE;
 import static io.seata.common.DefaultValues.DEFAULT_REDIS_MAX_TOTAL;
 import static io.seata.common.DefaultValues.DEFAULT_REDIS_MIN_IDLE;
@@ -63,7 +62,6 @@ public class JedisPooledFactory {
      *
      * @return redisPool
      */
-    @SafeVarargs
     public static Pool<Jedis> getJedisPoolInstance(Pool<Jedis>... jedisPools) {
         if (jedisPool == null) {
             synchronized (JedisPooledFactory.class) {
@@ -99,9 +97,13 @@ public class JedisPooledFactory {
                             }
                             Set<String> sentinels = new HashSet<>(SENTINEL_HOST_NUMBER);
                             String[] sentinelHosts = CONFIGURATION.getConfig(ConfigurationKeys.STORE_REDIS_SENTINEL_HOST).split(",");
-                            sentinels.addAll(Arrays.asList(sentinelHosts));
+                            Arrays.asList(sentinelHosts).forEach(sentinelHost -> sentinels.add(sentinelHost));
+                            String sentinelPassword = CONFIGURATION.getConfig(ConfigurationKeys.STORE_REDIS_SENTINEL_PASSWORD);
+                            if (StringUtils.isBlank(sentinelPassword)) {
+                                sentinelPassword = null;
+                            }
                             tempJedisPool = new JedisSentinelPool(masterName, sentinels, poolConfig, 60000, 60000, password, CONFIGURATION.getInt(ConfigurationKeys.STORE_REDIS_DATABASE, DATABASE),
-                                    null, Protocol.DEFAULT_TIMEOUT, Protocol.DEFAULT_TIMEOUT, CONFIGURATION.getConfig(ConfigurationKeys.STORE_REDIS_SENTINEL_PASSWORD), null);
+                                    null, Protocol.DEFAULT_TIMEOUT, Protocol.DEFAULT_TIMEOUT, sentinelPassword, null);
                         } else if (mode.equals(ConfigurationKeys.REDIS_SINGLE_MODE)) {
                             String host = CONFIGURATION.getConfig(ConfigurationKeys.STORE_REDIS_SINGLE_HOST);
                             host = StringUtils.isBlank(host) ? CONFIGURATION.getConfig(ConfigurationKeys.STORE_REDIS_HOST, HOST) : host;
