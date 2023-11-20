@@ -74,7 +74,7 @@
         <!-- The version of spring-boot for 'spring-boot-dependencies' and 'spring-boot-maven-plugin' -->
         <spring-boot.version>3.1.5</spring-boot.version>
         <spring-framework.version>6.0.13</spring-framework.version>
-        <netty.version>4.1.100.Final</netty.version>
+        <netty.version>4.1.101.Final</netty.version>
         <!-- Maven plugin versions -->
         <!-- Build -->
         <easyj-maven-plugin.version>1.1.5</easyj-maven-plugin.version>
@@ -125,6 +125,8 @@
         <checkstyle.skip>true</checkstyle.skip>
         <license.skip>true</license.skip>
         <maven.test.skip>false</maven.test.skip>
+        <maven.surefire.argLine></maven.surefire.argLine>
+        <maven.surefire.excludes></maven.surefire.excludes>
         <gpg.keyname>37F181C60AACE24BD5C1D3925583F79497E8E293</gpg.keyname>
         <gpg.arg1/>
         <gpg.arg2/>
@@ -202,14 +204,6 @@
                         <simplifiedPomFileName>.flattened-pom.xml</simplifiedPomFileName>
                         <useTabIndent>true</useTabIndent>
                     </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.codehaus.plexus</groupId>
-                            <artifactId>plexus-utils</artifactId>
-                            <version>3.5.0</version>
-                        </dependency>
-                    </dependencies>
-
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -414,6 +408,14 @@
                     --add-opens java.sql/java.sql=ALL-UNNAMED
                     --add-opens java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED
                 </maven.surefire.argLine>
+            </properties>
+        </profile>
+
+        <!-- profile: args-for-client-test -->
+        <profile>
+            <id>args-for-client-test</id>
+            <properties>
+                <maven.surefire.excludes>io/seata/server/**/*.java,io/seata/console/**/*.java</maven.surefire.excludes>
             </properties>
         </profile>
     </profiles>
