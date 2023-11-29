@@ -43,7 +43,8 @@ class ConfigFutureTest {
         // mock field
         origin = Mockito.spy(origin);
         // set mocked field to object
-        ReflectionUtil.setFieldValue(configFuture, originField, origin);
+        originField.setAccessible(true);
+        originField.set(configFuture, origin);
 
         Mockito.doThrow(ExecutionException.class).when(origin).get(Mockito.anyLong(), Mockito.any());
         Assertions.assertThrows(ShouldNeverHappenException.class, configFuture::get);
