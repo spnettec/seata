@@ -38,7 +38,7 @@
         <hsf.version>1.8.3</hsf.version>
         <dubbo.alibaba.version>2.6.12</dubbo.alibaba.version>
         <sofa.rpc.version>5.11.1</sofa.rpc.version>
-        <fastjson2.version>2.0.41</fastjson2.version>
+        <fastjson2.version>2.0.43</fastjson2.version>
         <protostuff.version>1.8.0</protostuff.version>
         <config.version>1.4.3</config.version>
         <commons-logging.version>1.2</commons-logging.version>
