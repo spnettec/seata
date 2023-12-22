@@ -23,8 +23,6 @@ import io.seata.config.ConfigurationFactory;
 import org.junit.jupiter.api.*;
 import org.mockito.MockedStatic;
 import org.mockito.internal.util.collections.Sets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -56,7 +54,7 @@ public class RedisRegisterServiceImplTest {
         System.setProperty("service.vgroupMapping.default_tx_group", "default");
         System.setProperty("registry.redis.serverAddr", "127.0.0.1:6789");
         System.setProperty("registry.redis.cluster", "default");
-        RedisServer server = new RedisServer();
+        server = new RedisServer();
         server.listener("127.0.0.1", 6789);
         redisRegistryService = RedisRegistryServiceImpl.getInstance();
     }
@@ -66,11 +64,11 @@ public class RedisRegisterServiceImplTest {
 
         redisRegistryService.register(new InetSocketAddress(NetUtil.getLocalIp(), 8091));
 
-        Assertions.assertTrue(redisRegistryService.lookup("default_tx_group").size() > 0);
+        Assertions.assertFalse(redisRegistryService.lookup("default_tx_group").isEmpty());
 
         redisRegistryService.unregister(new InetSocketAddress(NetUtil.getLocalIp(), 8091));
 
-        Assertions.assertTrue(redisRegistryService.lookup("default_tx_group").size() > 0);
+        Assertions.assertFalse(redisRegistryService.lookup("default_tx_group").isEmpty());
     }
 
     @Test
