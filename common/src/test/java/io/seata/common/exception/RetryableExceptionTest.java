@@ -14,17 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.seata.integration.tx.api.interceptor.parser;
+package io.seata.common.exception;
 
-import io.seata.integration.tx.api.interceptor.handler.ProxyInvocationHandler;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  */
-public interface InterfaceParser {
+public class RetryableExceptionTest {
 
-    ProxyInvocationHandler parserInterfaceToProxy(Object target, String objectName) throws Exception;
-
-    IfNeedEnhanceBean parseIfNeedEnhancement(Class<?> beanClass);
-
-
+    @Test
+    public void testRetryableException() {
+        Assertions.assertThrowsExactly(RetryableException.class, () -> {
+            throw new RetryableException();
+        });
+        Assertions.assertThrowsExactly(RetryableException.class, () -> {
+            throw new RetryableException("error");
+        });
+        Assertions.assertThrowsExactly(RetryableException.class, () -> {
+            throw new RetryableException(new Throwable("error"));
+        });
+        Assertions.assertThrowsExactly(RetryableException.class, () -> {
+            throw new RetryableException("error", new Throwable("error"));
+        });
+    }
 }

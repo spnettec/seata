@@ -14,17 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.seata.integration.tx.api.interceptor.parser;
+package io.seata.common.util;
 
-import io.seata.integration.tx.api.interceptor.handler.ProxyInvocationHandler;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 /**
  */
-public interface InterfaceParser {
+public class HttpClientUtilTest {
 
-    ProxyInvocationHandler parserInterfaceToProxy(Object target, String objectName) throws Exception;
-
-    IfNeedEnhanceBean parseIfNeedEnhancement(Class<?> beanClass);
-
-
+    @Test
+    public void testDoPost() throws IOException {
+        Assertions.assertNull(HttpClientUtil.doPost("test", new HashMap<>(), new HashMap<>(), 0));
+        Assertions.assertNull(HttpClientUtil.doGet("test", new HashMap<>(), new HashMap<>(), 0));
+    }
 }

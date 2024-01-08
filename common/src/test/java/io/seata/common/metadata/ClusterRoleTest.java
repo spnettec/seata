@@ -14,17 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.seata.integration.tx.api.interceptor.parser;
+package io.seata.common.metadata;
 
-import io.seata.integration.tx.api.interceptor.handler.ProxyInvocationHandler;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  */
-public interface InterfaceParser {
+public class ClusterRoleTest {
 
-    ProxyInvocationHandler parserInterfaceToProxy(Object target, String objectName) throws Exception;
-
-    IfNeedEnhanceBean parseIfNeedEnhancement(Class<?> beanClass);
-
-
+    @Test
+    public void testClusterRole() {
+        Assertions.assertEquals(0, ClusterRole.LEADER.getRoleCode());
+        Assertions.assertEquals(1, ClusterRole.FOLLOWER.getRoleCode());
+        Assertions.assertEquals(2, ClusterRole.LEARNER.getRoleCode());
+        Assertions.assertEquals(3, ClusterRole.MEMBER.getRoleCode());
+        Assertions.assertDoesNotThrow(() -> ClusterRole.MEMBER.setRoleCode(4));
+    }
 }
