@@ -16,29 +16,29 @@
  */
 package io.seata.console.config;
 
-import io.seata.console.filter.JwtAuthenticationTokenFilter;
-import io.seata.console.security.CustomUserDetailsServiceImpl;
-import io.seata.console.security.JwtAuthenticationEntryPoint;
-import io.seata.console.utils.JwtTokenUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import io.seata.console.filter.JwtAuthenticationTokenFilter;
+import io.seata.console.security.CustomUserDetailsServiceImpl;
+import io.seata.console.security.JwtAuthenticationEntryPoint;
+import io.seata.console.utils.JwtTokenUtils;
 
 /**
  * Spring security config
@@ -85,23 +85,24 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain authFilterChain(HttpSecurity http,
+                                                PasswordEncoder passwordEncoder,
                                                JwtTokenUtils tokenProvider,
                                                CustomUserDetailsServiceImpl userDetailsService,
                                                JwtAuthenticationEntryPoint unauthorizedHandler) throws Exception {
-        http.authorizeHttpRequests().anyRequest().authenticated().and()
+        http.authorizeHttpRequests(authorizeHttpRequestsConfigurer-> authorizeHttpRequestsConfigurer.anyRequest().authenticated())
                 // custom token authorize exception handler
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .exceptionHandling(exceptionHandlingConfigurer-> exceptionHandlingConfigurer.authenticationEntryPoint(unauthorizedHandler))
                 // since we use jwt, session is not necessary
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .sessionManagement(sessionManagementConfigurer-> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // since we use jwt, csrf is not necessary
-                .csrf().disable();
-        http.addFilterBefore(new JwtAuthenticationTokenFilter(tokenProvider),
-                UsernamePasswordAuthenticationFilter.class);
+                .csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(new JwtAuthenticationTokenFilter(tokenProvider),
+                UsernamePasswordAuthenticationFilter.class)
 
-        // disable cache
-        http.headers().cacheControl();
+                // disable cache
+                .headers(a-> a.cacheControl(Customizer.withDefaults()));
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
         return http.build();
     }
 
