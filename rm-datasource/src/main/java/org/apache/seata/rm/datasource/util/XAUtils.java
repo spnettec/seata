@@ -27,8 +27,7 @@ import com.alibaba.druid.util.MySqlUtils;
 import com.alibaba.druid.util.PGUtils;
 import org.apache.seata.rm.BaseDataSourceResource;
 import org.apache.seata.sqlparser.util.JdbcConstants;
-import org.mariadb.jdbc.MariaDbConnection;
-import org.mariadb.jdbc.MariaXaConnection;
+import org.mariadb.jdbc.MariaDbPoolConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +63,7 @@ public class XAUtils {
                         throw new SQLException("create xaConnection error", xae);
                     }
                 case JdbcConstants.MARIADB:
-                    return new MariaXaConnection((MariaDbConnection)physicalConn);
+                    return new MariaDbPoolConnection((org.mariadb.jdbc.Connection)physicalConn);
                 case JdbcConstants.POSTGRESQL:
                     return PGUtils.createXAConnection(physicalConn);
                 default:

@@ -31,7 +31,7 @@ import org.apache.seata.core.protocol.RegisterTMResponse;
 import org.apache.seata.core.protocol.RpcMessage;
 import org.apache.seata.core.protocol.Version;
 import org.apache.seata.core.rpc.netty.ChannelManager;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 @Deprecated
 public class DefaultServerMessageListenerImpl implements ServerMessageListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultServerMessageListenerImpl.class);
-    private static BlockingQueue<String> logQueue = new LinkedBlockingQueue<>();
+    private static final BlockingQueue<String> logQueue = new LinkedBlockingQueue<>();
     private RemotingServer remotingServer;
     private final TransactionMessageHandler transactionMessageHandler;
     private static final int MAX_LOG_SEND_THREAD = 1;

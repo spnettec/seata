@@ -16,6 +16,7 @@
  */
 package org.apache.seata.integration.http;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import org.apache.seata.common.util.StringUtils;
 import org.apache.seata.core.context.RootContext;

@@ -17,7 +17,7 @@
 package org.apache.seata.saga.statelang.parser.impl;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.parser.Feature;
+import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
 import org.apache.seata.common.loader.LoadLevel;
 import org.apache.seata.saga.statelang.parser.JsonParser;
@@ -82,7 +82,7 @@ public class FastjsonParser implements JsonParser {
             return JSON.parseObject(json, type);
         }
         else {
-            return JSON.parseObject(json, type, JSONReader.Feature.SupportAutoType);
+            return JSON.parseObject(json, type, JSONReader.autoTypeFilter(type));
         }
     }
 }

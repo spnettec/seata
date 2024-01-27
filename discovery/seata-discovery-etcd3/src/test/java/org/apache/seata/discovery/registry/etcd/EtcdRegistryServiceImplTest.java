@@ -16,29 +16,27 @@
  */
 package org.apache.seata.discovery.registry.etcd;
 
-import io.etcd.jetcd.ByteSequence;
-import io.etcd.jetcd.Client;
-import io.etcd.jetcd.Watch;
-import io.etcd.jetcd.launcher.junit4.EtcdClusterResource;
-import io.etcd.jetcd.options.DeleteOption;
-import io.etcd.jetcd.options.GetOption;
-import io.etcd.jetcd.watch.WatchResponse;
-import org.apache.seata.discovery.registry.etcd3.EtcdRegistryProvider;
-import org.apache.seata.discovery.registry.etcd3.EtcdRegistryServiceImpl;
-import org.apache.seata.discovery.registry.RegistryService;
-import org.junit.Rule;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import static io.netty.util.CharsetUtil.UTF_8;
+import static org.apache.seata.common.DefaultValues.DEFAULT_TX_GROUP;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static io.netty.util.CharsetUtil.UTF_8;
-import static org.apache.seata.common.DefaultValues.DEFAULT_TX_GROUP;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.apache.seata.discovery.registry.RegistryService;
+import org.apache.seata.discovery.registry.etcd3.EtcdRegistryProvider;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
+import io.etcd.jetcd.ByteSequence;
+import io.etcd.jetcd.Client;
+import io.etcd.jetcd.Watch;
+import io.etcd.jetcd.options.DeleteOption;
+import io.etcd.jetcd.options.GetOption;
+import io.etcd.jetcd.test.EtcdClusterExtension;
+import io.etcd.jetcd.watch.WatchResponse;
 
 /**
  */
@@ -46,22 +44,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EtcdRegistryServiceImplTest {
     private static final String REGISTRY_KEY_PREFIX = "registry-seata-";
     private static final String CLUSTER_NAME = "default";
-    @Rule
-    private final static EtcdClusterResource etcd = new EtcdClusterResource(CLUSTER_NAME, 1);
-
-    private final Client client = Client.builder().endpoints(etcd.getClientEndpoints()).build();
+    @RegisterExtension
+    public static final EtcdClusterExtension cluster = EtcdClusterExtension.builder()
+            .withNodes(1)
+            .build();
+    private final Client client = Client.builder().endpoints(cluster.clientEndpoints()).build();
     private final static String HOST = "127.0.0.1";
     private final static int PORT = 8091;
-
-    @BeforeAll
-    public static void beforeClass() throws Exception {
-        System.setProperty(EtcdRegistryServiceImpl.TEST_ENDPONT, etcd.getClientEndpoints().get(0).toString());
-    }
-
-    @AfterAll
-    public static void afterClass() throws Exception {
-        System.setProperty(EtcdRegistryServiceImpl.TEST_ENDPONT, "");
-    }
 
     @Test
     public void testRegister() throws Exception {
@@ -86,7 +75,7 @@ public class EtcdRegistryServiceImplTest {
         //1.register
         registryService.register(inetSocketAddress);
         //2.get instance information
-        GetOption getOption = GetOption.newBuilder().withPrefix(buildRegistryKeyPrefix()).build();
+        GetOption getOption = GetOption.builder().withRange(buildRegistryKeyPrefix()).build();
         long count = client.getKVClient().get(buildRegistryKeyPrefix(), getOption).get().getKvs().stream().filter(keyValue -> {
             String[] instanceInfo = keyValue.getValue().toString(UTF_8).split(":");
             return HOST.equals(instanceInfo[0]) && PORT == Integer.parseInt(instanceInfo[1]);
@@ -95,7 +84,7 @@ public class EtcdRegistryServiceImplTest {
         //3.unregister
         registryService.unregister(inetSocketAddress);
         //4.again get instance information
-        getOption = GetOption.newBuilder().withPrefix(buildRegistryKeyPrefix()).build();
+        getOption = GetOption.builder().withRange(buildRegistryKeyPrefix()).build();
         count = client.getKVClient().get(buildRegistryKeyPrefix(), getOption).get().getKvs().stream().filter(keyValue -> {
             String[] instanceInfo = keyValue.getValue().toString(UTF_8).split(":");
             return HOST.equals(instanceInfo[0]) && PORT == Integer.parseInt(instanceInfo[1]);
@@ -115,7 +104,7 @@ public class EtcdRegistryServiceImplTest {
         EtcdListener etcdListener = new EtcdListener();
         registryService.subscribe(CLUSTER_NAME, etcdListener);
         //3.delete instance,see if the listener can be notified
-        DeleteOption deleteOption = DeleteOption.newBuilder().withPrefix(buildRegistryKeyPrefix()).build();
+        DeleteOption deleteOption = DeleteOption.builder().withRange(buildRegistryKeyPrefix()).build();
         client.getKVClient().delete(buildRegistryKeyPrefix(), deleteOption).get();
         assertThat(etcdListener.isNotified()).isTrue();
     }
@@ -130,7 +119,7 @@ public class EtcdRegistryServiceImplTest {
         EtcdListener etcdListener = new EtcdListener();
         registryService.subscribe(CLUSTER_NAME, etcdListener);
         //3.delete instance,see if the listener can be notified
-        DeleteOption deleteOption = DeleteOption.newBuilder().withPrefix(buildRegistryKeyPrefix()).build();
+        DeleteOption deleteOption = DeleteOption.builder().withRange(buildRegistryKeyPrefix()).build();
         client.getKVClient().delete(buildRegistryKeyPrefix(), deleteOption).get();
         assertThat(etcdListener.isNotified()).isTrue();
         //4.unsubscribe

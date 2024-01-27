@@ -26,7 +26,6 @@ import org.apache.seata.rm.datasource.xa.DataSourceProxyXA;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mariadb.jdbc.MariaDbConnection;
 import org.mockito.Mockito;
 
 import javax.sql.DataSource;
@@ -75,18 +74,18 @@ public class DataSourceProxyXATest {
         RootContext.bind("test");
         connFromDataSourceProxyXA = dataSourceProxyXA.getConnection();
 
-        Assertions.assertTrue(connFromDataSourceProxyXA instanceof ConnectionProxyXA);
+        Assertions.assertInstanceOf(ConnectionProxyXA.class, connFromDataSourceProxyXA);
         ConnectionProxyXA connectionProxyXA = (ConnectionProxyXA)dataSourceProxyXA.getConnection();
 
         Connection wrappedConnection = connectionProxyXA.getWrappedConnection();
-        Assertions.assertTrue(wrappedConnection instanceof PooledConnection);
+        Assertions.assertInstanceOf(PooledConnection.class, wrappedConnection);
 
         Connection wrappedPhysicalConn = ((PooledConnection)wrappedConnection).getConnection();
         Assertions.assertSame(wrappedPhysicalConn, connection);
 
         XAConnection xaConnection = connectionProxyXA.getWrappedXAConnection();
         Connection connectionInXA = xaConnection.getConnection();
-        Assertions.assertTrue(connectionInXA instanceof JDBC4ConnectionWrapper);
+        Assertions.assertInstanceOf(JDBC4ConnectionWrapper.class, connectionInXA);
         tearDown();
     }
 
@@ -94,9 +93,9 @@ public class DataSourceProxyXATest {
     public void testGetMariaXaConnection() throws SQLException {
         // Mock
         Driver driver = Mockito.mock(Driver.class);
-        MariaDbConnection connection = Mockito.mock(MariaDbConnection.class);
+        org.mariadb.jdbc.Connection connection = Mockito.mock(org.mariadb.jdbc.Connection.class);
         Mockito.when(connection.getAutoCommit()).thenReturn(true);
-        DatabaseMetaData metaData = Mockito.mock(DatabaseMetaData.class);
+        org.mariadb.jdbc.DatabaseMetaData metaData = Mockito.mock(org.mariadb.jdbc.DatabaseMetaData.class);
         Mockito.when(metaData.getURL()).thenReturn("jdbc:mariadb:xxx");
         Mockito.when(connection.getMetaData()).thenReturn(metaData);
         Mockito.when(driver.connect(any(), any())).thenReturn(connection);
@@ -109,18 +108,18 @@ public class DataSourceProxyXATest {
         RootContext.bind("test");
         connFromDataSourceProxyXA = dataSourceProxyXA.getConnection();
 
-        Assertions.assertTrue(connFromDataSourceProxyXA instanceof ConnectionProxyXA);
+        Assertions.assertInstanceOf(ConnectionProxyXA.class, connFromDataSourceProxyXA);
         ConnectionProxyXA connectionProxyXA = (ConnectionProxyXA)dataSourceProxyXA.getConnection();
 
         Connection wrappedConnection = connectionProxyXA.getWrappedConnection();
-        Assertions.assertTrue(wrappedConnection instanceof PooledConnection);
+        Assertions.assertInstanceOf(PooledConnection.class, wrappedConnection);
 
         Connection wrappedPhysicalConn = ((PooledConnection)wrappedConnection).getConnection();
         Assertions.assertSame(wrappedPhysicalConn, connection);
 
         XAConnection xaConnection = connectionProxyXA.getWrappedXAConnection();
         Connection connectionInXA = xaConnection.getConnection();
-        Assertions.assertTrue(connectionInXA instanceof MariaDbConnection);
+        Assertions.assertInstanceOf(org.mariadb.jdbc.Connection.class, connectionInXA);
         tearDown();
     }
 
