@@ -45,10 +45,10 @@ create table if not exists seata_state_machine_inst
     end_params          clob comment 'end parameters',
     status              varchar(2) comment 'status(SU succeed|FA failed|UN unknown|SK skipped|RU running)',
     compensation_status varchar(2) comment 'compensation status(SU succeed|FA failed|UN unknown|SK skipped|RU running)',
-    is_running          tinyint comment 'is running(0 no|1 yes)',
+    is_running          tinyint(1) comment 'is running(0 no|1 yes)',
     gmt_updated         timestamp(3)   not null,
     primary key (id),
-    constraint unikey_buz_tenant unique (business_key, tenant_id)
+    unique key unikey_buz_tenant (business_key, tenant_id)
 );
 
 create table if not exists seata_state_inst
@@ -64,7 +64,7 @@ create table if not exists seata_state_inst
     state_id_compensated_for varchar(50) comment 'state compensated for',
     state_id_retried_for     varchar(50) comment 'state retried for',
     gmt_started              timestamp(3)    not null comment 'start time',
-    is_for_update            tinyint comment 'is service for update',
+    is_for_update            tinyint(1) comment 'is service for update',
     input_params             clob comment 'input parameters',
     output_params            clob comment 'output parameters',
     status                   varchar(2)   not null comment 'status(SU succeed|FA failed|UN unknown|SK skipped|RU running)',

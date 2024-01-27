@@ -80,7 +80,7 @@ public class FileConfiguration extends AbstractConfiguration {
 
     /**
      * Note that:this constructor is only used to create proxy with CGLIB
-     * see io.seata.spring.boot.autoconfigure.provider.SpringBootConfigurationProvider#provide
+     * see org.apache.seata.spring.boot.autoconfigure.provider.SpringBootConfigurationProvider#provide
      */
     public FileConfiguration() {
         this.name = null;

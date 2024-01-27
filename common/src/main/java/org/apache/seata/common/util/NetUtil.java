@@ -298,7 +298,7 @@ public class NetUtil {
     /**
      * is valid IP
      *
-     * @param ip ip
+     * @param ip
      * @param validLocalAndAny Are 127.0.0.1 and 0.0.0.0 valid IPs?
      * @return true if the given IP is valid
      */

@@ -40,4 +40,28 @@ public class RpcMessageTest {
     /**
      * Test field get set from json.
      */
+    @Test
+    public void testFieldGetSetFromJson() {
+        String fromJson = "{\n" +
+            "\t\"body\":\"" + BODY_FIELD + "\",\n" +
+            "\t\"codec\":" + CODEC_FIELD + ",\n" +
+            "\t\"compressor\":" + COMPRESS_FIELD + ",\n" +
+            "\t\"headMap\":" + HEAD_FIELD + ",\n" +
+            "\t\"id\":" + ID_FIELD + ",\n" +
+            "\t\"messageType\":" + MSG_TYPE_FIELD + "\n" +
+            "}";
+        RpcMessage fromJsonMessage = JSON.parseObject(fromJson, RpcMessage.class);
+        assertThat(fromJsonMessage.getBody()).isEqualTo(BODY_FIELD);
+        assertThat(fromJsonMessage.getId()).isEqualTo(ID_FIELD);
+
+        RpcMessage toJsonMessage = new RpcMessage();
+        toJsonMessage.setBody(BODY_FIELD);
+        toJsonMessage.setId(ID_FIELD);
+        toJsonMessage.setMessageType(MSG_TYPE_FIELD);
+        toJsonMessage.setCodec(CODEC_FIELD);
+        toJsonMessage.setCompressor(COMPRESS_FIELD);
+        toJsonMessage.setHeadMap(HEAD_FIELD);
+        String toJson = JSON.toJSONString(toJsonMessage, JSONWriter.Feature.PrettyFormat);
+        assertThat(fromJson).isEqualTo(toJson);
+    }
 }
