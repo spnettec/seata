@@ -184,6 +184,10 @@
                         <groupId>io.grpc</groupId>
                         <artifactId>grpc-netty-shaded</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>net.jcip</groupId>
+                        <artifactId>jcip-annotations</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
