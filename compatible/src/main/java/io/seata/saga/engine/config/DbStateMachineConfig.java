@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.navbar{
-    overflow-y: auto;
-    .next-menu{
-        height: 100%;
-    }
+package io.seata.saga.engine.config;
+
+public class DbStateMachineConfig extends org.apache.seata.saga.engine.config.DbStateMachineConfig {
+
 }

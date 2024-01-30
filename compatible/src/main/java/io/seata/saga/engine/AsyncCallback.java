@@ -14,9 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.navbar{
-    overflow-y: auto;
-    .next-menu{
-        height: 100%;
-    }
+package io.seata.saga.engine;
+
+import io.seata.saga.proctrl.ProcessContext;
+import io.seata.saga.statelang.domain.StateMachineInstance;
+
+/**
+ * Async Callback
+ *
+ */
+public interface AsyncCallback {
+
+    /**
+     * on finished
+     *
+     * @param context
+     * @param stateMachineInstance
+     */
+    void onFinished(ProcessContext context, StateMachineInstance stateMachineInstance);
+
+    /**
+     * on error
+     *
+     * @param context
+     * @param stateMachineInstance
+     * @param exp
+     */
+    void onError(ProcessContext context, StateMachineInstance stateMachineInstance, Exception exp);
 }
