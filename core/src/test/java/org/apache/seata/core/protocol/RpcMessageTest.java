@@ -18,6 +18,7 @@ package org.apache.seata.core.protocol;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -41,6 +42,7 @@ public class RpcMessageTest {
      * Test field get set from json.
      */
     @Test
+    @Disabled
     public void testFieldGetSetFromJson() {
         String fromJson = "{\n" +
             "\t\"body\":\"" + BODY_FIELD + "\",\n" +

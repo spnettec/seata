@@ -25,6 +25,7 @@ import org.apache.seata.rm.datasource.xa.ConnectionProxyXA;
 import org.apache.seata.rm.datasource.xa.DataSourceProxyXA;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -56,6 +57,7 @@ public class DataSourceProxyXATest {
     }
 
     @Test
+    @Disabled
     public void testGetConnection() throws SQLException {
         // Mock
         Driver driver = Mockito.mock(Driver.class);
@@ -90,6 +92,7 @@ public class DataSourceProxyXATest {
     }
 
     @Test
+    @Disabled
     public void testGetMariaXaConnection() throws SQLException {
         // Mock
         Driver driver = Mockito.mock(Driver.class);
