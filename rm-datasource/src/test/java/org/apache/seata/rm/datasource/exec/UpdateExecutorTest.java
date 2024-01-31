@@ -34,6 +34,7 @@ import org.apache.seata.rm.datasource.DataSourceProxy;
 import org.apache.seata.rm.datasource.DataSourceProxyTest;
 import org.apache.seata.rm.datasource.StatementProxy;
 import org.apache.seata.rm.datasource.exec.UpdateExecutor;
+import org.apache.seata.rm.datasource.mock.MockConnection;
 import org.apache.seata.rm.datasource.mock.MockDriver;
 import org.apache.seata.rm.datasource.sql.struct.TableRecords;
 import org.apache.seata.sqlparser.druid.mysql.MySQLUpdateRecognizer;
@@ -79,8 +80,11 @@ public class UpdateExecutorTest {
             Field field = dataSourceProxy.getClass().getDeclaredField("dbType");
             field.setAccessible(true);
             field.set(dataSourceProxy, "mysql");
+            Field field1 = dataSourceProxy.getClass().getDeclaredField("kernelVersion");
+            field1.setAccessible(true);
+            field1.set(dataSourceProxy, "8.0.0");
             ConnectionProxy connectionProxy = new ConnectionProxy(dataSourceProxy, dataSource.getConnection().getConnection());
-            MockStatementBase mockStatement = new MockStatement(dataSource.getConnection().getConnection());
+            MockStatementBase mockStatement = new MockStatement(new MockConnection(mockDriver,"jdbc:mock:xxx",null));
             statementProxy = new StatementProxy(connectionProxy, mockStatement);
         } catch (Exception e) {
             throw new RuntimeException("init failed");

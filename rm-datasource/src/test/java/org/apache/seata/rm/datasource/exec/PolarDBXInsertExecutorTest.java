@@ -34,6 +34,7 @@ import org.apache.seata.rm.datasource.PreparedStatementProxy;
 import org.apache.seata.rm.datasource.StatementProxy;
 import org.apache.seata.rm.datasource.exec.StatementCallback;
 import org.apache.seata.rm.datasource.exec.polardbx.PolarDBXInsertExecutor;
+import org.apache.seata.rm.datasource.mock.MockConnection;
 import org.apache.seata.rm.datasource.mock.MockDriver;
 import org.apache.seata.rm.datasource.mock.MockResultSet;
 import org.apache.seata.sqlparser.SQLInsertRecognizer;
@@ -108,11 +109,14 @@ public class PolarDBXInsertExecutorTest extends MySQLInsertExecutorTest {
 
         DataSourceProxy newDataSourceProxy = DataSourceProxyTest.getDataSourceProxy(dataSource);
         try {
-            Field field = dataSourceProxy.getClass().getDeclaredField("dbType");
+            Field field = newDataSourceProxy.getClass().getDeclaredField("dbType");
             field.setAccessible(true);
             field.set(newDataSourceProxy, "mysql");
+            Field field1 = newDataSourceProxy.getClass().getDeclaredField("kernelVersion");
+            field1.setAccessible(true);
+            field1.set(newDataSourceProxy, "8.0.0");
             ConnectionProxy newConnectionProxy = new ConnectionProxy(newDataSourceProxy, dataSource.getConnection().getConnection());
-            MockStatementBase mockStatement = new MockStatement(dataSource.getConnection().getConnection());
+            MockStatementBase mockStatement = new MockStatement(new MockConnection(mockDriver,"jdbc:mock:xxx",null));
             newStatementProxy = new StatementProxy(newConnectionProxy, mockStatement);
         } catch (Exception e) {
             throw new RuntimeException("init failed");

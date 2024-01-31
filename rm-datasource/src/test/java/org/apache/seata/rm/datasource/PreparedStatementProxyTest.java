@@ -97,7 +97,7 @@ public class PreparedStatementProxyTest {
         String sql = "update prepared_statement_proxy set name = ?";
 
         PreparedStatement preparedStatement = mockDriver.createSeataMockPreparedStatement(
-            (MockConnection)connectionProxy.getTargetConnection(), sql);
+                new MockConnection(mockDriver,"jdbc:mock:xxx",null), sql);
 
         preparedStatementProxy = new PreparedStatementProxy(connectionProxy, preparedStatement, sql);
         unusedConstructorPreparedStatementProxy = new TestUnusedConstructorPreparedStatementProxy(connectionProxy, preparedStatement);

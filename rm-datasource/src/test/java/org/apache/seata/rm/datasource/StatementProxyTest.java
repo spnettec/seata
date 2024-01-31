@@ -85,7 +85,7 @@ public class StatementProxyTest {
         ConnectionProxy connectionProxy = new ConnectionProxy(dataSourceProxy,
             dataSource.getConnection().getConnection());
 
-        Statement statement = mockDriver.createMockStatement((MockConnection)connectionProxy.getTargetConnection());
+        Statement statement = mockDriver.createMockStatement(new MockConnection(mockDriver,"jdbc:mock:xxx",null));
 
         MockResultSet mockResultSet = new MockResultSet(statement);
         ((ResultSetMetaDataBase)mockResultSet.getMetaData()).getColumns().add(new ResultSetMetaDataBase.ColumnMetaData());

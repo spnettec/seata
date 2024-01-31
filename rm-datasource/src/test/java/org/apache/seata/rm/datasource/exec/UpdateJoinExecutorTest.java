@@ -34,12 +34,13 @@ import org.apache.seata.rm.datasource.DataSourceProxyTest;
 import org.apache.seata.rm.datasource.StatementProxy;
 import org.apache.seata.rm.datasource.exec.UpdateExecutor;
 import org.apache.seata.rm.datasource.exec.mysql.MySQLUpdateJoinExecutor;
+import org.apache.seata.rm.datasource.mock.MockConnection;
 import org.apache.seata.rm.datasource.mock.MockDriver;
 import org.apache.seata.rm.datasource.sql.struct.TableRecords;
 import org.apache.seata.sqlparser.druid.mysql.MySQLUpdateRecognizer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
+import org.mockito.Mockito;
 
 public class UpdateJoinExecutorTest {
     @Test
@@ -87,8 +88,12 @@ public class UpdateJoinExecutorTest {
             Field field = dataSourceProxy.getClass().getDeclaredField("dbType");
             field.setAccessible(true);
             field.set(dataSourceProxy, "mysql");
+            Field field1 = dataSourceProxy.getClass().getDeclaredField("kernelVersion");
+            field1.setAccessible(true);
+            field1.set(dataSourceProxy, "8.0.0");
             ConnectionProxy connectionProxy = new ConnectionProxy(dataSourceProxy, dataSource.getConnection().getConnection());
-            MockStatementBase mockStatement = new MockStatement(dataSource.getConnection().getConnection());
+            MockStatementBase mockStatement = mockDriver.createMockStatement(new MockConnection(mockDriver,"jdbc:mock:xxx",null));
+
             return new StatementProxy(connectionProxy, mockStatement);
         } catch (Exception e) {
             throw new RuntimeException("init failed");
