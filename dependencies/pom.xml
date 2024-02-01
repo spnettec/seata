@@ -57,7 +57,7 @@
         <eureka-clients.version>1.10.18</eureka-clients.version>
         <jettison.version>1.5.4</jettison.version>
         <consul-clients.version>1.4.5</consul-clients.version>
-        <nacos-client.version>2.2.6.B</nacos-client.version>
+        <nacos-client.version>2.3.1.B</nacos-client.version>
         <etcd-client-v3.version>0.7.7</etcd-client-v3.version>
         <testcontainers.version>1.19.4</testcontainers.version>
         <guava.version>33.0.0-jre</guava.version>
