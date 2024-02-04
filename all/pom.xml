@@ -404,7 +404,7 @@
             <artifactId>dubbo-filter-seata</artifactId>
             <exclusions>
                 <exclusion>
-                    <groupId>com.github.heyoulin.seata</groupId>
+                    <groupId>org.apache.seata</groupId>
                     <artifactId>seata-core</artifactId>
                 </exclusion>
             </exclusions>
@@ -682,8 +682,7 @@
                             <createDependencyReducedPom>true</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
-                                    <include>org.apache.seata:*</include>
-                                    <include>com.github.heyoulin.seata:seata-all</include>
+                                    <include>com.github.heyoulin.seata:*</include>
                                 </includes>
                             </artifactSet>
                             <transformers>
@@ -736,8 +735,7 @@
                     <keepOptionalDependencies>true</keepOptionalDependencies>
                     <excludeDependencies>
                         <!-- Exclude dependencies that need to be shaded. -->
-                        <dependency>com.github.heyoulin.seata:seata-all</dependency>
-                        <dependency>org.apache.seata:*</dependency>
+                        <dependency>com.github.heyoulin.seata:*</dependency>
                     </excludeDependencies>
                 </configuration>
             </plugin>
