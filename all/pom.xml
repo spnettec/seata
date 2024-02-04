@@ -683,7 +683,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>org.apache.seata:*</include>
-                                    <include>io.seata:seata-all</include>
+                                    <include>com.github.heyoulin.seata:seata-all</include>
                                 </includes>
                             </artifactSet>
                             <transformers>
@@ -736,7 +736,7 @@
                     <keepOptionalDependencies>true</keepOptionalDependencies>
                     <excludeDependencies>
                         <!-- Exclude dependencies that need to be shaded. -->
-                        <dependency>io.seata:seata-all</dependency>
+                        <dependency>com.github.heyoulin.seata:seata-all</dependency>
                         <dependency>org.apache.seata:*</dependency>
                     </excludeDependencies>
                 </configuration>
