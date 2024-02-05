@@ -75,18 +75,18 @@ public class DataSourceProxyXATest {
         RootContext.bind("test");
         connFromDataSourceProxyXA = dataSourceProxyXA.getConnection();
 
-        Assertions.assertInstanceOf(ConnectionProxyXA.class, connFromDataSourceProxyXA);
+        Assertions.assertTrue(connFromDataSourceProxyXA instanceof ConnectionProxyXA);
         ConnectionProxyXA connectionProxyXA = (ConnectionProxyXA)dataSourceProxyXA.getConnection();
 
         Connection wrappedConnection = connectionProxyXA.getWrappedConnection();
-        Assertions.assertInstanceOf(PooledConnection.class, wrappedConnection);
+        Assertions.assertTrue(wrappedConnection instanceof PooledConnection);
 
         Connection wrappedPhysicalConn = ((PooledConnection)wrappedConnection).getConnection();
         Assertions.assertSame(wrappedPhysicalConn, connection);
 
         XAConnection xaConnection = connectionProxyXA.getWrappedXAConnection();
         Connection connectionInXA = xaConnection.getConnection();
-        Assertions.assertInstanceOf(JDBC4ConnectionWrapper.class, connectionInXA);
+        Assertions.assertTrue(connectionInXA instanceof JDBC4ConnectionWrapper);
         tearDown();
     }
 
@@ -121,7 +121,7 @@ public class DataSourceProxyXATest {
 
         XAConnection xaConnection = connectionProxyXA.getWrappedXAConnection();
         Connection connectionInXA = xaConnection.getConnection();
-        Assertions.assertInstanceOf(org.mariadb.jdbc.Connection.class, connectionInXA);
+        Assertions.assertEquals("org.mariadb.jdbc.MariaDbConnection", connectionInXA.getClass().getName());
         tearDown();
     }
 

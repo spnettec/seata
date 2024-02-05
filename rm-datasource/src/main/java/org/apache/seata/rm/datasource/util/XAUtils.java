@@ -99,4 +99,50 @@ public class XAUtils {
         }
 
     }
+
+    private static Constructor<XAConnection> getConstructorByDBType(Class xaConnectionClass, String dbType) throws SQLException {
+        try {
+            switch (dbType) {
+                case JdbcConstants.ORACLE:
+                    return xaConnectionClass.getConstructor(Connection.class);
+                case JdbcConstants.MARIADB:
+                    //MariaXaConnection(MariaDbConnection connection)
+                    Class mariaXaConnectionClass = Class.forName("org.mariadb.jdbc.MariaDbConnection");
+                    return xaConnectionClass.getConstructor(mariaXaConnectionClass);
+                default:
+                    throw new SQLException("xa reflect not support dbType: " + dbType);
+            }
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
+    }
+
+    private static <T> List<T> getInitargsByDBType(String dbType, Object... params) throws SQLException {
+        List result = new ArrayList<>();
+        if (params.length == 0) {
+            return null;
+        }
+        if (!(params[0] instanceof Connection)) {
+            throw new SQLException("not support params: " + Arrays.toString(params));
+        }
+
+        try {
+            switch (dbType) {
+                case JdbcConstants.ORACLE:
+                    result.add(params[0]);
+                    return result;
+                case JdbcConstants.MARIADB:
+                    Class mariaDbConnectionClass = Class.forName("org.mariadb.jdbc.MariaDbConnection");
+                    if (mariaDbConnectionClass.isInstance(params[0])) {
+                        Object mariaDbConnectionInstance = mariaDbConnectionClass.cast(params[0]);
+                        result.add(mariaDbConnectionInstance);
+                        return result;
+                    }
+                default:
+                    throw new SQLException("xa reflect not support dbType: " + dbType);
+            }
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
+    }
 }
