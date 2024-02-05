@@ -16,7 +16,17 @@
  */
 package org.apache.seata.rm.xa;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.Driver;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+import javax.sql.PooledConnection;
+import javax.sql.XAConnection;
+
 import com.alibaba.druid.pool.DruidDataSource;
+
 import com.mysql.jdbc.JDBC4MySQLConnection;
 import com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper;
 import org.apache.seata.core.context.RootContext;
@@ -25,23 +35,13 @@ import org.apache.seata.rm.datasource.xa.ConnectionProxyXA;
 import org.apache.seata.rm.datasource.xa.DataSourceProxyXA;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import javax.sql.DataSource;
-import javax.sql.PooledConnection;
-import javax.sql.XAConnection;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.Driver;
-import java.sql.SQLException;
 
 import static org.mockito.ArgumentMatchers.any;
 
 /**
  * Tests for DataSourceProxyXA
- *
  */
 public class DataSourceProxyXATest {
 
@@ -57,7 +57,6 @@ public class DataSourceProxyXATest {
     }
 
     @Test
-    @Disabled
     public void testGetConnection() throws SQLException {
         // Mock
         Driver driver = Mockito.mock(Driver.class);
@@ -92,13 +91,13 @@ public class DataSourceProxyXATest {
     }
 
     @Test
-    @Disabled
-    public void testGetMariaXaConnection() throws SQLException {
+    public void testGetMariaXaConnection() throws SQLException, ClassNotFoundException {
         // Mock
         Driver driver = Mockito.mock(Driver.class);
-        org.mariadb.jdbc.Connection connection = Mockito.mock(org.mariadb.jdbc.Connection.class);
+        Class clazz = Class.forName("org.mariadb.jdbc.MariaDbConnection");
+        Connection connection = (Connection)(Mockito.mock(clazz));
         Mockito.when(connection.getAutoCommit()).thenReturn(true);
-        org.mariadb.jdbc.DatabaseMetaData metaData = Mockito.mock(org.mariadb.jdbc.DatabaseMetaData.class);
+        DatabaseMetaData metaData = Mockito.mock(DatabaseMetaData.class);
         Mockito.when(metaData.getURL()).thenReturn("jdbc:mariadb:xxx");
         Mockito.when(connection.getMetaData()).thenReturn(metaData);
         Mockito.when(driver.connect(any(), any())).thenReturn(connection);
@@ -127,7 +126,7 @@ public class DataSourceProxyXATest {
     }
 
     @AfterAll
-    public static void tearDown(){
+    public static void tearDown() {
         RootContext.unbind();
     }
 }
