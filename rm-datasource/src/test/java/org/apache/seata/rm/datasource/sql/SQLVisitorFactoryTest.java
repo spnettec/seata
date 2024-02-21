@@ -16,7 +16,6 @@
  */
 package org.apache.seata.rm.datasource.sql;
 
-import org.apache.seata.rm.datasource.sql.SQLVisitorFactory;
 import org.apache.seata.common.loader.EnhancedServiceNotFoundException;
 import org.apache.seata.sqlparser.SQLRecognizer;
 import org.apache.seata.sqlparser.SQLType;

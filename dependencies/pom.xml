@@ -108,8 +108,8 @@
         <!-- for jdbc driver when package -->
 
         <!-- # for kotlin -->
-        <kotlin.version>1.4.32</kotlin.version>
-        <kotlin-coroutines.version>1.4.3</kotlin-coroutines.version>
+        <kotlin.version>1.9.22</kotlin.version>
+        <kotlin-coroutines.version>1.8.0</kotlin-coroutines.version>
         <native-lib-loader.version>2.4.0</native-lib-loader.version>
     </properties>
 

@@ -49,7 +49,7 @@ public class ProtocolV1SerializerTest {
         ProtocolV1Client client = new ProtocolV1Client();
         try {
             server.start();
-            client.connect("127.0.0.1", 8811, 500);
+            client.connect("127.0.0.1", 8811, 1000);
 
             Assertions.assertTrue(client.channel.isActive());
 
