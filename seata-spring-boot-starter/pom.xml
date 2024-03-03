@@ -77,6 +77,16 @@
         </dependency>
         <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
+            <artifactId>seata-saga-rm</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.heyoulin.seata</groupId>
+            <artifactId>seata-saga-spring</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-saga-engine-store</artifactId>
             <version>${project.version}</version>
         </dependency>
