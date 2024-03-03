@@ -316,19 +316,18 @@
         </dependency>
         <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
-            <artifactId>seata-saga-tm</artifactId>
+            <artifactId>seata-saga-engine-store</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.heyoulin.seata</groupId>
-            <artifactId>seata-saga-engine-store</artifactId>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-saga-spring</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>seata-serializer-all</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-all</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- spring  -->
@@ -683,6 +682,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.github.heyoulin.seata:*</include>
+                                    <include>io.seata:seata-all</include>
                                 </includes>
                             </artifactSet>
                             <transformers>
@@ -735,6 +735,7 @@
                     <keepOptionalDependencies>true</keepOptionalDependencies>
                     <excludeDependencies>
                         <!-- Exclude dependencies that need to be shaded. -->
+                        <dependency>io.seata:seata-all</dependency>
                         <dependency>com.github.heyoulin.seata:*</dependency>
                     </excludeDependencies>
                 </configuration>
@@ -769,6 +770,7 @@
                             <dependencySourceIncludes>
                                 <dependencySourceInclude>io.seata:seata-*</dependencySourceInclude>
                             </dependencySourceIncludes>
+                            <additionalparam>-Xdoclint:none</additionalparam>
                         </configuration>
                         <executions>
                             <execution>
