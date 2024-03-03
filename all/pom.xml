@@ -320,7 +320,7 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.seata</groupId>
+            <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-saga-spring</artifactId>
             <version>${project.version}</version>
         </dependency>
