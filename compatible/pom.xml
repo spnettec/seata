@@ -39,12 +39,12 @@
         </dependency>
         <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
-            <artifactId>seata-saga-spring</artifactId>
+            <artifactId>seata-saga-engine-store</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
-            <artifactId>seata-saga-engine-store</artifactId>
+            <artifactId>seata-saga-spring</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -110,6 +110,12 @@
             <artifactId>grpc-stub</artifactId>
             <version>1.61.1</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
