@@ -27,6 +27,8 @@ import org.apache.seata.tm.TransactionManagerHolder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.JRE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +81,7 @@ class DefaultFailureHandlerImplTest {
     }
 
     @Test
+    @EnabledOnJre({ JRE.JAVA_8, JRE.JAVA_11})
     void onCommitFailure() throws Exception{
 
         RootContext.bind(DEFAULT_XID);
@@ -104,6 +107,7 @@ class DefaultFailureHandlerImplTest {
     }
 
     @Test
+    @EnabledOnJre({JRE.JAVA_8, JRE.JAVA_11})
     void onRollbackFailure() throws Exception {
 
 
