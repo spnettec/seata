@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.seata.rm.xa;
+package io.seata.rm.datasource.xa;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -27,17 +27,17 @@ import javax.sql.XAConnection;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
-import com.alibaba.druid.pool.DruidStatementConnection;
 import com.mysql.jdbc.JDBC4MySQLConnection;
 import com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper;
-import org.apache.seata.core.context.RootContext;
-import org.apache.seata.rm.datasource.mock.MockDataSource;
+import io.seata.rm.datasource.mock.MockDataSource;
+import io.seata.core.context.RootContext;
 import org.apache.seata.rm.datasource.xa.ConnectionProxyXA;
-import org.apache.seata.rm.datasource.xa.DataSourceProxyXA;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -45,6 +45,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Tests for DataSourceProxyXA
  */
 public class DataSourceProxyXATest {
+
 
     @Test
     public void test_constructor() {
@@ -71,11 +72,11 @@ public class DataSourceProxyXATest {
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setDriver(driver);
         DataSourceProxyXA dataSourceProxyXA = new DataSourceProxyXA(druidDataSource);
+        RootContext.unbind();
         Connection connFromDataSourceProxyXA = dataSourceProxyXA.getConnection();
         Assertions.assertFalse(connFromDataSourceProxyXA instanceof ConnectionProxyXA);
         RootContext.bind("test");
         connFromDataSourceProxyXA = dataSourceProxyXA.getConnection();
-
         Assertions.assertTrue(connFromDataSourceProxyXA instanceof ConnectionProxyXA);
         ConnectionProxyXA connectionProxyXA = (ConnectionProxyXA)dataSourceProxyXA.getConnection();
 
@@ -83,7 +84,7 @@ public class DataSourceProxyXATest {
         Assertions.assertTrue(wrappedConnection instanceof PooledConnection);
 
         Connection wrappedPhysicalConn = ((PooledConnection)wrappedConnection).getConnection();
-        Assertions.assertSame(((DruidStatementConnection)wrappedPhysicalConn).getConnection(), connection);
+        Assertions.assertSame(wrappedPhysicalConn, connection);
 
         XAConnection xaConnection = connectionProxyXA.getWrappedXAConnection();
         Connection connectionInXA = xaConnection.getConnection();
@@ -106,28 +107,28 @@ public class DataSourceProxyXATest {
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setDriver(driver);
         DataSourceProxyXA dataSourceProxyXA = new DataSourceProxyXA(druidDataSource);
+        RootContext.unbind();
         Connection connFromDataSourceProxyXA = dataSourceProxyXA.getConnection();
         Assertions.assertFalse(connFromDataSourceProxyXA instanceof ConnectionProxyXA);
         RootContext.bind("test");
         connFromDataSourceProxyXA = dataSourceProxyXA.getConnection();
 
-        Assertions.assertInstanceOf(ConnectionProxyXA.class, connFromDataSourceProxyXA);
+        Assertions.assertTrue(connFromDataSourceProxyXA instanceof ConnectionProxyXA);
         ConnectionProxyXA connectionProxyXA = (ConnectionProxyXA)dataSourceProxyXA.getConnection();
 
         Connection wrappedConnection = connectionProxyXA.getWrappedConnection();
-        Assertions.assertInstanceOf(PooledConnection.class, wrappedConnection);
+        Assertions.assertTrue(wrappedConnection instanceof PooledConnection);
 
         Connection wrappedPhysicalConn = ((PooledConnection)wrappedConnection).getConnection();
-        Assertions.assertSame(((DruidStatementConnection)wrappedPhysicalConn).getConnection(), connection);
+        Assertions.assertSame(wrappedPhysicalConn, connection);
 
         XAConnection xaConnection = connectionProxyXA.getWrappedXAConnection();
         Connection connectionInXA = xaConnection.getConnection();
         Assertions.assertEquals("org.mariadb.jdbc.MariaDbConnection", connectionInXA.getClass().getName());
-        tearDown();
     }
 
-    @AfterAll
-    public static void tearDown() {
+    @AfterEach
+    public void tearDown() {
         RootContext.unbind();
     }
 }

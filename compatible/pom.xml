@@ -30,6 +30,11 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <mockito.version>4.11.0</mockito.version>
+        <druid.version>1.2.21</druid.version>
+        <mysql.version>8.0.33</mysql.version>
+        <mariadb.version>3.3.3</mariadb.version>
+        <assertj-core.version>3.25.3</assertj-core.version>
     </properties>
     <dependencies>
         <dependency>
@@ -54,12 +59,12 @@
         </dependency>
         <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
-            <artifactId>seata-metrics-api</artifactId>
+            <artifactId>seata-sqlparser-druid</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
-            <artifactId>seata-sqlparser-druid</artifactId>
+            <artifactId>seata-metrics-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -108,7 +113,7 @@
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-stub</artifactId>
-            <version>1.61.1</version>
+            <version>1.62.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -116,11 +121,41 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.8.2</version>
             <scope>test</scope>
-        </dependency>
+           </dependency>
         <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-tcc</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <scope>provided</scope>
+            <version>${druid.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>${mariadb.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
