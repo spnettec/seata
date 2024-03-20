@@ -62,7 +62,7 @@ class TccActionInterceptorParserTest {
     }
 
     @BeforeEach
-    private void before() {
+    public void before() {
         resourceManager = new TCCResourceManager() {
 
             @Override
