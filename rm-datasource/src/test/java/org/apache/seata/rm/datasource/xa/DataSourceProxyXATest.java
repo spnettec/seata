@@ -27,7 +27,6 @@ import javax.sql.XAConnection;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
-import com.alibaba.druid.pool.DruidStatementConnection;
 import com.mysql.jdbc.JDBC4MySQLConnection;
 import com.mysql.jdbc.jdbc2.optional.JDBC4ConnectionWrapper;
 import org.apache.seata.core.context.RootContext;
@@ -81,7 +80,7 @@ public class DataSourceProxyXATest {
         Assertions.assertTrue(wrappedConnection instanceof PooledConnection);
 
         Connection wrappedPhysicalConn = ((PooledConnection)wrappedConnection).getConnection();
-        Assertions.assertSame(((DruidStatementConnection)wrappedPhysicalConn).getConnection(), connection);
+        Assertions.assertSame(wrappedPhysicalConn, connection);
 
         XAConnection xaConnection = connectionProxyXA.getWrappedXAConnection();
         Connection connectionInXA = xaConnection.getConnection();
@@ -109,14 +108,14 @@ public class DataSourceProxyXATest {
         RootContext.bind("test");
         connFromDataSourceProxyXA = dataSourceProxyXA.getConnection();
 
-        Assertions.assertInstanceOf(ConnectionProxyXA.class, connFromDataSourceProxyXA);
+        Assertions.assertTrue(connFromDataSourceProxyXA instanceof ConnectionProxyXA);
         ConnectionProxyXA connectionProxyXA = (ConnectionProxyXA)dataSourceProxyXA.getConnection();
 
         Connection wrappedConnection = connectionProxyXA.getWrappedConnection();
-        Assertions.assertInstanceOf(PooledConnection.class, wrappedConnection);
+        Assertions.assertTrue(wrappedConnection instanceof PooledConnection);
 
         Connection wrappedPhysicalConn = ((PooledConnection)wrappedConnection).getConnection();
-        Assertions.assertSame(((DruidStatementConnection)wrappedPhysicalConn).getConnection(), connection);
+        Assertions.assertSame(wrappedPhysicalConn, connection);
 
         XAConnection xaConnection = connectionProxyXA.getWrappedXAConnection();
         Connection connectionInXA = xaConnection.getConnection();
