@@ -375,11 +375,6 @@
                 <version>${jedis.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.microwww</groupId>
-                <artifactId>redis-server</artifactId>
-                <version>${mock-jedis.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.netflix.eureka</groupId>
                 <artifactId>eureka-client</artifactId>
                 <version>${eureka-clients.version}</version>
