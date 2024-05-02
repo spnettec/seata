@@ -437,7 +437,7 @@ public class EnhancedServiceLoader {
             } catch (Throwable e) {
                 throw new EnhancedServiceNotFoundException(
                     "not found service provider for : " + type.getName()
-                        + " caused by " + ExceptionUtils.getFullStackTrace(e));
+                        + " caused by " + ExceptionUtils.getStackTrace(e));
             }
         }
 
@@ -457,7 +457,7 @@ public class EnhancedServiceLoader {
                 } else {
                     throw new EnhancedServiceNotFoundException(
                             "not found service provider for : " + type.getName() + " caused by " + ExceptionUtils
-                                    .getFullStackTrace(e));
+                                    .getStackTrace(e));
                 }
             }
         }
