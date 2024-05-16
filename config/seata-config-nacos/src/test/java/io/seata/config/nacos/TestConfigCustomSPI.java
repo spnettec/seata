@@ -20,16 +20,20 @@ import java.security.SecureRandom;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.config.listener.AbstractSharedListener;
 import com.alibaba.nacos.api.exception.NacosException;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.apache.seata.config.CachedConfigurationChangeListener;
 import org.apache.seata.config.Configuration;
+import org.apache.seata.config.ConfigurationCache;
 import org.apache.seata.config.ConfigurationChangeEvent;
 import org.apache.seata.config.ConfigurationChangeListener;
 import org.apache.seata.config.ConfigurationFactory;
@@ -38,7 +42,7 @@ import org.junit.jupiter.api.*;
 @Disabled
 public class TestConfigCustomSPI {
 
-    private static final Config FILE_CONFIG = ConfigFactory.load("registry-test.conf");
+    private static  Config FILE_CONFIG;
     private static ConfigService configService;
 
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyz";
@@ -49,11 +53,11 @@ public class TestConfigCustomSPI {
 
     @BeforeAll
     public static void setup() throws NacosException {
-        String serverAddr = FILE_CONFIG.getString("config.test.serverAddr");
-        Properties properties = new Properties();
-        properties.put("serverAddr", serverAddr);
-        configService = NacosFactory.createConfigService(properties);
         System.setProperty("seataEnv", "test");
+        ConfigurationFactory.reload();
+        ConfigurationCache.clear();
+        FILE_CONFIG = ConfigFactory.load("registry-test.conf");
+        configService = NacosFactory.createConfigService(NacosConfiguration.getConfigProperties());
     }
 
     @Test
@@ -74,13 +78,13 @@ public class TestConfigCustomSPI {
         });
         configService.publishConfig(dataId, group, content);
         boolean reachZero = listenerCountDown.await(5, TimeUnit.SECONDS);
-        Assertions.assertFalse(reachZero);
+        Assertions.assertTrue(reachZero);
         //get config
         String config = configuration.getConfig(dataId);
         Assertions.assertEquals(content, config);
         //listener
         Set<ConfigurationChangeListener> listeners = configuration.getConfigListeners(dataId);
-        Assertions.assertEquals(2, listeners.size());
+        Assertions.assertEquals(1, listeners.size());
 
     }
 
@@ -94,5 +98,7 @@ public class TestConfigCustomSPI {
 
     @AfterAll
     public static void afterAll() {
+        ConfigurationFactory.reload();
+        ConfigurationCache.clear();
     }
 }
