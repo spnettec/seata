@@ -224,7 +224,7 @@
             <properties>
                 <image.publish.skip>false</image.publish.skip>
                 <dependencies.copy.skip>false</dependencies.copy.skip>
-                <mysql.jdbc.version>5.1.35</mysql.jdbc.version>
+                <mysql.jdbc.version>5.1.42</mysql.jdbc.version>
                 <mysql8.jdbc.version>8.0.31</mysql8.jdbc.version>
             </properties>
         </profile>
@@ -326,6 +326,7 @@
                                 <configuration>
                                     <configLocation>${user.dir}/style/seata_checkstyle.xml</configLocation>
                                     <suppressionsLocation>${user.dir}/style/seata_suppressions.xml</suppressionsLocation>
+                                    <encoding>UTF-8</encoding>
                                     <consoleOutput>true</consoleOutput>
                                     <failsOnError>true</failsOnError>
                                 </configuration>
@@ -349,17 +350,6 @@
             </extension>
         </extensions>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                    <compilerVersion>${maven.compiler.source}</compilerVersion>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <parameters>true</parameters>
-                </configuration>
-            </plugin>
             <!-- Source -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
