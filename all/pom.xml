@@ -682,7 +682,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.github.heyoulin.seata:*</include>
-                                    <include>io.seata:seata-all</include>
+                                    <include>io.seata:*</include>
                                 </includes>
                             </artifactSet>
                             <transformers>
@@ -744,6 +744,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

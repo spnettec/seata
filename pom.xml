@@ -84,13 +84,11 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-            <version>${junit-platform.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -106,7 +104,6 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -117,19 +114,16 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>${assertj-core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j-simple.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -224,8 +218,9 @@
             <properties>
                 <image.publish.skip>false</image.publish.skip>
                 <dependencies.copy.skip>false</dependencies.copy.skip>
-                <mysql.jdbc.version>5.1.35</mysql.jdbc.version>
+                <mysql.jdbc.version>5.1.42</mysql.jdbc.version>
                 <mysql8.jdbc.version>8.0.31</mysql8.jdbc.version>
+                <maven.git-commit-id.skip>false</maven.git-commit-id.skip>
             </properties>
         </profile>
         <!-- profile: release-image-based-on-java8 -->
@@ -233,6 +228,7 @@
             <id>release-image-based-on-java8</id>
             <properties>
                 <image.tags>${project.version},latest</image.tags>
+                <maven.git-commit-id.skip>false</maven.git-commit-id.skip>
             </properties>
         </profile>
         <!-- profile: release-image-based-on-java8-slim -->
@@ -240,6 +236,7 @@
             <id>release-image-based-on-java8-slim</id>
             <properties>
                 <image.tags>${project.version}-slim</image.tags>
+                <maven.git-commit-id.skip>false</maven.git-commit-id.skip>
             </properties>
         </profile>
         <!-- profile: release-image-based-on-java17 -->
@@ -247,6 +244,7 @@
             <id>release-image-based-on-java17</id>
             <properties>
                 <image.tags>${project.version}.jre17</image.tags>
+                <maven.git-commit-id.skip>false</maven.git-commit-id.skip>
             </properties>
         </profile>
         <!-- profile: release-image-based-on-java17-slim -->
@@ -254,6 +252,7 @@
             <id>release-image-based-on-java17-slim</id>
             <properties>
                 <image.tags>${project.version}.jre17-slim</image.tags>
+                <maven.git-commit-id.skip>false</maven.git-commit-id.skip>
             </properties>
         </profile>
         <!-- profile: arrch64 -->
@@ -359,25 +358,6 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <parameters>true</parameters>
                 </configuration>
-            </plugin>
-            <!-- Source -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven-source-plugin.version}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*.java.template</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <!-- PMD-->
             <!--
