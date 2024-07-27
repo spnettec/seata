@@ -57,7 +57,7 @@
         <eureka-clients.version>1.10.18</eureka-clients.version>
         <jettison.version>1.5.4</jettison.version>
         <consul-clients.version>1.4.5</consul-clients.version>
-        <nacos-client.version>2.4.0.B</nacos-client.version>
+        <nacos-client.version>2.4.1.B</nacos-client.version>
         <etcd-client-v3.version>0.7.7</etcd-client-v3.version>
         <testcontainers.version>1.19.4</testcontainers.version>
         <guava.version>33.1.0-jre</guava.version>
@@ -71,8 +71,8 @@
         <commons-compress.version>1.24.0</commons-compress.version>
         <ant.version>1.10.14</ant.version>
         <lz4.version>1.8.0</lz4.version>
-        <jraft.version>1.3.25.B</jraft.version>
-        <bolt.version>1.6.18.B</bolt.version>
+        <jraft.version>1.3.26.B</jraft.version>
+        <bolt.version>1.6.19.B</bolt.version>
         <kryo.version>5.5.0</kryo.version>
         <kryo-serializers.version>0.45</kryo-serializers.version>
         <hessian.version>4.0.66</hessian.version>
