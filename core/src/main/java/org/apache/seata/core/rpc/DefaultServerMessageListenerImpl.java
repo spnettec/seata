@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 @Deprecated
 public class DefaultServerMessageListenerImpl implements ServerMessageListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultServerMessageListenerImpl.class);
-    private static final BlockingQueue<String> logQueue = new LinkedBlockingQueue<>();
+    private static BlockingQueue<String> logQueue = new LinkedBlockingQueue<>();
     private RemotingServer remotingServer;
     private final TransactionMessageHandler transactionMessageHandler;
     private static final int MAX_LOG_SEND_THREAD = 1;

@@ -45,7 +45,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
@@ -60,7 +59,7 @@ import static org.apache.seata.common.DefaultValues.DEFAULT_TX_GROUP;
 public class LockManagerTest {
 
 
-    @Autowired
+    @Resource(type = GlobalLockService.class)
     private GlobalLockService globalLockService;
 
     @BeforeAll
