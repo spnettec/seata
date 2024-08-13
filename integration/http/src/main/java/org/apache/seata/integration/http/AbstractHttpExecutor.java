@@ -168,7 +168,6 @@ public abstract class AbstractHttpExecutor implements HttpExecutor {
         return CollectionUtils.toStringMap(JSON.parseObject(JSON.toJSONString(sourceParam, JSONWriter.Feature.WriteNullStringAsEmpty,JSONWriter.Feature.WriteMapNullValue), Map.class));
     }
 
-    @SuppressWarnings("lgtm[java/unsafe-deserialization]")
     public static <T> Map<String, String> convertParamOfJsonString(String jsonStr, Class<T> returnType) {
         return convertParamOfBean(JSON.parseObject(jsonStr, returnType));
     }
