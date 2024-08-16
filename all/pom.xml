@@ -147,7 +147,7 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.heyoulin.seata<</groupId>
+            <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-discovery-namingserver</artifactId>
             <version>${project.version}</version>
         </dependency>
