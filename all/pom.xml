@@ -147,6 +147,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.github.heyoulin.seata<</groupId>
+            <artifactId>seata-discovery-namingserver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-brpc</artifactId>
             <version>${project.version}</version>
@@ -744,10 +749,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
