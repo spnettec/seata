@@ -43,6 +43,11 @@
             <groupId>com.github.heyoulin.nacos</groupId>
             <artifactId>nacos-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.heyoulin.nacos</groupId>
+            <artifactId>nacos-common</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
