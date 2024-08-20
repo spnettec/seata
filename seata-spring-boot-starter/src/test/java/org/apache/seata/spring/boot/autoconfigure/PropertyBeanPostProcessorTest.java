@@ -36,8 +36,8 @@ public class PropertyBeanPostProcessorTest {
 
 
     @Bean
-    public SeataProperties seataProperties(SpringCloudAlibabaConfiguration springCloudAlibabaConfiguration) {
-        SeataProperties seataProperties = new SeataProperties(springCloudAlibabaConfiguration);
+    public SeataProperties seataProperties() {
+        SeataProperties seataProperties = new SeataProperties();
         seataProperties.setApplicationId("test-id");
         return seataProperties;
     }

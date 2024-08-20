@@ -80,11 +80,8 @@ public class SeataProperties {
      */
     private String secretKey;
 
-    private final SpringCloudAlibabaConfiguration springCloudAlibabaConfiguration;
-
-    public SeataProperties(SpringCloudAlibabaConfiguration springCloudAlibabaConfiguration) {
-        this.springCloudAlibabaConfiguration = springCloudAlibabaConfiguration;
-    }
+    @Autowired
+    private SpringCloudAlibabaConfiguration springCloudAlibabaConfiguration;
 
     public boolean isEnabled() {
         return enabled;
