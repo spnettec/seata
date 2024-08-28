@@ -113,6 +113,7 @@
         <!-- # for kotlin -->
         <kotlin.version>1.9.23</kotlin.version>
         <kotlin-coroutines.version>1.8.0</kotlin-coroutines.version>
+        <mockwebserver-version>4.12.0</mockwebserver-version>
         <native-lib-loader.version>2.5.0</native-lib-loader.version>
     </properties>
 
