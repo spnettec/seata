@@ -20,32 +20,29 @@ import org.apache.seata.console.filter.JwtAuthenticationTokenFilter;
 import org.apache.seata.console.security.CustomUserDetailsServiceImpl;
 import org.apache.seata.console.security.JwtAuthenticationEntryPoint;
 import org.apache.seata.console.utils.JwtTokenUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Spring security config
  *
  */
 @Configuration(proxyBeanMethods = false)
-@EnableMethodSecurity
-public class WebSecurityConfig {
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * The constant AUTHORIZATION_HEADER.
@@ -67,42 +64,50 @@ public class WebSecurityConfig {
      */
     public static final String TOKEN_PREFIX = "Bearer ";
 
+    @Autowired
+    private CustomUserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
+
+    @Autowired
+    private JwtTokenUtils tokenProvider;
+
+    @Autowired
+    private Environment env;
+
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer(Environment env) {
-        return (web) -> {
-            String ignoreURLs = env.getProperty("seata.security.ignore.urls", "/**");
-            for (String ignoreURL : ignoreURLs.trim().split(SECURITY_IGNORE_URLS_SPILT_CHAR)) {
-                web.ignoring().requestMatchers(AntPathRequestMatcher.antMatcher(ignoreURL.trim()));
-            }
-        };
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    @Bean
-    public SecurityFilterChain authFilterChain(HttpSecurity http,
-                                                PasswordEncoder passwordEncoder,
-                                               JwtTokenUtils tokenProvider,
-                                               CustomUserDetailsServiceImpl userDetailsService,
-                                               JwtAuthenticationEntryPoint unauthorizedHandler) throws Exception {
-        http.authorizeHttpRequests(authorizeHttpRequestsConfigurer-> authorizeHttpRequestsConfigurer.anyRequest().authenticated())
-                // custom token authorize exception handler
-                .exceptionHandling(exceptionHandlingConfigurer-> exceptionHandlingConfigurer.authenticationEntryPoint(unauthorizedHandler))
-                // since we use jwt, session is not necessary
-                .sessionManagement(sessionManagementConfigurer-> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // since we use jwt, csrf is not necessary
-                .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(new JwtAuthenticationTokenFilter(tokenProvider),
-                UsernamePasswordAuthenticationFilter.class)
+    @Override
+    public void configure(WebSecurity web) {
+        String ignoreURLs = env.getProperty("seata.security.ignore.urls", "/**");
+        for (String ignoreURL : ignoreURLs.trim().split(SECURITY_IGNORE_URLS_SPILT_CHAR)) {
+            web.ignoring().antMatchers(ignoreURL.trim());
+        }
+    }
 
-                // disable cache
-                .headers(a-> a.cacheControl(Customizer.withDefaults()));
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-        return http.build();
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().anyRequest().authenticated().and()
+            // custom token authorize exception handler
+            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+            // since we use jwt, session is not necessary
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).disable();
+            // don't disable csrf, jwt may be implemented based on cookies
+        http.addFilterBefore(new JwtAuthenticationTokenFilter(tokenProvider),
+            UsernamePasswordAuthenticationFilter.class);
+
+        // disable cache
+        http.headers().cacheControl();
     }
 
     /**
