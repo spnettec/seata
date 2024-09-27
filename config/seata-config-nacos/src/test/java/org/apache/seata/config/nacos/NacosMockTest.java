@@ -33,12 +33,17 @@ import org.apache.seata.config.ConfigurationChangeEvent;
 import org.apache.seata.config.ConfigurationChangeListener;
 import org.apache.seata.config.ConfigurationFactory;
 import org.apache.seata.config.Dispose;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
-@Disabled
 public class NacosMockTest {
     private static ConfigService configService;
-    private static final String NACOS_ENDPOINT = "console.nacos.io:80";
+    private static final String NACOS_ENDPOINT = "127.0.0.1:8848";
 
     private static final String NACOS_GROUP = "SEATA_GROUP";
 
@@ -62,6 +67,7 @@ public class NacosMockTest {
     }
 
     @Test
+    @EnabledOnOs(OS.LINUX)
     public void getInstance() {
         Assertions.assertNotNull(configService);
         Assertions.assertNotNull(NacosConfiguration.getInstance());
@@ -69,6 +75,7 @@ public class NacosMockTest {
     }
 
     @Test
+    @EnabledOnOs(OS.LINUX)
     public void getConfig() {
         Configuration configuration = ConfigurationFactory.getInstance();
         String configStrValue = configuration.getConfig(SUB_NACOS_DATAID);
@@ -133,6 +140,7 @@ public class NacosMockTest {
     }
 
     @Test
+    @EnabledOnOs(OS.LINUX)
     public void putConfigIfAbsent() {
         Configuration configuration = ConfigurationFactory.getInstance();
         Assertions.assertThrows(UndeclaredThrowableException.class, () -> {
@@ -141,6 +149,7 @@ public class NacosMockTest {
     }
 
     @Test
+    @EnabledOnOs(OS.LINUX)
     public void removeConfig() {
         Configuration configuration = ConfigurationFactory.getInstance();
         boolean removed = configuration.removeConfig(NACOS_DATAID);
@@ -148,6 +157,7 @@ public class NacosMockTest {
     }
 
     @Test
+    @EnabledOnOs(OS.LINUX)
     public void putConfig() {
         Configuration configuration = ConfigurationFactory.getInstance();
         boolean added = configuration.putConfig(SUB_NACOS_DATAID, "TEST");
@@ -157,6 +167,7 @@ public class NacosMockTest {
     }
 
     @Test
+    @EnabledOnOs(OS.LINUX)
     public void testConfigListener() throws NacosException, InterruptedException {
         Configuration configuration = ConfigurationFactory.getInstance();
         configuration.putConfig(NACOS_DATAID, "KEY=TEST");

@@ -32,7 +32,6 @@
     <name>seata-grpc ${project.version}</name>
     <description>gRPC integration for Seata built with Maven</description>
 
-
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>

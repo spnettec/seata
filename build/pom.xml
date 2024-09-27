@@ -131,7 +131,7 @@
         <license.skip>true</license.skip>
         <pmd.skip>true</pmd.skip>
         <maven.test.skip>false</maven.test.skip>
-        <maven.git-commit-id.skip>false</maven.git-commit-id.skip>
+        <maven.git-commit-id.skip>true</maven.git-commit-id.skip>
 
         <!-- For docker image-->
         <image.publish.skip>true</image.publish.skip>
