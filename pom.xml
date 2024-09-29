@@ -321,6 +321,7 @@
                                 <configuration>
                                     <configLocation>${user.dir}/style/seata_checkstyle.xml</configLocation>
                                     <suppressionsLocation>${user.dir}/style/seata_suppressions.xml</suppressionsLocation>
+                                    <encoding>UTF-8</encoding>
                                     <consoleOutput>true</consoleOutput>
                                     <failsOnError>true</failsOnError>
                                 </configuration>
@@ -344,16 +345,24 @@
             </extension>
         </extensions>
         <plugins>
+            <!-- Source -->
             <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                    <compilerVersion>${maven.compiler.source}</compilerVersion>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <parameters>true</parameters>
+                    <excludes>
+                        <exclude>**/*.java.template</exclude>
+                    </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <!-- PMD-->
             <!--
