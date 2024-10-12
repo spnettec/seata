@@ -23,7 +23,6 @@ import org.apache.seata.console.config.WebSecurityConfig;
 import org.apache.seata.common.result.SingleResult;
 import org.apache.seata.console.security.User;
 import org.apache.seata.console.utils.JwtTokenUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
