@@ -72,7 +72,7 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.seata</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>seata-serializer-protobuf</artifactId>
             <version>${project.version}</version>
         </dependency>
