@@ -340,7 +340,7 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.seata</groupId>
+            <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-saga-annotation</artifactId>
             <version>${project.version}</version>
         </dependency>
