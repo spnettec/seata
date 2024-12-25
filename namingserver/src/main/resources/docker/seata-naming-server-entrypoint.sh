@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -14,16 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Auto Configure
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.apache.seata.spring.boot.autoconfigure.SeataCoreAutoConfiguration
 
-# Environment Post Processors
-org.springframework.boot.env.EnvironmentPostProcessor=\
-org.apache.seata.spring.boot.autoconfigure.SeataCoreEnvironmentPostProcessor
+# entrypoint for namingserver
 
-org.springframework.context.ApplicationContextInitializer=\
-org.apache.seata.spring.boot.autoconfigure.loader.SeataPropertiesLoader
-
-org.springframework.context.ApplicationListener=\
-org.apache.seata.spring.boot.autoconfigure.listener.SeataApplicationListener
+. /seata-namingserver-setup.sh
+JAVA_OPT=${JAVA_OPT//"//"/"/"}
+echo "Affected JVM parameters:$JAVA_OPT"
+exec java $JAVA_OPT \
+  -cp $( cat /seata-naming-server/jib-classpath-file ) \
+  $( cat /seata-naming-server/jib-main-class-file )
