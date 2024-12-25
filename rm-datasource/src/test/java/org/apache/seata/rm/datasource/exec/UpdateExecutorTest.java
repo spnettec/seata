@@ -33,7 +33,6 @@ import org.apache.seata.rm.datasource.ConnectionProxy;
 import org.apache.seata.rm.datasource.DataSourceProxy;
 import org.apache.seata.rm.datasource.DataSourceProxyTest;
 import org.apache.seata.rm.datasource.StatementProxy;
-import org.apache.seata.rm.datasource.exec.UpdateExecutor;
 import org.apache.seata.rm.datasource.mock.MockConnection;
 import org.apache.seata.rm.datasource.mock.MockDriver;
 import org.apache.seata.rm.datasource.sql.struct.TableRecords;

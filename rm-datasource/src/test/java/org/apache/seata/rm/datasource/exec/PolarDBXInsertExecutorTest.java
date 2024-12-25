@@ -32,7 +32,6 @@ import org.apache.seata.rm.datasource.DataSourceProxy;
 import org.apache.seata.rm.datasource.DataSourceProxyTest;
 import org.apache.seata.rm.datasource.PreparedStatementProxy;
 import org.apache.seata.rm.datasource.StatementProxy;
-import org.apache.seata.rm.datasource.exec.StatementCallback;
 import org.apache.seata.rm.datasource.exec.polardbx.PolarDBXInsertExecutor;
 import org.apache.seata.rm.datasource.mock.MockConnection;
 import org.apache.seata.rm.datasource.mock.MockDriver;

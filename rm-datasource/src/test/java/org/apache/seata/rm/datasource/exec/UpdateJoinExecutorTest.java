@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
-import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.sql.SQLUtils;
@@ -32,7 +31,6 @@ import org.apache.seata.rm.datasource.ConnectionProxy;
 import org.apache.seata.rm.datasource.DataSourceProxy;
 import org.apache.seata.rm.datasource.DataSourceProxyTest;
 import org.apache.seata.rm.datasource.StatementProxy;
-import org.apache.seata.rm.datasource.exec.UpdateExecutor;
 import org.apache.seata.rm.datasource.exec.mysql.MySQLUpdateJoinExecutor;
 import org.apache.seata.rm.datasource.mock.MockConnection;
 import org.apache.seata.rm.datasource.mock.MockDriver;
@@ -40,7 +38,7 @@ import org.apache.seata.rm.datasource.sql.struct.TableRecords;
 import org.apache.seata.sqlparser.druid.mysql.MySQLUpdateRecognizer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+
 
 public class UpdateJoinExecutorTest {
     @Test
