@@ -114,6 +114,9 @@
         <kotlin.version>1.9.23</kotlin.version>
         <kotlin-coroutines.version>1.8.0</kotlin-coroutines.version>
         <native-lib-loader.version>2.5.0</native-lib-loader.version>
+
+        <!--  for fury  -->
+        <fury.version>0.8.0</fury.version>
     </properties>
 
     <dependencyManagement>
@@ -821,6 +824,13 @@
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-client</artifactId>
                 <version>${rocketmq-version}</version>
+            </dependency>
+
+            <!-- Fury Serialize -->
+            <dependency>
+                <groupId>org.apache.fury</groupId>
+                <artifactId>fury-core</artifactId>
+                <version>${fury.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
