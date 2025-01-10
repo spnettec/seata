@@ -21,24 +21,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>com.github.heyoulin.seata</groupId>
-        <artifactId>seata-parent</artifactId>
+        <groupId>org.apache.seata</groupId>
+        <artifactId>seata-serializer</artifactId>
         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>seata-serializer</artifactId>
-    <packaging>pom</packaging>
-    <name>seata-serializer ${project.version}</name>
-    <description>serializer top parent for Seata built with Maven</description>
+    <artifactId>seata-serializer-fury</artifactId>
+    <packaging>jar</packaging>
+    <name>seata-serializer-fury ${project.version}</name>
+    <description>serializer-fury for Seata built with Maven</description>
 
-    <modules>
-        <module>seata-serializer-all</module>
-        <module>seata-serializer-protobuf</module>
-        <module>seata-serializer-seata</module>
-        <module>seata-serializer-kryo</module>
-        <module>seata-serializer-hessian</module>
-        <module>seata-serializer-fastjson2</module>
-        <module>seata-serializer-fury</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.apache.fury</groupId>
+            <artifactId>fury-core</artifactId>
+        </dependency>
+    </dependencies>
 </project>
