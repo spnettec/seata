@@ -103,7 +103,7 @@ public interface DefaultValues {
     /**
      * The constant DEFAULT_SELECTOR_THREAD_SIZE.
      */
-    int DEFAULT_SELECTOR_THREAD_SIZE = 1;
+    int DEFAULT_SELECTOR_THREAD_SIZE = -1;
     /**
      * The constant DEFAULT_BOSS_THREAD_SIZE.
      */
@@ -122,6 +122,10 @@ public interface DefaultValues {
      */
     @Deprecated
     boolean DEFAULT_ENABLE_CLIENT_BATCH_SEND_REQUEST = true;
+    /**
+     * The constant DEFAULT_ENABLE_CLIENT_USE_SHARED_EVENT_LOOP.
+     */
+    boolean DEFAULT_ENABLE_CLIENT_USE_SHARED_EVENT_LOOP = false;
     /**
      * The constant DEFAULT_ENABLE_TM_CLIENT_BATCH_SEND_REQUEST.
      */
@@ -311,6 +315,11 @@ public interface DefaultValues {
     int DEFAULT_RETRY_DEAD_THRESHOLD = 2 * 60 * 1000 + 10 * 1000;
 
     /**
+     * the constant DEFAULT_END_STATE_RETRY_DEAD_THRESHOLD
+     */
+    int DEFAULT_END_STATE_RETRY_DEAD_THRESHOLD = 10 * 1000;
+
+    /**
      * the constant TM_INTERCEPTOR_ORDER
      */
     int TM_INTERCEPTOR_ORDER = Integer.MIN_VALUE + 1000;
@@ -396,6 +405,11 @@ public interface DefaultValues {
      * the constant DEFAULT_ROLLBACKING_RETRY_PERIOD
      */
     int DEFAULT_ROLLBACKING_RETRY_PERIOD = 1000;
+
+    /**
+     * the constant DEFAULT_END_STATUS_RETRY_PERIOD
+     */
+    int DEFAULT_END_STATUS_RETRY_PERIOD = 30 * 1000;
 
     /**
      * the constant DEFAULT_TIMEOUT_RETRY_PERIOD
