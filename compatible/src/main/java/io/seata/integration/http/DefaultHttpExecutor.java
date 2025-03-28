@@ -16,11 +16,11 @@
  */
 package io.seata.integration.http;
 
-import java.util.Map;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
+import java.util.Map;
 
 /**
  * The type Default http executor.

@@ -44,12 +44,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.entity.ContentType;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.StatusLine;
 import org.apache.seata.common.ConfigurationKeys;
 import org.apache.seata.common.exception.AuthenticationFailedException;
 import org.apache.seata.common.exception.RetryableException;
@@ -218,10 +219,10 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
             if (StringUtils.isNotBlank(jwtToken)) {
                 header.put(AUTHORIZATION_HEADER, jwtToken);
             }
-            header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+            header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
 
             try (CloseableHttpResponse response = HttpClientUtil.doPost(url, jsonBody, header, 3000)) {
-                int statusCode = response.getStatusLine().getStatusCode();
+                int statusCode = response == null? 0 : response.getCode();
                 if (statusCode == 200) {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("instance has been registered successfully:{}", statusCode);
@@ -238,9 +239,9 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
     public boolean doHealthCheck(String url) {
         url = HTTP_PREFIX + url + "/naming/v1/health";
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+        header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
         try (CloseableHttpResponse response = HttpClientUtil.doGet(url, null, header, 3000)) {
-            int statusCode = response.getStatusLine().getStatusCode();
+            int statusCode = response.getCode();
             return statusCode == 200;
         } catch (Exception e) {
             return false;
@@ -265,9 +266,9 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
             params = params + "&namespace=" + instance.getNamespace();
             url += params;
             Map<String, String> header = new HashMap<>();
-            header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+            header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
             try (CloseableHttpResponse response = HttpClientUtil.doPost(url, jsonBody, header, 3000)) {
-                int statusCode = response.getStatusLine().getStatusCode();
+                int statusCode = response == null? 0 : response.getCode();
                 if (statusCode == 200) {
                     LOGGER.info("instance has been unregistered successfully:{}", statusCode);
                 } else {
@@ -344,8 +345,7 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
         }
         try (CloseableHttpResponse response = HttpClientUtil.doPost(watchAddr, (String) null, header, 30000)) {
             if (response != null) {
-                StatusLine statusLine = response.getStatusLine();
-                return statusLine != null && statusLine.getStatusCode() == HttpStatus.SC_OK;
+                return response.getCode() == HttpStatus.SC_OK;
             }
         } catch (Exception e) {
             LOGGER.error("watch failed: {}", e.getMessage());
@@ -421,14 +421,14 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
         paraMap.put(NAMESPACE_KEY, getNamespace());
         String url = HTTP_PREFIX + namingAddr + "/naming/v1/discovery";
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+        header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
         if (StringUtils.isNotBlank(jwtToken)) {
             header.put(AUTHORIZATION_HEADER, jwtToken);
         }
         try (CloseableHttpResponse response = HttpClientUtil.doGet(url, paraMap, header, 3000)) {
-            if (response == null || response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+            if (response == null || response.getCode() != HttpStatus.SC_OK) {
                 throw new NamingRegistryException("cannot lookup server list in vgroup: " + vGroup + ", http code: "
-                    + response.getStatusLine().getStatusCode());
+                    + (response == null? "": String.valueOf(response.getCode())));
             }
             String jsonResponse = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
             // jsonResponse -> MetaResponse
@@ -438,6 +438,8 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
             throw new RemoteException();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -563,12 +565,12 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
         param.put(PRO_USERNAME_KEY, USERNAME);
         param.put(PRO_PASSWORD_KEY, PASSWORD);
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+        header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
         String response = null;
         try (CloseableHttpResponse httpResponse =
             HttpClientUtil.doPost("http://" + tcAddress + "/api/v1/auth/login", param, header, 1000)) {
             if (httpResponse != null) {
-                if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                if (httpResponse.getCode() == HttpStatus.SC_OK) {
                     response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
                     JsonNode jsonNode = OBJECT_MAPPER.readTree(response);
                     String codeStatus = jsonNode.get("code").asText();
@@ -585,6 +587,8 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
             }
         } catch (IOException e) {
             throw new RetryableException(e.getMessage(), e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 

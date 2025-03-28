@@ -33,15 +33,16 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.entity.ContentType;
-import org.apache.http.protocol.HTTP;
+
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.seata.common.metadata.Cluster;
 import org.apache.seata.common.metadata.ClusterRole;
 import org.apache.seata.common.metadata.Node;
@@ -167,11 +168,15 @@ public class NamingManager {
             params.put(CONSTANT_GROUP, vGroup);
             params.put(NamingServerConstants.CONSTANT_UNIT, unitName);
             Map<String, String> header = new HashMap<>();
-            header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+            header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
 
             try (CloseableHttpResponse closeableHttpResponse = HttpClientUtil.doGet(httpUrl, params, header, 3000)) {
-                if (closeableHttpResponse == null || closeableHttpResponse.getStatusLine().getStatusCode() != 200) {
-                    return new Result<>(String.valueOf(closeableHttpResponse.getStatusLine().getStatusCode()),
+                if (closeableHttpResponse == null ) {
+                    return new Result<>(Result.FAIL_CODE,
+                            "add vGroup in new cluster failed");
+                }
+                else if (closeableHttpResponse.getCode() != 200) {
+                    return new Result<>(String.valueOf(closeableHttpResponse.getCode()),
                         "add vGroup in new cluster failed");
                 }
                 LOGGER.info("namespace: {} add vGroup: {} in new cluster: {} successfully!", namespace, vGroup, clusterName);
@@ -193,12 +198,16 @@ public class NamingManager {
             params.put(CONSTANT_GROUP, vGroup);
             params.put(NamingServerConstants.CONSTANT_UNIT, unitName);
             Map<String, String> header = new HashMap<>();
-            header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+            header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
             try (CloseableHttpResponse closeableHttpResponse = HttpClientUtil.doGet(httpUrl, params, header, 3000)) {
-                if (closeableHttpResponse == null || closeableHttpResponse.getStatusLine().getStatusCode() != 200) {
+                if (closeableHttpResponse == null) {
                     LOGGER.warn("remove vGroup in old cluster failed");
-                    return new Result<>(String.valueOf(closeableHttpResponse.getStatusLine().getStatusCode()),
+                    return new Result<>(Result.FAIL_CODE,
                         "removing vGroup " + vGroup + " in old cluster " + clusterName + " failed");
+                } else if (closeableHttpResponse.getCode() != 200) {
+                    LOGGER.warn("remove vGroup in old cluster failed");
+                    return new Result<>(String.valueOf(closeableHttpResponse.getCode()),
+                            "removing vGroup " + vGroup + " in old cluster " + clusterName + " failed");
                 }
                 LOGGER.info("namespace: {} remove vGroup: {} in new cluster: {} successfully!", namespace, vGroup,
                     clusterName);

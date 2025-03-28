@@ -16,12 +16,11 @@
  */
 package org.apache.seata.integration.http;
 
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.util.Args;
 import org.apache.seata.core.context.RootContext;
-import org.apache.http.HttpResponse;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.Args;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.seata.common.util.BufferUtils;
 import org.apache.seata.core.context.RootContext;
-import org.apache.http.HttpResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -125,20 +125,26 @@ class HttpTest {
         json.put("age", 15);
 
         //The body parameter of post supports the above types (str,person,map,json)
+        CloseableHttpResponse response = null;
         try {
-            HttpResponse response;
-
             if (param_type == PARAM_TYPE_MAP) {
-                response = httpExecuter.executePost(host, postPath, map, HttpResponse.class);
+                response = httpExecuter.executePost(host, postPath, map, CloseableHttpResponse.class);
             } else if (param_type == PARAM_TYPE_BEAN) {
-                response = httpExecuter.executePost(host, postPath, person, HttpResponse.class);
+                response = httpExecuter.executePost(host, postPath, person, CloseableHttpResponse.class);
             } else {
-                response = httpExecuter.executePost(host, postPath, str, HttpResponse.class);
+                response = httpExecuter.executePost(host, postPath, str, CloseableHttpResponse.class);
             }
 
             return readStreamAsStr(response.getEntity().getContent());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException ignored) {
+                }
+            }
         }
     }
 
@@ -153,15 +159,16 @@ class HttpTest {
                 "    \"age\":15\n" +
                 "}";
         Person person = JSON.parseObject(str, Person.class);
+        CloseableHttpResponse response = null;
         try {
             //support all type of parameter types
-            HttpResponse response;
+
             if (param_type == PARAM_TYPE_MAP) {
-                response = httpExecuter.executeGet(host, getPath, params, HttpResponse.class);
+                response = httpExecuter.executeGet(host, getPath, params, CloseableHttpResponse.class);
             } else if (param_type == PARAM_TYPE_BEAN) {
-                response = httpExecuter.executeGet(host, getPath, convertParamOfBean(person), HttpResponse.class);
+                response = httpExecuter.executeGet(host, getPath, convertParamOfBean(person), CloseableHttpResponse.class);
             } else {
-                response = httpExecuter.executeGet(host, getPath, convertParamOfJsonString(str, Person.class), HttpResponse.class);
+                response = httpExecuter.executeGet(host, getPath, convertParamOfJsonString(str, Person.class), CloseableHttpResponse.class);
             }
             return readStreamAsStr(response.getEntity().getContent());
 
@@ -173,6 +180,13 @@ class HttpTest {
             } catch (IOException ex) {
                 throw new RuntimeException(e);
             }
+        } finally {
+            if (response!=null) {
+                try {
+                    response.close();
+                } catch (IOException ignored) {
+                }
+            }
         }
     }
 
@@ -181,9 +195,9 @@ class HttpTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "zhangsan");
         params.put("age", "15");
-        HttpResponse response;
+        CloseableHttpResponse response = null;
         try {
-            response = httpExecuter.executeGet(host, testException, params, HttpResponse.class);
+            response = httpExecuter.executeGet(host, testException, params, CloseableHttpResponse.class);
             return readStreamAsStr(response.getEntity().getContent());
         } catch (IOException e) {
             /* if in Travis CI inv, only mock method call */
@@ -194,6 +208,13 @@ class HttpTest {
                 throw new RuntimeException(e);
             }
 
+        } finally {
+            if (response!=null) {
+                try {
+                    response.close();
+                } catch (IOException ignored) {
+                }
+            }
         }
 
     }

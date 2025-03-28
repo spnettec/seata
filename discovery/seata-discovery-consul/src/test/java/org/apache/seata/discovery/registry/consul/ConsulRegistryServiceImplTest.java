@@ -16,7 +16,7 @@
  */
 package org.apache.seata.discovery.registry.consul;
 
-import com.ecwid.consul.transport.RawResponse;
+import com.ecwid.consul.transport.HttpResponse;
 import com.ecwid.consul.v1.ConsulClient;
 import com.ecwid.consul.v1.Response;
 import com.ecwid.consul.v1.health.model.HealthService;
@@ -84,7 +84,7 @@ public class ConsulRegistryServiceImplTest {
         ExecutorService executorService = mock(ExecutorService.class);
         setExecutorService(executorService);
 
-        Response<List<HealthService>> response = new Response<>(new ArrayList<>(), mock(RawResponse.class));
+        Response<List<HealthService>> response = new Response<>(new ArrayList<>(), mock(HttpResponse.class));
         when(client.getHealthServices(any(), any())).thenReturn(response);
 
         service.subscribe(TEST_CLUSTER_NAME, consulListener);

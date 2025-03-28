@@ -19,14 +19,14 @@ package org.apache.seata.discovery.registry.raft;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.message.StatusLine;
 import org.apache.seata.common.metadata.MetadataResponse;
 import org.apache.seata.common.metadata.Node;
 import org.apache.seata.common.util.*;
 import org.apache.seata.config.ConfigurationFactory;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.entity.StringEntity;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -78,11 +78,11 @@ class RaftRegistryServiceImplTest {
         try (MockedStatic<HttpClientUtil> mockedStatic = Mockito.mockStatic(HttpClientUtil.class)) {
 
             CloseableHttpResponse mockResponse = mock(CloseableHttpResponse.class);
-            StatusLine mockStatusLine = mock(StatusLine.class);
+            //StatusLine mockStatusLine = mock(StatusLine.class);
 
             when(mockResponse.getEntity()).thenReturn(new StringEntity(responseBody));
-            when(mockResponse.getStatusLine()).thenReturn(mockStatusLine);
-            when(mockStatusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
+            when(mockResponse.getCode()).thenReturn(200);
+            //when(mockStatusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
 
 
             when(HttpClientUtil.doPost(any(String.class), any(Map.class), any(Map.class), any(int.class)))
@@ -108,11 +108,11 @@ class RaftRegistryServiceImplTest {
         try (MockedStatic<HttpClientUtil> mockedStatic = Mockito.mockStatic(HttpClientUtil.class)) {
 
             CloseableHttpResponse mockResponse = mock(CloseableHttpResponse.class);
-            StatusLine mockStatusLine = mock(StatusLine.class);
+            //StatusLine mockStatusLine = mock(StatusLine.class);
 
             when(mockResponse.getEntity()).thenReturn(new StringEntity(responseBody));
-            when(mockResponse.getStatusLine()).thenReturn(mockStatusLine);
-            when(mockStatusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
+            when(mockResponse.getCode()).thenReturn(200);
+            //when(mockStatusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
 
 
             when(HttpClientUtil.doPost(any(String.class), any(Map.class), any(Map.class), any(int.class)))

@@ -20,20 +20,20 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONException;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.util.Args;
 import org.apache.seata.common.util.CollectionUtils;
 import org.apache.seata.core.context.RootContext;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.Args;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,12 +141,12 @@ public abstract class AbstractHttpExecutor implements HttpExecutor {
             headers.forEach(httpUriRequest::addHeader);
         }
         response = httpClient.execute(httpUriRequest);
-        int statusCode = response.getStatusLine().getStatusCode();
+        int statusCode = response.getCode();
         /** 2xx is success. */
         if (statusCode < HttpStatus.SC_OK || statusCode > HttpStatus.SC_MULTI_STATUS) {
             throw new RuntimeException("Failed to invoke the http method "
-                    + httpUriRequest.getURI() + " in the service "
-                    + ". return status by: " + response.getStatusLine().getStatusCode());
+                    + httpUriRequest.getRequestUri() + " in the service "
+                    + ". return status by: " + response.getCode());
         }
 
         return convertResult(response, returnType);

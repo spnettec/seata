@@ -114,7 +114,7 @@ public class WebConfig {
                     // setDefaultMaxPerRoute now can be used in builder
                     .setMaxConnPerRoute(DEFAULT_CONNECTION_MAX_PER_ROUTE)
                     .setDefaultConnectionConfig(ConnectionConfig.custom()
-                            .setConnectTimeout(DEFAULT_REQUEST_TIMEOUT, TimeUnit.SECONDS)
+                            .setConnectTimeout(DEFAULT_REQUEST_TIMEOUT, TimeUnit.MILLISECONDS)
                             .build())
                     .build();
         } catch (NoSuchAlgorithmException e) {

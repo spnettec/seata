@@ -17,9 +17,9 @@
 package org.apache.seata.integration.http;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -112,7 +112,7 @@ public class DefaultHttpExecutor extends AbstractHttpExecutor {
     public <K> K convertResult(HttpResponse response, Class<K> clazz) {
 
 
-        if (clazz == HttpResponse.class) {
+        if (HttpResponse.class.isAssignableFrom(clazz)) {
             return (K) response;
         }
         return null;

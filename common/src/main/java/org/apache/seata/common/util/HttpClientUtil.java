@@ -18,20 +18,20 @@ package org.apache.seata.common.util;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.hc.client5.http.ClientProtocolException;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.net.URIBuilder;
+import org.apache.hc.core5.net.URLEncodedUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.concurrent.TimeUnit;
 
 public class HttpClientUtil {
 
@@ -97,12 +97,13 @@ public class HttpClientUtil {
                     httpPost.setEntity(stringEntity);
                 }
             }
-            CloseableHttpClient client = HTTP_CLIENT_MAP.computeIfAbsent(timeout,
+            try(CloseableHttpClient client = HTTP_CLIENT_MAP.computeIfAbsent(timeout,
                 k -> HttpClients.custom().setConnectionManager(POOLING_HTTP_CLIENT_CONNECTION_MANAGER)
-                    .setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout)
-                        .setSocketTimeout(timeout).setConnectTimeout(timeout).build())
-                    .build());
-            return client.execute(httpPost);
+                    .setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout, TimeUnit.MILLISECONDS)
+                        .build())
+                    .build())) {
+                return client.execute(httpPost);
+            }
         } catch (URISyntaxException | ClientProtocolException e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -127,12 +128,13 @@ public class HttpClientUtil {
                     httpPost.setEntity(stringEntity);
                 }
             }
-            CloseableHttpClient client = HTTP_CLIENT_MAP.computeIfAbsent(timeout,
+            try(CloseableHttpClient client = HTTP_CLIENT_MAP.computeIfAbsent(timeout,
                 k -> HttpClients.custom().setConnectionManager(POOLING_HTTP_CLIENT_CONNECTION_MANAGER)
-                    .setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout)
-                        .setSocketTimeout(timeout).setConnectTimeout(timeout).build())
-                    .build());
-            return client.execute(httpPost);
+                    .setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout, TimeUnit.MILLISECONDS)
+                        .build())
+                    .build())) {
+                return client.execute(httpPost);
+            }
         } catch (URISyntaxException | ClientProtocolException e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -155,12 +157,13 @@ public class HttpClientUtil {
             if (header != null) {
                 header.forEach(httpGet::addHeader);
             }
-            CloseableHttpClient client = HTTP_CLIENT_MAP.computeIfAbsent(timeout,
+            try(CloseableHttpClient client = HTTP_CLIENT_MAP.computeIfAbsent(timeout,
                 k -> HttpClients.custom().setConnectionManager(POOLING_HTTP_CLIENT_CONNECTION_MANAGER)
-                    .setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout)
-                        .setSocketTimeout(timeout).setConnectTimeout(timeout).build())
-                    .build());
-            return client.execute(httpGet);
+                    .setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout, TimeUnit.MILLISECONDS)
+                            .build())
+                    .build())) {
+                return client.execute(httpGet);
+            }
         } catch (URISyntaxException | ClientProtocolException e) {
             LOGGER.error(e.getMessage(), e);
         }
