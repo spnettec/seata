@@ -14,22 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.seata.server.logging.logback;
+package org.apache.seata.discovery.registry.eureka;
 
-import ch.qos.logback.classic.pattern.ExtendedThrowableProxyConverter;
-import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.core.CoreConstants;
+import org.junit.jupiter.api.Test;
 
-/**
- * {@link ExtendedThrowableProxyConverter} that adds some additional whitespace around the
- * stack trace.
- * Copied from spring-boot-xxx.jar by wang.liang
- */
-public class ExtendedWhitespaceThrowableProxyConverter extends ExtendedThrowableProxyConverter {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    @Override
-    protected String throwableProxyToString(IThrowableProxy tp) {
-        return "==>" + CoreConstants.LINE_SEPARATOR + super.throwableProxyToString(tp)
-                + "<==" + CoreConstants.LINE_SEPARATOR + CoreConstants.LINE_SEPARATOR;
+public class EurekaRegistryProviderTest {
+
+    @Test
+    void testProvide(){
+        assertThat(new EurekaRegistryProvider()).isInstanceOf(EurekaRegistryProvider.class);
     }
 }
