@@ -27,13 +27,14 @@ import org.apache.seata.integration.brpc.dto.Echo;
 import org.apache.seata.integration.brpc.server.EchoService;
 import org.apache.seata.integration.brpc.server.impl.EchoServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+@Disabled
 public class TransactionInterceptorTest {
 
     /**

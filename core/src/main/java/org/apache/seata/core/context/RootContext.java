@@ -18,9 +18,6 @@ package org.apache.seata.core.context;
 
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.apache.seata.common.Constants;
 import org.apache.seata.common.exception.ShouldNeverHappenException;
 import org.apache.seata.common.util.StringUtils;
@@ -28,6 +25,9 @@ import org.apache.seata.core.model.BranchType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static org.apache.seata.core.model.BranchType.AT;
 import static org.apache.seata.core.model.BranchType.XA;
