@@ -76,8 +76,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <snakeyaml.version>2.4</snakeyaml.version>
         <!-- The version of spring-boot for 'spring-boot-dependencies' and 'spring-boot-maven-plugin' -->
-        <spring-boot.version>3.4.4</spring-boot.version>
-        <spring-framework.version>6.2.5</spring-framework.version>
+        <spring-boot.version>3.4.5</spring-boot.version>
+        <spring-framework.version>6.2.6</spring-framework.version>
         <netty.version>4.1.119.Final</netty.version>
         <bucket4j.version>8.10.1</bucket4j.version>
         <!-- Maven plugin versions -->
@@ -87,7 +87,7 @@
         <!-- Compiler -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <protobuf.version>4.30.2</protobuf.version>
-        <grpc.version>1.71.0</grpc.version>
+        <grpc.version>1.72.0</grpc.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <kotlin-maven-plugin.version>1.9.21</kotlin-maven-plugin.version>
         <!-- Check -->

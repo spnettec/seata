@@ -16,8 +16,16 @@
  */
 package org.apache.seata.common.util;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -31,48 +39,38 @@ import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.hc.core5.net.URIBuilder;
-import org.apache.hc.core5.net.URLEncodedUtils;
+import org.apache.hc.core5.net.WWWFormCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 public class HttpClientUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientUtil.class);
 
-    private static final Map<Integer/*timeout*/, CloseableHttpClient> HTTP_CLIENT_MAP = new ConcurrentHashMap<>();
+    private static final Map<Integer /*timeout*/, CloseableHttpClient> HTTP_CLIENT_MAP = new ConcurrentHashMap<>();
 
     private static final PoolingHttpClientConnectionManager POOLING_HTTP_CLIENT_CONNECTION_MANAGER =
-        new PoolingHttpClientConnectionManager();
+            new PoolingHttpClientConnectionManager();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     static {
         POOLING_HTTP_CLIENT_CONNECTION_MANAGER.setMaxTotal(10);
         POOLING_HTTP_CLIENT_CONNECTION_MANAGER.setDefaultMaxPerRoute(10);
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> HTTP_CLIENT_MAP.values().parallelStream().forEach(client -> {
-            try {
-                //delay 3s, make sure unregister http request send successfully
-                Thread.sleep(3000);
-                client.close();
-            } catch (IOException | InterruptedException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
-        })));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> HTTP_CLIENT_MAP.values().parallelStream()
+                .forEach(client -> {
+                    try {
+                        // delay 3s, make sure unregister http request send successfully
+                        Thread.sleep(3000);
+                        client.close();
+                    } catch (IOException | InterruptedException e) {
+                        LOGGER.error(e.getMessage(), e);
+                    }
+                })));
     }
 
-
     // post request
-    public static CloseableHttpResponse doPost(String url, Map<String, String> params, Map<String, String> header,
-        int timeout) throws IOException {
+    public static CloseableHttpResponse doPost(
+            String url, Map<String, String> params, Map<String, String> header, int timeout) throws IOException {
         try {
             URIBuilder builder = new URIBuilder(url);
             URI uri = builder.build();
@@ -88,7 +86,7 @@ public class HttpClientUtil {
                     params.forEach((k, v) -> {
                         nameValuePairs.add(new BasicNameValuePair(k, v));
                     });
-                    String requestBody = URLEncodedUtils.format(nameValuePairs, StandardCharsets.UTF_8);
+                    String requestBody = WWWFormCodec.format(nameValuePairs, StandardCharsets.UTF_8);
                     StringEntity stringEntity = new StringEntity(requestBody, ContentType.APPLICATION_FORM_URLENCODED);
                     httpPost.setEntity(stringEntity);
                 } else if (ContentType.APPLICATION_JSON.getMimeType().equals(contentType)) {
@@ -97,13 +95,14 @@ public class HttpClientUtil {
                     httpPost.setEntity(stringEntity);
                 }
             }
-            try(CloseableHttpClient client = HTTP_CLIENT_MAP.computeIfAbsent(timeout,
-                k -> HttpClients.custom().setConnectionManager(POOLING_HTTP_CLIENT_CONNECTION_MANAGER)
-                    .setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout, TimeUnit.MILLISECONDS)
-                        .build())
-                    .build())) {
-                return client.execute(httpPost);
-            }
+            CloseableHttpClient client = HTTP_CLIENT_MAP.computeIfAbsent(timeout, k -> HttpClients.custom()
+                    .setConnectionManager(POOLING_HTTP_CLIENT_CONNECTION_MANAGER)
+                    .setDefaultRequestConfig(RequestConfig.custom()
+                            .setConnectionRequestTimeout(timeout, TimeUnit.MILLISECONDS)
+                            .build())
+                    .build());
+            return client.execute(httpPost);
+
         } catch (URISyntaxException | ClientProtocolException e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -111,8 +110,8 @@ public class HttpClientUtil {
     }
 
     // post request
-    public static CloseableHttpResponse doPost(String url, String body, Map<String, String> header,
-        int timeout) throws IOException {
+    public static CloseableHttpResponse doPost(String url, String body, Map<String, String> header, int timeout)
+            throws IOException {
         try {
             URIBuilder builder = new URIBuilder(url);
             URI uri = builder.build();
@@ -128,23 +127,23 @@ public class HttpClientUtil {
                     httpPost.setEntity(stringEntity);
                 }
             }
-            try(CloseableHttpClient client = HTTP_CLIENT_MAP.computeIfAbsent(timeout,
-                k -> HttpClients.custom().setConnectionManager(POOLING_HTTP_CLIENT_CONNECTION_MANAGER)
-                    .setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout, TimeUnit.MILLISECONDS)
-                        .build())
-                    .build())) {
-                return client.execute(httpPost);
-            }
+            CloseableHttpClient client = HTTP_CLIENT_MAP.computeIfAbsent(timeout, k -> HttpClients.custom()
+                    .setConnectionManager(POOLING_HTTP_CLIENT_CONNECTION_MANAGER)
+                    .setDefaultRequestConfig(RequestConfig.custom()
+                            .setConnectionRequestTimeout(timeout, TimeUnit.MILLISECONDS)
+                            .build())
+                    .build());
+            return client.execute(httpPost);
+
         } catch (URISyntaxException | ClientProtocolException e) {
             LOGGER.error(e.getMessage(), e);
         }
         return null;
     }
 
-
     // get request
-    public static CloseableHttpResponse doGet(String url, Map<String, String> param, Map<String, String> header,
-        int timeout) throws IOException {
+    public static CloseableHttpResponse doGet(
+            String url, Map<String, String> param, Map<String, String> header, int timeout) throws IOException {
         try {
             URIBuilder builder = new URIBuilder(url);
             if (param != null) {
@@ -157,17 +156,17 @@ public class HttpClientUtil {
             if (header != null) {
                 header.forEach(httpGet::addHeader);
             }
-            try(CloseableHttpClient client = HTTP_CLIENT_MAP.computeIfAbsent(timeout,
-                k -> HttpClients.custom().setConnectionManager(POOLING_HTTP_CLIENT_CONNECTION_MANAGER)
-                    .setDefaultRequestConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout, TimeUnit.MILLISECONDS)
+            CloseableHttpClient client = HTTP_CLIENT_MAP.computeIfAbsent(timeout, k -> HttpClients.custom()
+                    .setConnectionManager(POOLING_HTTP_CLIENT_CONNECTION_MANAGER)
+                    .setDefaultRequestConfig(RequestConfig.custom()
+                            .setConnectionRequestTimeout(timeout, TimeUnit.MILLISECONDS)
                             .build())
-                    .build())) {
-                return client.execute(httpGet);
-            }
+                    .build());
+            return client.execute(httpGet);
+
         } catch (URISyntaxException | ClientProtocolException e) {
             LOGGER.error(e.getMessage(), e);
         }
         return null;
     }
-
 }
