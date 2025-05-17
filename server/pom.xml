@@ -216,7 +216,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <optional>true</optional>
+            <scope>test</scope>
         </dependency>
 <!--        <dependency>
             <groupId>org.mariadb.jdbc</groupId>
