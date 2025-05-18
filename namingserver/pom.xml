@@ -65,10 +65,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>seata-console</artifactId>
             <version>${project.version}</version>
@@ -129,6 +125,12 @@
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.19.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

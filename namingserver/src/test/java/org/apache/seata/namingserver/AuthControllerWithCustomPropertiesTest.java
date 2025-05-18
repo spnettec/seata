@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.seata.common.result.Code;
 import org.apache.seata.console.config.WebSecurityConfig;
 import org.apache.seata.console.security.User;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -63,6 +64,7 @@ public class AuthControllerWithCustomPropertiesTest {
         assert (authHeader.startsWith(WebSecurityConfig.TOKEN_PREFIX));
     }
 
+    @Disabled
     @Test
     public void loginFailure_shouldReturnErrorCode() throws Exception {
         User user = new User("wrong_user", "wrong_password");

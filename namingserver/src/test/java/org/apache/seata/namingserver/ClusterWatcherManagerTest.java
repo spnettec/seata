@@ -16,7 +16,19 @@
  */
 package org.apache.seata.namingserver;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.apache.seata.namingserver.listener.ClusterChangeEvent;
 import org.apache.seata.namingserver.listener.Watcher;
 import org.apache.seata.namingserver.manager.ClusterWatcherManager;
@@ -26,21 +38,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 @SpringBootTest
 public class ClusterWatcherManagerTest {
@@ -68,8 +65,10 @@ public class ClusterWatcherManagerTest {
         Mockito.when(asyncContext.getRequest()).thenReturn(request);
         Mockito.when(request.getRemoteAddr()).thenReturn(TEST_CLIENT_ENDPOINT);
 
-        Map<String, Queue<Watcher<?>>> watchers = (Map<String, Queue<Watcher<?>>>) ReflectionTestUtils.getField(clusterWatcherManager, "WATCHERS");
-        Map<String, Long> groupUpdateTime = (Map<String, Long>) ReflectionTestUtils.getField(clusterWatcherManager, "GROUP_UPDATE_TIME");
+        Map<String, Queue<Watcher<?>>> watchers =
+                (Map<String, Queue<Watcher<?>>>) ReflectionTestUtils.getField(clusterWatcherManager, "WATCHERS");
+        Map<String, Long> groupUpdateTime =
+                (Map<String, Long>) ReflectionTestUtils.getField(clusterWatcherManager, "GROUP_UPDATE_TIME");
 
         watchers.clear();
         groupUpdateTime.clear();
@@ -78,8 +77,8 @@ public class ClusterWatcherManagerTest {
     @Test
     void testInit() {
         clusterWatcherManager.init();
-        ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = (ScheduledThreadPoolExecutor) ReflectionTestUtils
-                .getField(clusterWatcherManager, "scheduledThreadPoolExecutor");
+        ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = (ScheduledThreadPoolExecutor)
+                ReflectionTestUtils.getField(clusterWatcherManager, "scheduledThreadPoolExecutor");
 
         assertNotNull(scheduledThreadPoolExecutor);
         assertFalse(scheduledThreadPoolExecutor.isShutdown());
@@ -87,10 +86,12 @@ public class ClusterWatcherManagerTest {
 
     @Test
     void testRegistryNewWatcher() {
-        Watcher<AsyncContext> watcher = new Watcher<>(TEST_GROUP, asyncContext, TEST_TIMEOUT, TEST_TERM, TEST_CLIENT_ENDPOINT);
+        Watcher<AsyncContext> watcher =
+                new Watcher<>(TEST_GROUP, asyncContext, TEST_TIMEOUT, TEST_TERM, TEST_CLIENT_ENDPOINT);
         clusterWatcherManager.registryWatcher(watcher);
 
-        Map<String, Queue<Watcher<?>>> watchers = (Map<String, Queue<Watcher<?>>>) ReflectionTestUtils.getField(clusterWatcherManager, "WATCHERS");
+        Map<String, Queue<Watcher<?>>> watchers =
+                (Map<String, Queue<Watcher<?>>>) ReflectionTestUtils.getField(clusterWatcherManager, "WATCHERS");
 
         assertNotNull(watchers);
         assertTrue(watchers.containsKey(TEST_GROUP));
@@ -100,17 +101,20 @@ public class ClusterWatcherManagerTest {
 
     @Test
     void testRegistryWatcherOldTerm() {
-        Map<String, Long> groupUpdateTime = (Map<String, Long>) ReflectionTestUtils.getField(clusterWatcherManager, "GROUP_UPDATE_TIME");
+        Map<String, Long> groupUpdateTime =
+                (Map<String, Long>) ReflectionTestUtils.getField(clusterWatcherManager, "GROUP_UPDATE_TIME");
         groupUpdateTime.put(TEST_GROUP, TEST_TERM + 10);
 
-        Watcher<AsyncContext> watcher = new Watcher<>(TEST_GROUP, asyncContext, TEST_TIMEOUT, TEST_TERM, TEST_CLIENT_ENDPOINT);
+        Watcher<AsyncContext> watcher =
+                new Watcher<>(TEST_GROUP, asyncContext, TEST_TIMEOUT, TEST_TERM, TEST_CLIENT_ENDPOINT);
         clusterWatcherManager.registryWatcher(watcher);
 
         Mockito.verify(response).setStatus(HttpServletResponse.SC_OK);
         Mockito.verify(asyncContext).complete();
         assertTrue(watcher.isDone());
 
-        Map<String, Queue<Watcher<?>>> watchers = (Map<String, Queue<Watcher<?>>>) ReflectionTestUtils.getField(clusterWatcherManager, "WATCHERS");
+        Map<String, Queue<Watcher<?>>> watchers =
+                (Map<String, Queue<Watcher<?>>>) ReflectionTestUtils.getField(clusterWatcherManager, "WATCHERS");
 
         assertFalse(watchers.containsKey(TEST_GROUP));
         assertNull(watchers.get(TEST_GROUP));
@@ -118,10 +122,13 @@ public class ClusterWatcherManagerTest {
 
     @Test
     void testOnEventChange() {
-        Watcher<AsyncContext> watcher = new Watcher<>(TEST_GROUP, asyncContext, TEST_TIMEOUT, TEST_TERM, TEST_CLIENT_ENDPOINT);
+        Watcher<AsyncContext> watcher =
+                new Watcher<>(TEST_GROUP, asyncContext, TEST_TIMEOUT, TEST_TERM, TEST_CLIENT_ENDPOINT);
         clusterWatcherManager.registryWatcher(watcher);
-        Map<String, Queue<Watcher<?>>> watchers = (Map<String, Queue<Watcher<?>>>) ReflectionTestUtils.getField(clusterWatcherManager, "WATCHERS");
-        Map<String, Long> updateTime = (Map<String, Long>) ReflectionTestUtils.getField(clusterWatcherManager, "GROUP_UPDATE_TIME");
+        Map<String, Queue<Watcher<?>>> watchers =
+                (Map<String, Queue<Watcher<?>>>) ReflectionTestUtils.getField(clusterWatcherManager, "WATCHERS");
+        Map<String, Long> updateTime =
+                (Map<String, Long>) ReflectionTestUtils.getField(clusterWatcherManager, "GROUP_UPDATE_TIME");
 
         assertNotNull(watchers);
         assertNotNull(updateTime);
@@ -152,7 +159,8 @@ public class ClusterWatcherManagerTest {
     void testGetWatcherIpList() {
         Watcher<AsyncContext> watcher1 = new Watcher<>(TEST_GROUP, asyncContext, TEST_TIMEOUT, TEST_TERM, "127.0.0.1");
         Watcher<AsyncContext> watcher2 = new Watcher<>(TEST_GROUP, asyncContext, TEST_TIMEOUT, TEST_TERM, "127.0.0.1");
-        Watcher<AsyncContext> watcher3 = new Watcher<>(TEST_GROUP, asyncContext, TEST_TIMEOUT, TEST_TERM, "192.168.1.1");
+        Watcher<AsyncContext> watcher3 =
+                new Watcher<>(TEST_GROUP, asyncContext, TEST_TIMEOUT, TEST_TERM, "192.168.1.1");
 
         clusterWatcherManager.registryWatcher(watcher1);
         clusterWatcherManager.registryWatcher(watcher2);
@@ -185,7 +193,8 @@ public class ClusterWatcherManagerTest {
 
     @Test
     void testGetTermByvGroup() {
-        Map<String, Long> groupUpdateTime = (Map<String, Long>) ReflectionTestUtils.getField(clusterWatcherManager, "GROUP_UPDATE_TIME");
+        Map<String, Long> groupUpdateTime =
+                (Map<String, Long>) ReflectionTestUtils.getField(clusterWatcherManager, "GROUP_UPDATE_TIME");
 
         assertNotNull(groupUpdateTime);
 
