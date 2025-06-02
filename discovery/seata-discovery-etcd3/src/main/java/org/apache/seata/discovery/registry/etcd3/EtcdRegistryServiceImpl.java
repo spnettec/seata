@@ -28,12 +28,21 @@ import io.etcd.jetcd.options.LeaseOption;
 import io.etcd.jetcd.options.PutOption;
 import io.etcd.jetcd.options.WatchOption;
 import io.etcd.jetcd.watch.WatchResponse;
+import org.apache.seata.common.exception.ShouldNeverHappenException;
+import org.apache.seata.common.thread.NamedThreadFactory;
+import org.apache.seata.common.util.NetUtil;
+import org.apache.seata.common.util.StringUtils;
+import org.apache.seata.config.Configuration;
+import org.apache.seata.config.ConfigurationFactory;
+import org.apache.seata.config.exception.ConfigNotFoundException;
+import org.apache.seata.discovery.registry.RegistryHeartBeats;
+import org.apache.seata.discovery.registry.RegistryService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetSocketAddress;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -54,6 +63,8 @@ import org.apache.seata.discovery.registry.RegistryHeartBeats;
 import org.apache.seata.discovery.registry.RegistryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class EtcdRegistryServiceImpl implements RegistryService<Watch.Listener> {
 
@@ -364,7 +375,7 @@ public class EtcdRegistryServiceImpl implements RegistryService<Watch.Listener> 
                     LeaseTimeToLiveResponse leaseTimeToLiveResponse = this.leaseClient
                             .timeToLive(this.leaseId, LeaseOption.DEFAULT)
                             .get();
-                    final long tTl = leaseTimeToLiveResponse.getTTl();
+                    final long tTl = leaseTimeToLiveResponse.getTTL();
                     if (tTl <= LIFE_KEEP_CRITICAL) {
                         // 2.refresh the TTL
                         this.leaseClient.keepAliveOnce(this.leaseId).get();
