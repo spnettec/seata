@@ -16,6 +16,25 @@
  */
 package org.apache.seata.config.nacos;
 
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.exception.NacosException;
+import org.apache.seata.config.Configuration;
+import org.apache.seata.config.ConfigurationCache;
+import org.apache.seata.config.ConfigurationChangeEvent;
+import org.apache.seata.config.ConfigurationChangeListener;
+import org.apache.seata.config.ConfigurationFactory;
+import org.apache.seata.config.Dispose;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
+
 import java.lang.reflect.UndeclaredThrowableException;
 import java.time.Duration;
 import java.util.Properties;
@@ -23,20 +42,6 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.exception.NacosException;
-
-import org.apache.seata.config.Configuration;
-import org.apache.seata.config.ConfigurationCache;
-import org.apache.seata.config.ConfigurationChangeEvent;
-import org.apache.seata.config.ConfigurationChangeListener;
-import org.apache.seata.config.ConfigurationFactory;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.condition.EnabledOnOs;
-import org.junit.jupiter.api.condition.OS;
-
-@Disabled
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class NacosMockTest {
     private static ConfigService configService;
@@ -53,8 +58,8 @@ public class NacosMockTest {
     public static void setup() throws NacosException {
         System.setProperty("seataEnv", "mock");
         NacosConfiguration configuration = NacosConfiguration.getInstance();
-        if (configuration != null) {
-            configuration.dispose();
+        if (configuration instanceof Dispose) {
+            ((Dispose) configuration).dispose();
         }
         ConfigurationFactory.reload();
         Properties properties = new Properties();
@@ -109,9 +114,9 @@ public class NacosMockTest {
         ConfigurationCache.clear();
         short configShortValue = configuration.getShort(SUB_NACOS_DATAID);
         Assertions.assertEquals(0, configShortValue);
-        configShortValue = configuration.getShort(SUB_NACOS_DATAID, (short)64);
+        configShortValue = configuration.getShort(SUB_NACOS_DATAID, (short) 64);
         Assertions.assertEquals(64, configShortValue);
-        configShortValue = configuration.getShort(SUB_NACOS_DATAID, (short)127, 1000);
+        configShortValue = configuration.getShort(SUB_NACOS_DATAID, (short) 127, 1000);
         Assertions.assertEquals(127, configShortValue);
 
         ConfigurationCache.clear();
@@ -135,7 +140,6 @@ public class NacosMockTest {
         ConfigurationCache.clear();
         configStrValue = configuration.getLatestConfig(SUB_NACOS_DATAID, "DEFAULT", 1000);
         Assertions.assertEquals("DEFAULT", configStrValue);
-
     }
 
     @Test
@@ -174,7 +178,7 @@ public class NacosMockTest {
     public void testConfigListener() throws NacosException, InterruptedException {
         Configuration configuration = ConfigurationFactory.getInstance();
         configuration.putConfig(NACOS_DATAID, "KEY=TEST");
-        //prevent the listener event from batch processing
+        // prevent the listener event from batch processing
         Thread.sleep(1000);
         CountDownLatch latch = new CountDownLatch(1);
         listener = new ConfigurationChangeListener() {
@@ -189,7 +193,7 @@ public class NacosMockTest {
         configuration.putConfig(NACOS_DATAID, "KEY=VALUE");
         latch.await(1000, TimeUnit.MILLISECONDS);
         Set<ConfigurationChangeListener> listeners = configuration.getConfigListeners(SUB_NACOS_DATAID);
-        //configcache listener + user listener
+        // configcache listener + user listener
         Assertions.assertEquals(2, listeners.size());
 
         configuration.removeConfigListener(SUB_NACOS_DATAID, listener);

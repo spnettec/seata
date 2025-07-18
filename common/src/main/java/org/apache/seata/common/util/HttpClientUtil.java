@@ -102,7 +102,6 @@ public class HttpClientUtil {
                             .build())
                     .build());
             return client.execute(httpPost);
-
         } catch (URISyntaxException | ClientProtocolException e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -134,16 +133,16 @@ public class HttpClientUtil {
                             .build())
                     .build());
             return client.execute(httpPost);
-
         } catch (URISyntaxException | ClientProtocolException e) {
             LOGGER.error(e.getMessage(), e);
         }
         return null;
     }
 
+
     // get request
-    public static CloseableHttpResponse doGet(
-            String url, Map<String, String> param, Map<String, String> header, int timeout) throws IOException {
+    public static CloseableHttpResponse doGet(String url, Map<String, String> param, Map<String, String> header,
+        int timeout) throws IOException {
         try {
             URIBuilder builder = new URIBuilder(url);
             if (param != null) {
@@ -163,7 +162,6 @@ public class HttpClientUtil {
                             .build())
                     .build());
             return client.execute(httpGet);
-
         } catch (URISyntaxException | ClientProtocolException e) {
             LOGGER.error(e.getMessage(), e);
         }

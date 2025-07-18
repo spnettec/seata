@@ -68,7 +68,7 @@ public class ConsoleRemotingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
         if (servletRequest instanceof HttpServletRequest) {
             if (urlPattern.matcher(((HttpServletRequest) servletRequest).getRequestURI()).matches()) {
                 CachedBodyHttpServletRequest request = new CachedBodyHttpServletRequest(

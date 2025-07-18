@@ -51,17 +51,16 @@ public class MessageFutureTest {
     @Test
     @Disabled
     public void testFieldSetGet() {
-        String fromJson = "{\n" +
-            "\t\"requestMessage\":{\n" +
-            "\t\t\"body\":\"" + BODY_FIELD + "\",\n" +
-            "\t\t\"codec\":" + CODEC_FIELD + ",\n" +
-            "\t\t\"compressor\":" + COMPRESS_FIELD + ",\n" +
-            "\t\t\"headMap\":" + HEAD_FIELD + ",\n" +
-            "\t\t\"id\":" + ID_FIELD + ",\n" +
-            "\t\t\"messageType\":" + MSG_TYPE_FIELD + "\n" +
-            "\t},\n" +
-            "\t\"timeout\":" + TIME_OUT_FIELD + "\n" +
-            "}";
+        String fromJson = "{\n" + "\t\"requestMessage\":{\n"
+                + "\t\t\"body\":\""
+                + BODY_FIELD + "\",\n" + "\t\t\"codec\":"
+                + CODEC_FIELD + ",\n" + "\t\t\"compressor\":"
+                + COMPRESS_FIELD + ",\n" + "\t\t\"headMap\":"
+                + HEAD_FIELD + ",\n" + "\t\t\"id\":"
+                + ID_FIELD + ",\n" + "\t\t\"messageType\":"
+                + MSG_TYPE_FIELD + "\n" + "\t},\n"
+                + "\t\"timeout\":"
+                + TIME_OUT_FIELD + "\n" + "}";
         MessageFuture fromJsonFuture = JSON.parseObject(fromJson, MessageFuture.class);
         assertThat(fromJsonFuture.getTimeout()).isEqualTo(TIME_OUT_FIELD);
         MessageFuture toJsonFuture = new MessageFuture();
@@ -83,7 +82,6 @@ public class MessageFutureTest {
         assertThat(messageFuture.isTimeout()).isFalse();
         Thread.sleep(TIME_OUT_FIELD + 1);
         assertThat(messageFuture.isTimeout()).isTrue();
-
     }
 
     /**

@@ -16,6 +16,22 @@
  */
 package org.apache.seata.rm.datasource.undo;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.serializer.SerializerFeature;
+import org.apache.seata.rm.datasource.ConnectionProxy;
+import org.apache.seata.rm.datasource.DataSourceProxy;
+import org.apache.seata.rm.datasource.mock.MockDataSource;
+import org.apache.seata.rm.datasource.sql.struct.Field;
+import org.apache.seata.rm.datasource.sql.struct.KeyType;
+import org.apache.seata.rm.datasource.sql.struct.Row;
+import org.apache.seata.rm.datasource.sql.struct.TableRecords;
+import org.apache.seata.sqlparser.SQLType;
+import org.apache.seata.sqlparser.struct.TableMeta;
+import org.apache.seata.sqlparser.util.JdbcConstants;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -47,23 +63,6 @@ import java.sql.Types;
 import java.util.*;
 import java.util.concurrent.Executor;
 
-import com.alibaba.fastjson2.JSON;
-
-import org.apache.seata.rm.datasource.ConnectionProxy;
-import org.apache.seata.rm.datasource.DataSourceProxy;
-import org.apache.seata.rm.datasource.mock.MockDataSource;
-import org.apache.seata.rm.datasource.undo.SQLUndoLog;
-import org.apache.seata.sqlparser.SQLType;
-import org.apache.seata.rm.datasource.sql.struct.Field;
-import org.apache.seata.rm.datasource.sql.struct.KeyType;
-import org.apache.seata.rm.datasource.sql.struct.Row;
-import org.apache.seata.sqlparser.struct.TableMeta;
-import org.apache.seata.rm.datasource.sql.struct.TableRecords;
-import org.apache.seata.sqlparser.util.JdbcConstants;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 /**
  * The type Undo executor test.
  */
@@ -73,7 +72,6 @@ public class UndoExecutorTest {
     MockDataSource dataSource = new MockDataSource();
     DataSourceProxy dataSourceProxy = new DataSourceProxy(dataSource);
     ConnectionProxy connectionProxy = new ConnectionProxy(dataSourceProxy, connection);
-
 
     /**
      * Test field.
@@ -86,7 +84,7 @@ public class UndoExecutorTest {
         f.setType(Types.VARCHAR);
         f.setKeyType(KeyType.PRIMARY_KEY);
 
-        String s = JSON.toJSONString(f);
+        String s = JSON.toJSONString(f, SerializerFeature.WriteDateUseDateFormat);
 
         System.out.println(s);
 
@@ -160,7 +158,7 @@ public class UndoExecutorTest {
         AbstractUndoExecutor spy = Mockito.spy(executor);
         // skip data validation
         Mockito.doReturn(true).when(spy).dataValidationAndGoOn(connectionProxy);
-        Assertions.assertEquals(JdbcConstants.MYSQL,connectionProxy.getDbType());
+        Assertions.assertEquals(JdbcConstants.MYSQL, connectionProxy.getDbType());
         spy.executeOn(connectionProxy);
     }
 
@@ -229,7 +227,7 @@ public class UndoExecutorTest {
         AbstractUndoExecutor spy = Mockito.spy(executor);
         // skip data validation
         Mockito.doReturn(true).when(spy).dataValidationAndGoOn(connectionProxy);
-        Assertions.assertEquals(JdbcConstants.MYSQL,connectionProxy.getDbType());
+        Assertions.assertEquals(JdbcConstants.MYSQL, connectionProxy.getDbType());
         spy.executeOn(connectionProxy);
     }
 
@@ -299,7 +297,7 @@ public class UndoExecutorTest {
         AbstractUndoExecutor spy = Mockito.spy(executor);
         // skip data validation
         Mockito.doReturn(true).when(spy).dataValidationAndGoOn(connectionProxy);
-        Assertions.assertEquals(JdbcConstants.MYSQL,connectionProxy.getDbType());
+        Assertions.assertEquals(JdbcConstants.MYSQL, connectionProxy.getDbType());
         spy.executeOn(connectionProxy);
     }
 
@@ -319,7 +317,6 @@ public class UndoExecutorTest {
         public MockTableMeta(String tableName, String pkName) {
             setTableName(tableName);
             this.mockPK = pkName;
-
         }
 
         @Override
@@ -328,8 +325,8 @@ public class UndoExecutorTest {
         }
 
         @Override
-        public List<String> getPrimaryKeyOnlyName(){
-            return Arrays.asList(new String[]{mockPK});
+        public List<String> getPrimaryKeyOnlyName() {
+            return Arrays.asList(new String[] {mockPK});
         }
     }
 
@@ -357,104 +354,64 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void setNull(int parameterIndex, int sqlType) throws SQLException {
-
-                }
+                public void setNull(int parameterIndex, int sqlType) throws SQLException {}
 
                 @Override
-                public void setBoolean(int parameterIndex, boolean x) throws SQLException {
-
-                }
+                public void setBoolean(int parameterIndex, boolean x) throws SQLException {}
 
                 @Override
-                public void setByte(int parameterIndex, byte x) throws SQLException {
-
-                }
+                public void setByte(int parameterIndex, byte x) throws SQLException {}
 
                 @Override
-                public void setShort(int parameterIndex, short x) throws SQLException {
-
-                }
+                public void setShort(int parameterIndex, short x) throws SQLException {}
 
                 @Override
-                public void setInt(int parameterIndex, int x) throws SQLException {
-
-                }
+                public void setInt(int parameterIndex, int x) throws SQLException {}
 
                 @Override
-                public void setLong(int parameterIndex, long x) throws SQLException {
-
-                }
+                public void setLong(int parameterIndex, long x) throws SQLException {}
 
                 @Override
-                public void setFloat(int parameterIndex, float x) throws SQLException {
-
-                }
+                public void setFloat(int parameterIndex, float x) throws SQLException {}
 
                 @Override
-                public void setDouble(int parameterIndex, double x) throws SQLException {
-
-                }
+                public void setDouble(int parameterIndex, double x) throws SQLException {}
 
                 @Override
-                public void setBigDecimal(int parameterIndex, BigDecimal x) throws SQLException {
-
-                }
+                public void setBigDecimal(int parameterIndex, BigDecimal x) throws SQLException {}
 
                 @Override
-                public void setString(int parameterIndex, String x) throws SQLException {
-
-                }
+                public void setString(int parameterIndex, String x) throws SQLException {}
 
                 @Override
-                public void setBytes(int parameterIndex, byte[] x) throws SQLException {
-
-                }
+                public void setBytes(int parameterIndex, byte[] x) throws SQLException {}
 
                 @Override
-                public void setDate(int parameterIndex, Date x) throws SQLException {
-
-                }
+                public void setDate(int parameterIndex, Date x) throws SQLException {}
 
                 @Override
-                public void setTime(int parameterIndex, Time x) throws SQLException {
-
-                }
+                public void setTime(int parameterIndex, Time x) throws SQLException {}
 
                 @Override
-                public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {
-
-                }
+                public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {}
 
                 @Override
-                public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException {
-
-                }
+                public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException {}
 
                 @Override
-                public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
-
-                }
+                public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {}
 
                 @Override
-                public void setBinaryStream(int parameterIndex, InputStream x, int length) throws SQLException {
-
-                }
+                public void setBinaryStream(int parameterIndex, InputStream x, int length) throws SQLException {}
 
                 @Override
-                public void clearParameters() throws SQLException {
-
-                }
+                public void clearParameters() throws SQLException {}
 
                 @Override
-                public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException {
-
-                }
+                public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException {}
 
                 @Override
-                public void setObject(int parameterIndex, Object x) throws SQLException {
-
-                }
+                public void setObject(int parameterIndex, Object x) throws SQLException {}
 
                 @Override
                 public boolean execute() throws SQLException {
@@ -462,34 +419,22 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void addBatch() throws SQLException {
-
-                }
+                public void addBatch() throws SQLException {}
 
                 @Override
-                public void setCharacterStream(int parameterIndex, Reader reader, int length) throws SQLException {
-
-                }
+                public void setCharacterStream(int parameterIndex, Reader reader, int length) throws SQLException {}
 
                 @Override
-                public void setRef(int parameterIndex, Ref x) throws SQLException {
-
-                }
+                public void setRef(int parameterIndex, Ref x) throws SQLException {}
 
                 @Override
-                public void setBlob(int parameterIndex, Blob x) throws SQLException {
-
-                }
+                public void setBlob(int parameterIndex, Blob x) throws SQLException {}
 
                 @Override
-                public void setClob(int parameterIndex, Clob x) throws SQLException {
-
-                }
+                public void setClob(int parameterIndex, Clob x) throws SQLException {}
 
                 @Override
-                public void setArray(int parameterIndex, Array x) throws SQLException {
-
-                }
+                public void setArray(int parameterIndex, Array x) throws SQLException {}
 
                 @Override
                 public ResultSetMetaData getMetaData() throws SQLException {
@@ -497,29 +442,19 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
-
-                }
+                public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {}
 
                 @Override
-                public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
-
-                }
+                public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {}
 
                 @Override
-                public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {
-
-                }
+                public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {}
 
                 @Override
-                public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
-
-                }
+                public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {}
 
                 @Override
-                public void setURL(int parameterIndex, URL x) throws SQLException {
-
-                }
+                public void setURL(int parameterIndex, URL x) throws SQLException {}
 
                 @Override
                 public ParameterMetaData getParameterMetaData() throws SQLException {
@@ -527,100 +462,62 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void setRowId(int parameterIndex, RowId x) throws SQLException {
-
-                }
+                public void setRowId(int parameterIndex, RowId x) throws SQLException {}
 
                 @Override
-                public void setNString(int parameterIndex, String value) throws SQLException {
-
-                }
+                public void setNString(int parameterIndex, String value) throws SQLException {}
 
                 @Override
-                public void setNCharacterStream(int parameterIndex, Reader value, long length) throws SQLException {
-
-                }
+                public void setNCharacterStream(int parameterIndex, Reader value, long length) throws SQLException {}
 
                 @Override
-                public void setNClob(int parameterIndex, NClob value) throws SQLException {
-
-                }
+                public void setNClob(int parameterIndex, NClob value) throws SQLException {}
 
                 @Override
-                public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {
-
-                }
+                public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {}
 
                 @Override
-                public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException {
-
-                }
+                public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException {}
 
                 @Override
-                public void setNClob(int parameterIndex, Reader reader, long length) throws SQLException {
-
-                }
+                public void setNClob(int parameterIndex, Reader reader, long length) throws SQLException {}
 
                 @Override
-                public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {
-
-                }
+                public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {}
 
                 @Override
                 public void setObject(int parameterIndex, Object x, int targetSqlType, int scaleOrLength)
-                    throws SQLException {
-
-                }
+                        throws SQLException {}
 
                 @Override
-                public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
-
-                }
+                public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {}
 
                 @Override
-                public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
-
-                }
+                public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {}
 
                 @Override
-                public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException {
-
-                }
+                public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException {}
 
                 @Override
-                public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
-
-                }
+                public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {}
 
                 @Override
-                public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
-
-                }
+                public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {}
 
                 @Override
-                public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {
-
-                }
+                public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {}
 
                 @Override
-                public void setNCharacterStream(int parameterIndex, Reader value) throws SQLException {
-
-                }
+                public void setNCharacterStream(int parameterIndex, Reader value) throws SQLException {}
 
                 @Override
-                public void setClob(int parameterIndex, Reader reader) throws SQLException {
-
-                }
+                public void setClob(int parameterIndex, Reader reader) throws SQLException {}
 
                 @Override
-                public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException {
-
-                }
+                public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException {}
 
                 @Override
-                public void setNClob(int parameterIndex, Reader reader) throws SQLException {
-
-                }
+                public void setNClob(int parameterIndex, Reader reader) throws SQLException {}
 
                 @Override
                 public ResultSet executeQuery(String sql) throws SQLException {
@@ -633,9 +530,7 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void close() throws SQLException {
-
-                }
+                public void close() throws SQLException {}
 
                 @Override
                 public int getMaxFieldSize() throws SQLException {
@@ -643,9 +538,7 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void setMaxFieldSize(int max) throws SQLException {
-
-                }
+                public void setMaxFieldSize(int max) throws SQLException {}
 
                 @Override
                 public int getMaxRows() throws SQLException {
@@ -653,14 +546,10 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void setMaxRows(int max) throws SQLException {
-
-                }
+                public void setMaxRows(int max) throws SQLException {}
 
                 @Override
-                public void setEscapeProcessing(boolean enable) throws SQLException {
-
-                }
+                public void setEscapeProcessing(boolean enable) throws SQLException {}
 
                 @Override
                 public int getQueryTimeout() throws SQLException {
@@ -668,14 +557,10 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void setQueryTimeout(int seconds) throws SQLException {
-
-                }
+                public void setQueryTimeout(int seconds) throws SQLException {}
 
                 @Override
-                public void cancel() throws SQLException {
-
-                }
+                public void cancel() throws SQLException {}
 
                 @Override
                 public SQLWarning getWarnings() throws SQLException {
@@ -683,14 +568,10 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void clearWarnings() throws SQLException {
-
-                }
+                public void clearWarnings() throws SQLException {}
 
                 @Override
-                public void setCursorName(String name) throws SQLException {
-
-                }
+                public void setCursorName(String name) throws SQLException {}
 
                 @Override
                 public boolean execute(String sql) throws SQLException {
@@ -713,9 +594,7 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void setFetchDirection(int direction) throws SQLException {
-
-                }
+                public void setFetchDirection(int direction) throws SQLException {}
 
                 @Override
                 public int getFetchDirection() throws SQLException {
@@ -723,9 +602,7 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void setFetchSize(int rows) throws SQLException {
-
-                }
+                public void setFetchSize(int rows) throws SQLException {}
 
                 @Override
                 public int getFetchSize() throws SQLException {
@@ -743,14 +620,10 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void addBatch(String sql) throws SQLException {
-
-                }
+                public void addBatch(String sql) throws SQLException {}
 
                 @Override
-                public void clearBatch() throws SQLException {
-
-                }
+                public void clearBatch() throws SQLException {}
 
                 @Override
                 public int[] executeBatch() throws SQLException {
@@ -813,9 +686,7 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void setPoolable(boolean poolable) throws SQLException {
-
-                }
+                public void setPoolable(boolean poolable) throws SQLException {}
 
                 @Override
                 public boolean isPoolable() throws SQLException {
@@ -823,9 +694,7 @@ public class UndoExecutorTest {
                 }
 
                 @Override
-                public void closeOnCompletion() throws SQLException {
-
-                }
+                public void closeOnCompletion() throws SQLException {}
 
                 @Override
                 public boolean isCloseOnCompletion() throws SQLException {
@@ -855,9 +724,7 @@ public class UndoExecutorTest {
         }
 
         @Override
-        public void setAutoCommit(boolean autoCommit) throws SQLException {
-
-        }
+        public void setAutoCommit(boolean autoCommit) throws SQLException {}
 
         @Override
         public boolean getAutoCommit() throws SQLException {
@@ -865,19 +732,13 @@ public class UndoExecutorTest {
         }
 
         @Override
-        public void commit() throws SQLException {
-
-        }
+        public void commit() throws SQLException {}
 
         @Override
-        public void rollback() throws SQLException {
-
-        }
+        public void rollback() throws SQLException {}
 
         @Override
-        public void close() throws SQLException {
-
-        }
+        public void close() throws SQLException {}
 
         @Override
         public boolean isClosed() throws SQLException {
@@ -890,9 +751,7 @@ public class UndoExecutorTest {
         }
 
         @Override
-        public void setReadOnly(boolean readOnly) throws SQLException {
-
-        }
+        public void setReadOnly(boolean readOnly) throws SQLException {}
 
         @Override
         public boolean isReadOnly() throws SQLException {
@@ -900,9 +759,7 @@ public class UndoExecutorTest {
         }
 
         @Override
-        public void setCatalog(String catalog) throws SQLException {
-
-        }
+        public void setCatalog(String catalog) throws SQLException {}
 
         @Override
         public String getCatalog() throws SQLException {
@@ -910,9 +767,7 @@ public class UndoExecutorTest {
         }
 
         @Override
-        public void setTransactionIsolation(int level) throws SQLException {
-
-        }
+        public void setTransactionIsolation(int level) throws SQLException {}
 
         @Override
         public int getTransactionIsolation() throws SQLException {
@@ -925,9 +780,7 @@ public class UndoExecutorTest {
         }
 
         @Override
-        public void clearWarnings() throws SQLException {
-
-        }
+        public void clearWarnings() throws SQLException {}
 
         @Override
         public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
@@ -936,13 +789,13 @@ public class UndoExecutorTest {
 
         @Override
         public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
-            throws SQLException {
+                throws SQLException {
             return null;
         }
 
         @Override
         public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency)
-            throws SQLException {
+                throws SQLException {
             return null;
         }
 
@@ -952,14 +805,10 @@ public class UndoExecutorTest {
         }
 
         @Override
-        public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
-
-        }
+        public void setTypeMap(Map<String, Class<?>> map) throws SQLException {}
 
         @Override
-        public void setHoldability(int holdability) throws SQLException {
-
-        }
+        public void setHoldability(int holdability) throws SQLException {}
 
         @Override
         public int getHoldability() throws SQLException {
@@ -977,30 +826,26 @@ public class UndoExecutorTest {
         }
 
         @Override
-        public void rollback(Savepoint savepoint) throws SQLException {
-
-        }
+        public void rollback(Savepoint savepoint) throws SQLException {}
 
         @Override
-        public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-
-        }
+        public void releaseSavepoint(Savepoint savepoint) throws SQLException {}
 
         @Override
         public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
-            throws SQLException {
+                throws SQLException {
             return null;
         }
 
         @Override
-        public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
-                                                  int resultSetHoldability) throws SQLException {
+        public PreparedStatement prepareStatement(
+                String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
             return null;
         }
 
         @Override
-        public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
-                                             int resultSetHoldability) throws SQLException {
+        public CallableStatement prepareCall(
+                String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
             return null;
         }
 
@@ -1045,14 +890,10 @@ public class UndoExecutorTest {
         }
 
         @Override
-        public void setClientInfo(String name, String value) throws SQLClientInfoException {
-
-        }
+        public void setClientInfo(String name, String value) throws SQLClientInfoException {}
 
         @Override
-        public void setClientInfo(Properties properties) throws SQLClientInfoException {
-
-        }
+        public void setClientInfo(Properties properties) throws SQLClientInfoException {}
 
         @Override
         public String getClientInfo(String name) throws SQLException {
@@ -1075,9 +916,7 @@ public class UndoExecutorTest {
         }
 
         @Override
-        public void setSchema(String schema) throws SQLException {
-
-        }
+        public void setSchema(String schema) throws SQLException {}
 
         @Override
         public String getSchema() throws SQLException {
@@ -1085,14 +924,10 @@ public class UndoExecutorTest {
         }
 
         @Override
-        public void abort(Executor executor) throws SQLException {
-
-        }
+        public void abort(Executor executor) throws SQLException {}
 
         @Override
-        public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
-
-        }
+        public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {}
 
         @Override
         public int getNetworkTimeout() throws SQLException {
@@ -1109,5 +944,4 @@ public class UndoExecutorTest {
             return false;
         }
     }
-
 }

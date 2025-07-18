@@ -16,13 +16,12 @@
  */
 package org.apache.seata.console.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.seata.common.result.Code;
-import org.apache.seata.console.config.WebSecurityConfig;
 import org.apache.seata.common.result.SingleResult;
+import org.apache.seata.console.config.WebSecurityConfig;
 import org.apache.seata.console.security.User;
 import org.apache.seata.console.utils.JwtTokenUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 /**
  * auth user
  *
@@ -40,13 +41,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
-    private final JwtTokenUtils jwtTokenUtils;
-    private final AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtTokenUtils jwtTokenUtils;
 
-    public AuthController(JwtTokenUtils jwtTokenUtils, AuthenticationManager authenticationManager) {
-        this.jwtTokenUtils = jwtTokenUtils;
-        this.authenticationManager = authenticationManager;
-    }
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     /**
      * Whether the Seata is in broken states or not, and cannot recover except by being restarted
@@ -58,19 +57,19 @@ public class AuthController {
      */
     @PostMapping("/login")
     public SingleResult<String> login(HttpServletResponse response, @RequestBody User user) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-            user.getUsername(), user.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
 
         try {
-            //AuthenticationManager(default ProviderManager) #authenticate check Authentication
+            // AuthenticationManager(default ProviderManager) #authenticate check Authentication
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
-            //bind authentication to securityContext
+            // bind authentication to securityContext
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            //create token
+            // create token
             String token = jwtTokenUtils.createToken(authentication);
 
             String authHeader = WebSecurityConfig.TOKEN_PREFIX + token;
-            //put token into http header
+            // put token into http header
             response.addHeader(WebSecurityConfig.AUTHORIZATION_HEADER, authHeader);
 
             return SingleResult.success(authHeader);

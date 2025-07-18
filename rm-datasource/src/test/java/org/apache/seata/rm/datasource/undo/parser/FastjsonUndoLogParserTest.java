@@ -16,15 +16,9 @@
  */
 package org.apache.seata.rm.datasource.undo.parser;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.filter.ValueFilter;
-
+import com.alibaba.fastjson2.serializer.SerializeConfig;
+import com.alibaba.fastjson2.serializer.ValueFilter;
 import org.apache.seata.common.loader.EnhancedServiceLoader;
 import org.apache.seata.rm.datasource.sql.struct.Field;
 import org.apache.seata.rm.datasource.sql.struct.KeyType;
@@ -38,10 +32,16 @@ import org.apache.seata.sqlparser.SQLType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FastjsonUndoLogParserTest extends BaseUndoLogParserTest {
 
-    FastjsonUndoLogParser parser = (FastjsonUndoLogParser) EnhancedServiceLoader.load(UndoLogParser.class, FastjsonUndoLogParser.NAME);
+    FastjsonUndoLogParser parser =
+            (FastjsonUndoLogParser) EnhancedServiceLoader.load(UndoLogParser.class, FastjsonUndoLogParser.NAME);
 
     @Override
     public UndoLogParser getParser() {
@@ -55,12 +55,14 @@ public class FastjsonUndoLogParserTest extends BaseUndoLogParserTest {
     public void testTimestampEncodeAndDecode() {
         Timestamp encodeStamp = new Timestamp(System.currentTimeMillis());
         encodeStamp.setNanos(999999);
-        byte[] encode = JSON.toJSONString(encodeStamp, new TimestampSerializer()).getBytes();
+        SerializeConfig.getGlobalInstance().addFilter(Timestamp.class, new TimestampSerializer());
+        byte[] encode = JSON.toJSONString(encodeStamp, SerializeConfig.getGlobalInstance())
+                .getBytes();
     }
 
     @Test
     public void testWriteClassName() throws Exception {
-        TableRecords beforeImage =  new TableRecords();
+        TableRecords beforeImage = new TableRecords();
         TableRecords afterImage = new TableRecords();
         afterImage.setTableName("t1");
         List<Row> rows = new ArrayList<>();
@@ -99,15 +101,30 @@ public class FastjsonUndoLogParserTest extends BaseUndoLogParserTest {
         Assertions.assertTrue(s.contains("\"@type\""));
 
         BranchUndoLog decode = getParser().decode(s.getBytes());
-        Object value1 = decode.getSqlUndoLogs().get(0).getAfterImage().getRows().get(0).getFields().get(0).getValue();
-        Object value2 = decode.getSqlUndoLogs().get(0).getAfterImage().getRows().get(0).getFields().get(1).getValue();
+        Object value1 = decode.getSqlUndoLogs()
+                .get(0)
+                .getAfterImage()
+                .getRows()
+                .get(0)
+                .getFields()
+                .get(0)
+                .getValue();
+        Object value2 = decode.getSqlUndoLogs()
+                .get(0)
+                .getAfterImage()
+                .getRows()
+                .get(0)
+                .getFields()
+                .get(1)
+                .getValue();
         Assertions.assertTrue(value1 instanceof Long);
-        Assertions.assertTrue(value2 instanceof Integer);
+        Assertions.assertTrue(value2 instanceof BigDecimal);
     }
 
-    private static class TimestampSerializer implements ValueFilter {
+    private class TimestampSerializer implements ValueFilter {
+
         @Override
-        public Object apply(Object object, String name, Object value) {
+        public Object process(Object object, String name, Object value) {
             return null;
         }
     }

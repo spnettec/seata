@@ -27,14 +27,10 @@ import org.apache.seata.integration.brpc.dto.Echo;
 import org.apache.seata.integration.brpc.server.EchoService;
 import org.apache.seata.integration.brpc.server.impl.EchoServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
 public class TransactionInterceptorTest {
 
     /**
@@ -69,9 +65,10 @@ public class TransactionInterceptorTest {
         rpcClientAOptions.setWorkThreadNum(1);
         rpcClientAOptions.setMinIdleConnections(1);
         rpcClientAOptions.setReadTimeoutMillis(999999);
-        return new RpcClient("list://127.0.0.1:9999", rpcClientAOptions, List.of(new TransactionPropagationClientInterceptor()));
+        RpcClient rpcClient = new RpcClient("list://127.0.0.1:9999", rpcClientAOptions);
+        rpcClient.getInterceptors().add(new TransactionPropagationClientInterceptor());
+        return rpcClient;
     }
-
 
     @BeforeAll
     public static void rpcInit() {
@@ -80,10 +77,9 @@ public class TransactionInterceptorTest {
         RpcServerOptions rpcServerBOptions = new RpcServerOptions();
         rpcServerBOptions.setIoThreadNum(1);
         rpcServerBOptions.setWorkThreadNum(1);
-        rpcServerB = new RpcServer(9999, rpcServerBOptions,List.of(new TransactionPropagationServerInterceptor()));
+        rpcServerB = new RpcServer(9999, rpcServerBOptions);
         rpcServerB.registerService(new EchoServiceImpl());
+        rpcServerB.getInterceptors().add(new TransactionPropagationServerInterceptor());
         rpcServerB.start();
     }
-
-
 }

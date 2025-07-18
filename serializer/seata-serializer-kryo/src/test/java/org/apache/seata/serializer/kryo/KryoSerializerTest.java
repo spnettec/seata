@@ -16,11 +16,6 @@
  */
 package org.apache.seata.serializer.kryo;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -34,8 +29,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KryoSerializerTest {
 
@@ -78,7 +77,6 @@ public class KryoSerializerTest {
         assertThat(t.getResourceId()).isEqualTo(branchCommitRequest.getResourceId());
         assertThat(t.getBranchId()).isEqualTo(branchCommitRequest.getBranchId());
         assertThat(t.getApplicationData()).isEqualTo(branchCommitRequest.getApplicationData());
-
     }
 
     @Test
@@ -101,7 +99,6 @@ public class KryoSerializerTest {
         assertThat(t.getBranchStatus()).isEqualTo(branchCommitResponse.getBranchStatus());
         assertThat(t.getMsg()).isEqualTo(branchCommitResponse.getMsg());
         assertThat(t.getResultCode()).isEqualTo(branchCommitResponse.getResultCode());
-
     }
 
     @Test
@@ -109,9 +106,9 @@ public class KryoSerializerTest {
         Kryo kryo = new Kryo();
         kryo.setReferences(true);
         kryo.setRegistrationRequired(false);
-        //kryo.register(HashMap.class);
+        // kryo.register(HashMap.class);
 
-        long beginMills=System.currentTimeMillis();
+        long beginMills = System.currentTimeMillis();
         for (int i = 0; i < 1; i++) {
             Map<String, String> map = new HashMap<>();
             map.put(String.valueOf(i), "test");
@@ -125,10 +122,9 @@ public class KryoSerializerTest {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(outByte);
             Input input = new Input(inputStream);
             input.close();
-            Map result = (HashMap)kryo.readClassAndObject(input);
+            Map result = (HashMap) kryo.readClassAndObject(input);
             assertThat(result).isEqualTo(map);
         }
-        //System.out.println(System.currentTimeMillis()-beginMills);
+        // System.out.println(System.currentTimeMillis()-beginMills);
     }
-
 }

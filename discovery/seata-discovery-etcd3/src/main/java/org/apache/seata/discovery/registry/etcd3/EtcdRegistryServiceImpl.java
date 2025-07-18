@@ -16,7 +16,6 @@
  */
 package org.apache.seata.discovery.registry.etcd3;
 
-
 import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.Lease;
@@ -37,12 +36,15 @@ import org.apache.seata.config.ConfigurationFactory;
 import org.apache.seata.config.exception.ConfigNotFoundException;
 import org.apache.seata.discovery.registry.RegistryHeartBeats;
 import org.apache.seata.discovery.registry.RegistryService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -52,19 +54,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.apache.seata.common.exception.ShouldNeverHappenException;
-import org.apache.seata.common.thread.NamedThreadFactory;
-import org.apache.seata.common.util.NetUtil;
-import org.apache.seata.common.util.StringUtils;
-import org.apache.seata.config.Configuration;
-import org.apache.seata.config.ConfigurationFactory;
-import org.apache.seata.config.exception.ConfigNotFoundException;
-import org.apache.seata.discovery.registry.RegistryHeartBeats;
-import org.apache.seata.discovery.registry.RegistryService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static io.netty.util.CharsetUtil.UTF_8;
 
 public class EtcdRegistryServiceImpl implements RegistryService<Watch.Listener> {
 
@@ -235,12 +226,34 @@ public class EtcdRegistryServiceImpl implements RegistryService<Watch.Listener> 
 
     @Override
     public void close() throws Exception {
-        if (lifeKeeper != null) {
-            lifeKeeper.stop();
-            if (lifeKeeperFuture != null) {
-                lifeKeeperFuture.get(3, TimeUnit.SECONDS);
+        // Shut down the ThreadPoolExecutor
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
+
+            try {
+                if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                LOGGER.warn("ExecutorService shutdown interrupted. Forcing shutdown.");
+                executorService.shutdownNow();
+            } finally {
+                executorService = null;
             }
         }
+
+        // Close the Etcd client and release the underlying connection
+        if (client != null) {
+            try {
+                client.close();
+            } catch (Exception e) {
+                LOGGER.warn("Failed to close Etcd client: {}", e.getMessage());
+            } finally {
+                client = null;
+            }
+        }
+
+        RegistryHeartBeats.close(REGISTRY_TYPE);
     }
 
     /**
@@ -375,7 +388,7 @@ public class EtcdRegistryServiceImpl implements RegistryService<Watch.Listener> 
                     LeaseTimeToLiveResponse leaseTimeToLiveResponse = this.leaseClient
                             .timeToLive(this.leaseId, LeaseOption.DEFAULT)
                             .get();
-                    final long tTl = leaseTimeToLiveResponse.getTTL();
+                    final long tTl = leaseTimeToLiveResponse.getTTl();
                     if (tTl <= LIFE_KEEP_CRITICAL) {
                         // 2.refresh the TTL
                         this.leaseClient.keepAliveOnce(this.leaseId).get();

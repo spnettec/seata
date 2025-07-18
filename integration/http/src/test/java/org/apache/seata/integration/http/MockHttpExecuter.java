@@ -25,13 +25,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class MockHttpExecuter extends AbstractHttpExecutor {
 
     DefaultHttpExecutor httpExecutor = DefaultHttpExecutor.getInstance();
 
     @Override
-    public <K> K executeGet(String host, String path, Map<String, String> paramObject, Class<K> returnType) throws IOException {
+    public <K> K executeGet(String host, String path, Map<String, String> paramObject, Class<K> returnType)
+            throws IOException {
         Args.notNull(host, "host");
         Args.notNull(path, "path");
 
@@ -44,20 +44,16 @@ public class MockHttpExecuter extends AbstractHttpExecutor {
         if (xid != null) {
             headers.put(RootContext.KEY_XID, xid);
         }
-        MockWebServer webServer =  new MockWebServer();
+        MockWebServer webServer = new MockWebServer();
         webServer.initServletMapping();
         return (K) webServer.dispatch(mockRequest, mockResponse);
     }
 
     @Override
-    protected <T> void buildClientEntity(CloseableHttpClient httpClient, T paramObject) {
-
-    }
+    protected <T> void buildClientEntity(CloseableHttpClient httpClient, T paramObject) {}
 
     @Override
-    protected <T> void buildGetHeaders(Map<String, String> headers, T paramObject) {
-
-    }
+    protected <T> void buildGetHeaders(Map<String, String> headers, T paramObject) {}
 
     @Override
     protected String initGetUrl(String host, String path, Map<String, String> paramObject) {
@@ -65,9 +61,7 @@ public class MockHttpExecuter extends AbstractHttpExecutor {
     }
 
     @Override
-    protected <T> void buildPostHeaders(Map<String, String> headers, T t) {
-
-    }
+    protected <T> void buildPostHeaders(Map<String, String> headers, T t) {}
 
     @Override
     protected <T> StringEntity buildEntity(StringEntity entity, T t) {
@@ -78,6 +72,4 @@ public class MockHttpExecuter extends AbstractHttpExecutor {
     protected <K> K convertResult(HttpResponse response, Class<K> clazz) {
         return null;
     }
-
-
 }
