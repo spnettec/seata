@@ -18,10 +18,10 @@ package org.apache.seata.integration.http;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.seata.common.util.StringUtils;
 import org.apache.seata.core.context.RootContext;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

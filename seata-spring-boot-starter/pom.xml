@@ -111,11 +111,6 @@
             <version>${jakarta.servlet-api.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     <profiles>
         <!--        notice: dependencies defined in args-for-test-by-jdk17-and-above profile will be not taken effect in jdk17-->

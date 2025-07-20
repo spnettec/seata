@@ -26,7 +26,7 @@ import org.apache.seata.server.logging.logback.appender.MetricLogbackAppender;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.slf4j.impl.StaticLoggerBinder;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
@@ -47,7 +47,7 @@ public class AppenderTest {
 
     @Test
     public void testAppenderEnabled() {
-        LoggerContext lc = (LoggerContext) StaticLoggerBinder.getSingleton().getLoggerFactory();
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         Iterator<Appender<ILoggingEvent>> appenderIterator =
                 lc.getLogger("ROOT").iteratorForAppenders();
 

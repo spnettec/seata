@@ -16,6 +16,7 @@
  */
 package org.apache.seata.namingserver.config;
 
+import jakarta.servlet.Filter;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -36,12 +37,13 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.http.client.HttpComponentsAsyncClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 
-import jakarta.servlet.Filter;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.TimeUnit;
 
 import static org.apache.seata.namingserver.contants.NamingConstant.DEFAULT_CONNECTION_MAX_PER_ROUTE;
 import static org.apache.seata.namingserver.contants.NamingConstant.DEFAULT_CONNECTION_MAX_TOTAL;
@@ -68,24 +70,54 @@ public class WebConfig {
     }
 
     @Bean
-    public AsyncRestTemplate asyncRestTemplate(RestTemplate restTemplate) {
-        HttpComponentsAsyncClientHttpRequestFactory asyncClientHttpRequestFactory =
-                new HttpComponentsAsyncClientHttpRequestFactory();
-        asyncClientHttpRequestFactory.setConnectionRequestTimeout(
-                DEFAULT_REQUEST_TIMEOUT); // Connection request timeout in milliseconds
-        asyncClientHttpRequestFactory.setConnectTimeout(DEFAULT_REQUEST_TIMEOUT); // Connection timeout in milliseconds
-        asyncClientHttpRequestFactory.setReadTimeout(DEFAULT_REQUEST_TIMEOUT); // Read timeout in milliseconds
-        return new AsyncRestTemplate(asyncClientHttpRequestFactory, restTemplate);
+    public CloseableHttpAsyncClient asyncRestTemplate() {
+        final AsyncClientConnectionManager connectionManager = getConnectionManager();
+        CloseableHttpAsyncClient client = HttpAsyncClients.custom()
+                .addRequestInterceptorLast(new RequestContent(true))
+                .setIOReactorConfig(IOReactorConfig.DEFAULT)
+                // catch all exceptions here instead of in DefaultConnectingIOReactor
+                .setIoReactorExceptionCallback((ex) -> {})
+                .setDefaultRequestConfig(RequestConfig.custom()
+                        .setConnectionRequestTimeout(DEFAULT_REQUEST_TIMEOUT, TimeUnit.SECONDS)
+                        .build())
+                .setConnectionManager(connectionManager)
+                .build();
+        client.start();
+        return client;
     }
 
     @Bean
     public FilterRegistrationBean<Filter> consoleRemotingFilter(
-            NamingManager namingManager, AsyncRestTemplate asyncRestTemplate) {
+            NamingManager namingManager, CloseableHttpAsyncClient asyncRestTemplate) {
         ConsoleRemotingFilter consoleRemotingFilter = new ConsoleRemotingFilter(namingManager, asyncRestTemplate);
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setFilter(consoleRemotingFilter);
         registration.addUrlPatterns("/*");
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registration;
+    }
+
+    private AsyncClientConnectionManager getConnectionManager() {
+        try {
+            SSLContext sslcontext = SSLContext.getDefault();
+            HostnameVerifier hostnameVerifier = new DefaultHostnameVerifier();
+            TlsStrategy sslStrategy = new DefaultClientTlsStrategy(sslcontext, hostnameVerifier);
+            // manager no more needs IOReactor
+            return PoolingAsyncClientConnectionManagerBuilder
+                    // old method Registry::register("http", NoopIOSessionStrategy.INSTANCE) has been a default strategy
+                    .create()
+                    // refers to old Registry::register("https", sslStrategy)
+                    .setTlsStrategy(sslStrategy)
+                    // setMaxTotal now can be used in builder
+                    .setMaxConnTotal(DEFAULT_CONNECTION_MAX_TOTAL)
+                    // setDefaultMaxPerRoute now can be used in builder
+                    .setMaxConnPerRoute(DEFAULT_CONNECTION_MAX_PER_ROUTE)
+                    .setDefaultConnectionConfig(ConnectionConfig.custom()
+                            .setConnectTimeout(DEFAULT_REQUEST_TIMEOUT, TimeUnit.MILLISECONDS)
+                            .build())
+                    .build();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

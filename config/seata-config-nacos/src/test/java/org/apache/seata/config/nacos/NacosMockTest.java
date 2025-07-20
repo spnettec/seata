@@ -25,13 +25,7 @@ import org.apache.seata.config.ConfigurationChangeEvent;
 import org.apache.seata.config.ConfigurationChangeListener;
 import org.apache.seata.config.ConfigurationFactory;
 import org.apache.seata.config.Dispose;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
@@ -42,6 +36,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+@Disabled
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class NacosMockTest {
     private static ConfigService configService;

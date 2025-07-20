@@ -19,12 +19,12 @@ package org.apache.seata.discovery.registry.etcd3;
 import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.Watch;
-import io.etcd.jetcd.launcher.junit4.EtcdClusterResource;
+import io.etcd.jetcd.launcher.Etcd;
+import io.etcd.jetcd.launcher.EtcdCluster;
 import io.etcd.jetcd.options.DeleteOption;
 import io.etcd.jetcd.options.GetOption;
 import io.etcd.jetcd.watch.WatchResponse;
 import org.apache.seata.discovery.registry.RegistryService;
-import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -43,11 +43,11 @@ public class EtcdRegistryServiceImplTest {
     private static final String REGISTRY_KEY_PREFIX = "registry-seata-";
     private static final String CLUSTER_NAME = "default";
 
-    @Rule
-    private static final EtcdClusterResource etcd = new EtcdClusterResource(CLUSTER_NAME, 1);
+    private static final EtcdCluster etcd =
+            Etcd.builder().withClusterName(CLUSTER_NAME).withNodes(1).build();
 
     private final Client client =
-            Client.builder().endpoints(etcd.getClientEndpoints()).build();
+            Client.builder().endpoints(etcd.clientEndpoints()).build();
     private static final String HOST = "127.0.0.1";
     private static final int PORT = 8091;
 
@@ -55,7 +55,7 @@ public class EtcdRegistryServiceImplTest {
     public static void beforeClass() throws Exception {
         System.setProperty(
                 EtcdRegistryServiceImpl.TEST_ENDPONT,
-                etcd.getClientEndpoints().get(0).toString());
+                etcd.clientEndpoints().get(0).toString());
     }
 
     @AfterAll

@@ -48,11 +48,6 @@ import java.util.Map;
 public abstract class AbstractHttpExecutor implements HttpExecutor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractHttpExecutor.class);
-    private static final ParserConfig LOCAL_CONFIG = new ParserConfig();
-
-    static {
-        LOCAL_CONFIG.setSafeMode(true);
-    }
 
     @Override
     public <T, K> K executePost(String host, String path, T paramObject, Class<K> returnType) throws IOException {
@@ -92,12 +87,7 @@ public abstract class AbstractHttpExecutor implements HttpExecutor {
                 String sParam = (String) paramObject;
                 JSONObject jsonObject = null;
                 try {
-                    Object obj = JSON.parse(sParam, LOCAL_CONFIG);
-                    if (obj instanceof JSONObject) {
-                        jsonObject = (JSONObject) obj;
-                    } else {
-                        jsonObject = (JSONObject) JSON.toJSON(obj);
-                    }
+                    jsonObject = JSON.parseObject(sParam);
                     content = jsonObject.toJSONString();
                 } catch (JSONException e) {
                     // Interface provider process parse exception
@@ -180,12 +170,11 @@ public abstract class AbstractHttpExecutor implements HttpExecutor {
     public static Map<String, String> convertParamOfBean(Object sourceParam) {
         return CollectionUtils.toStringMap(JSON.parseObject(
                 JSON.toJSONString(
-                        sourceParam, SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteMapNullValue),
-                Map.class,
-                LOCAL_CONFIG));
+                        sourceParam, JSONWriter.Feature.WriteNullStringAsEmpty, JSONWriter.Feature.WriteMapNullValue),
+                Map.class));
     }
 
     public static <T> Map<String, String> convertParamOfJsonString(String jsonStr, Class<T> returnType) {
-        return convertParamOfBean(JSON.parseObject(jsonStr, returnType, LOCAL_CONFIG));
+        return convertParamOfBean(JSON.parseObject(jsonStr, returnType));
     }
 }

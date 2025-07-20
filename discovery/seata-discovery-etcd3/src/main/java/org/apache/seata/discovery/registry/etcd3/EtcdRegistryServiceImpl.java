@@ -388,7 +388,7 @@ public class EtcdRegistryServiceImpl implements RegistryService<Watch.Listener> 
                     LeaseTimeToLiveResponse leaseTimeToLiveResponse = this.leaseClient
                             .timeToLive(this.leaseId, LeaseOption.DEFAULT)
                             .get();
-                    final long tTl = leaseTimeToLiveResponse.getTTl();
+                    final long tTl = leaseTimeToLiveResponse.getTTL();
                     if (tTl <= LIFE_KEEP_CRITICAL) {
                         // 2.refresh the TTL
                         this.leaseClient.keepAliveOnce(this.leaseId).get();

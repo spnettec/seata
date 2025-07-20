@@ -404,6 +404,8 @@ class GlobalTransactionScannerTest {
     @GlobalTransactional(name = "testTransaction", timeoutMills = 30000)
     private static class TestService {
 
+        public TestService() {}
+
         @GlobalTransactional
         public String doTransaction(String input) {
             return "processed: " + input;

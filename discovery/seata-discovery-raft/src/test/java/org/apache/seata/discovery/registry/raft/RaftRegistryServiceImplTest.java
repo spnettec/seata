@@ -78,7 +78,7 @@ class RaftRegistryServiceImplTest {
             StatusLine mockStatusLine = mock(StatusLine.class);
 
             when(mockResponse.getEntity()).thenReturn(new StringEntity(responseBody));
-            when(mockResponse.getStatusLine()).thenReturn(mockStatusLine);
+            when(mockResponse.getCode()).thenReturn(HttpStatus.SC_OK);
             when(mockStatusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
 
             when(HttpClientUtil.doPost(any(String.class), any(Map.class), any(Map.class), any(int.class)))
@@ -110,7 +110,7 @@ class RaftRegistryServiceImplTest {
             StatusLine mockStatusLine = mock(StatusLine.class);
 
             when(mockResponse.getEntity()).thenReturn(new StringEntity(responseBody));
-            when(mockResponse.getStatusLine()).thenReturn(mockStatusLine);
+            when(mockResponse.getCode()).thenReturn(HttpStatus.SC_OK);
             when(mockStatusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
 
             when(HttpClientUtil.doPost(any(String.class), any(Map.class), any(Map.class), any(int.class)))

@@ -16,9 +16,9 @@
  */
 package org.apache.seata.integration.http;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import org.apache.http.HttpResponse;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.seata.common.util.BufferUtils;
 import org.apache.seata.core.context.RootContext;
 import org.junit.jupiter.api.Assertions;
@@ -119,14 +119,14 @@ class HttpTest {
 
         // The body parameter of post supports the above types (str,person,map,json)
         try {
-            HttpResponse response;
+            CloseableHttpResponse response;
 
             if (param_type == PARAM_TYPE_MAP) {
-                response = httpExecuter.executePost(host, postPath, map, HttpResponse.class);
+                response = httpExecuter.executePost(host, postPath, map, CloseableHttpResponse.class);
             } else if (param_type == PARAM_TYPE_BEAN) {
-                response = httpExecuter.executePost(host, postPath, person, HttpResponse.class);
+                response = httpExecuter.executePost(host, postPath, person, CloseableHttpResponse.class);
             } else {
-                response = httpExecuter.executePost(host, postPath, str, HttpResponse.class);
+                response = httpExecuter.executePost(host, postPath, str, CloseableHttpResponse.class);
             }
 
             return readStreamAsStr(response.getEntity().getContent());
@@ -145,14 +145,15 @@ class HttpTest {
         Person person = JSON.parseObject(str, Person.class);
         try {
             // support all type of parameter types
-            HttpResponse response;
+            CloseableHttpResponse response;
             if (param_type == PARAM_TYPE_MAP) {
-                response = httpExecuter.executeGet(host, getPath, params, HttpResponse.class);
+                response = httpExecuter.executeGet(host, getPath, params, CloseableHttpResponse.class);
             } else if (param_type == PARAM_TYPE_BEAN) {
-                response = httpExecuter.executeGet(host, getPath, convertParamOfBean(person), HttpResponse.class);
+                response =
+                        httpExecuter.executeGet(host, getPath, convertParamOfBean(person), CloseableHttpResponse.class);
             } else {
                 response = httpExecuter.executeGet(
-                        host, getPath, convertParamOfJsonString(str, Person.class), HttpResponse.class);
+                        host, getPath, convertParamOfJsonString(str, Person.class), CloseableHttpResponse.class);
             }
             return readStreamAsStr(response.getEntity().getContent());
 
@@ -172,9 +173,9 @@ class HttpTest {
         Map<String, String> params = new HashMap<>();
         params.put("name", "zhangsan");
         params.put("age", "15");
-        HttpResponse response;
+        CloseableHttpResponse response;
         try {
-            response = httpExecuter.executeGet(host, testException, params, HttpResponse.class);
+            response = httpExecuter.executeGet(host, testException, params, CloseableHttpResponse.class);
             return readStreamAsStr(response.getEntity().getContent());
         } catch (IOException e) {
             /* if in Travis CI inv, only mock method call */

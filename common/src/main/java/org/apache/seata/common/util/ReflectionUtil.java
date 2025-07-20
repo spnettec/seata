@@ -391,6 +391,7 @@ public final class ReflectionUtil {
         staticField.setAccessible(true);
         staticField.set(staticField.getDeclaringClass(), newValue);
     }
+
     public static Field getModifiersField() throws IllegalAccessException, NoSuchFieldException {
         Field modifiersField = null;
         try {

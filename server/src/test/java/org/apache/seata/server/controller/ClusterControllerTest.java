@@ -16,11 +16,10 @@
  */
 package org.apache.seata.server.controller;
 
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.entity.ContentType;
-import org.apache.http.protocol.HTTP;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpStatus;
 import org.apache.seata.common.holder.ObjectHolder;
 import org.apache.seata.common.util.HttpClientUtil;
 import org.apache.seata.server.DynamicPortTestConfig;
@@ -54,16 +53,16 @@ class ClusterControllerTest {
     @Order(1)
     void watchTimeoutTest() throws Exception {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
-        header.put(HTTP.CONN_KEEP_ALIVE, "close");
+        header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+        header.put(HttpHeaders.KEEP_ALIVE, "close");
         Map<String, String> param = new HashMap<>();
         param.put("default-test", "1");
         int port = Integer.parseInt(System.getProperty(SERVER_SERVICE_PORT_CAMEL, "8091"));
         try (CloseableHttpResponse response = HttpClientUtil.doPost(
                 "http://127.0.0.1:" + port + "/metadata/v1/watch?timeout=3000", param, header, 5000)) {
             if (response != null) {
-                StatusLine statusLine = response.getStatusLine();
-                Assertions.assertEquals(HttpStatus.SC_NOT_MODIFIED, statusLine.getStatusCode());
+                int code = response.getCode();
+                Assertions.assertEquals(HttpStatus.SC_NOT_MODIFIED, code);
                 return;
             }
         }
@@ -74,7 +73,7 @@ class ClusterControllerTest {
     @Order(2)
     void watch() throws Exception {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+        header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
         Map<String, String> param = new HashMap<>();
         param.put("default-test", "1");
         Thread thread = new Thread(new Runnable() {
@@ -94,8 +93,8 @@ class ClusterControllerTest {
         try (CloseableHttpResponse response =
                 HttpClientUtil.doPost("http://127.0.0.1:" + port + "/metadata/v1/watch", param, header, 30000)) {
             if (response != null) {
-                StatusLine statusLine = response.getStatusLine();
-                Assertions.assertEquals(HttpStatus.SC_OK, statusLine.getStatusCode());
+                int code = response.getCode();
+                Assertions.assertEquals(HttpStatus.SC_OK, code);
                 return;
             }
         }

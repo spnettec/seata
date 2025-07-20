@@ -66,7 +66,8 @@ public class MessageFutureTest {
         MessageFuture toJsonFuture = new MessageFuture();
         toJsonFuture.setRequestMessage(buildRepcMessage());
         toJsonFuture.setTimeout(TIME_OUT_FIELD);
-        String toJson = JSON.toJSONString(toJsonFuture, JSONWriter.Feature.PrettyFormat,JSONWriter.Feature.MapSortField);
+        String toJson =
+                JSON.toJSONString(toJsonFuture, JSONWriter.Feature.PrettyFormat, JSONWriter.Feature.MapSortField);
         assertThat(toJson).isEqualTo(fromJson);
     }
 

@@ -20,6 +20,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
+import jakarta.annotation.PostConstruct;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
@@ -50,7 +51,6 @@ import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -177,11 +177,9 @@ public class NamingManager {
             header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
 
             try (CloseableHttpResponse closeableHttpResponse = HttpClientUtil.doGet(httpUrl, params, header, 3000)) {
-                if (closeableHttpResponse == null
-                        || closeableHttpResponse.getStatusLine().getStatusCode() != 200) {
+                if (closeableHttpResponse == null || closeableHttpResponse.getCode() != 200) {
                     return new Result<>(
-                            String.valueOf(closeableHttpResponse.getStatusLine().getStatusCode()),
-                            "add vGroup in new cluster failed");
+                            String.valueOf(closeableHttpResponse.getCode()), "add vGroup in new cluster failed");
                 }
                 LOGGER.info(
                         "namespace: {} add vGroup: {} in new cluster: {} successfully!",
@@ -210,11 +208,10 @@ public class NamingManager {
             Map<String, String> header = new HashMap<>();
             header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
             try (CloseableHttpResponse closeableHttpResponse = HttpClientUtil.doGet(httpUrl, params, header, 3000)) {
-                if (closeableHttpResponse == null
-                        || closeableHttpResponse.getStatusLine().getStatusCode() != 200) {
+                if (closeableHttpResponse == null || closeableHttpResponse.getCode() != 200) {
                     LOGGER.warn("remove vGroup in old cluster failed");
                     return new Result<>(
-                            String.valueOf(closeableHttpResponse.getStatusLine().getStatusCode()),
+                            String.valueOf(closeableHttpResponse.getCode()),
                             "removing vGroup " + vGroup + " in old cluster " + clusterName + " failed");
                 }
                 LOGGER.info(

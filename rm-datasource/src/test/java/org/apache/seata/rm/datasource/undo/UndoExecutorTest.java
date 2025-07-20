@@ -17,7 +17,6 @@
 package org.apache.seata.rm.datasource.undo;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.serializer.SerializerFeature;
 import org.apache.seata.rm.datasource.ConnectionProxy;
 import org.apache.seata.rm.datasource.DataSourceProxy;
 import org.apache.seata.rm.datasource.mock.MockDataSource;
@@ -84,7 +83,7 @@ public class UndoExecutorTest {
         f.setType(Types.VARCHAR);
         f.setKeyType(KeyType.PRIMARY_KEY);
 
-        String s = JSON.toJSONString(f, SerializerFeature.WriteDateUseDateFormat);
+        String s = JSON.toJSONString(f);
 
         System.out.println(s);
 

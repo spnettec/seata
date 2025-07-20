@@ -26,7 +26,6 @@ import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.apache.hc.core5.http.message.StatusLine;
 import org.apache.seata.common.ConfigurationKeys;
 import org.apache.seata.common.exception.AuthenticationFailedException;
 import org.apache.seata.common.exception.RetryableException;
@@ -232,7 +231,7 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
             header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
 
             try (CloseableHttpResponse response = HttpClientUtil.doPost(url, jsonBody, header, 3000)) {
-                int statusCode = response.getStatusLine().getStatusCode();
+                int statusCode = response.getCode();
                 if (statusCode == 200) {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("instance has been registered successfully:{}", statusCode);
@@ -251,7 +250,7 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
         Map<String, String> header = new HashMap<>();
         header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
         try (CloseableHttpResponse response = HttpClientUtil.doGet(url, null, header, 3000)) {
-            int statusCode = response.getStatusLine().getStatusCode();
+            int statusCode = response.getCode();
             return statusCode == 200;
         } catch (Exception e) {
             return false;
@@ -276,7 +275,7 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
             Map<String, String> header = new HashMap<>();
             header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
             try (CloseableHttpResponse response = HttpClientUtil.doPost(url, jsonBody, header, 3000)) {
-                int statusCode = response.getStatusLine().getStatusCode();
+                int statusCode = response.getCode();
                 if (statusCode == 200) {
                     LOGGER.info("instance has been unregistered successfully:{}", statusCode);
                 } else {
@@ -439,9 +438,9 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
             header.put(AUTHORIZATION_HEADER, jwtToken);
         }
         try (CloseableHttpResponse response = HttpClientUtil.doGet(url, paraMap, header, 3000)) {
-            if (response == null || response.HttpHeaders() != HttpStatus.SC_OK) {
-                throw new NamingRegistryException("cannot lookup server list in vgroup: " + vGroup + ", http code: "
-                        + response.getStatusLine().getStatusCode());
+            if (response == null || response.getCode() != HttpStatus.SC_OK) {
+                throw new NamingRegistryException(
+                        "cannot lookup server list in vgroup: " + vGroup + ", http code: " + response.getCode());
             }
             String jsonResponse = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
             // jsonResponse -> MetaResponse
@@ -450,6 +449,8 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
             throw new RemoteException();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -598,6 +599,8 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
             }
         } catch (IOException e) {
             throw new RetryableException(e.getMessage(), e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -16,7 +16,6 @@
  */
 package org.apache.seata.namingserver;
 
-import org.apache.http.StatusLine;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.seata.common.metadata.Cluster;
 import org.apache.seata.common.metadata.ClusterRole;
@@ -66,9 +65,6 @@ class NamingManagerTest {
     @Mock
     private CloseableHttpResponse httpResponse;
 
-    @Mock
-    private StatusLine statusLine;
-
     private MockedStatic<HttpClientUtil> mockedHttpClientUtil;
 
     @BeforeEach
@@ -78,7 +74,6 @@ class NamingManagerTest {
         ReflectionTestUtils.setField(namingManager, "heartbeatTimeThreshold", 500000);
         ReflectionTestUtils.setField(namingManager, "heartbeatCheckTimePeriod", 10000000);
 
-        Mockito.when(httpResponse.getStatusLine()).thenReturn(statusLine);
         mockedHttpClientUtil = Mockito.mockStatic(HttpClientUtil.class);
         mockedHttpClientUtil
                 .when(() -> HttpClientUtil.doGet(anyString(), anyMap(), anyMap(), anyInt()))
@@ -228,7 +223,7 @@ class NamingManagerTest {
         node.getMetadata().put(CONSTANT_GROUP, vGroups);
         namingManager.registerInstance(node, namespace, clusterName, unitName);
 
-        Mockito.when(statusLine.getStatusCode()).thenReturn(200);
+        Mockito.when(httpResponse.getCode()).thenReturn(200);
         Result<String> result = namingManager.createGroup(namespace, vGroup, clusterName, unitName);
         assertTrue(result.isSuccess());
         assertEquals("200", result.getCode());
@@ -289,8 +284,7 @@ class NamingManagerTest {
         nodeList.add(node);
         unit.setNamingInstanceList(nodeList);
 
-        Mockito.when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        Mockito.when(statusLine.getStatusCode()).thenReturn(200);
+        Mockito.when(httpResponse.getCode()).thenReturn(200);
 
         mockedHttpClientUtil
                 .when(() -> HttpClientUtil.doGet(anyString(), anyMap(), anyMap(), anyInt()))

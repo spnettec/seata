@@ -17,15 +17,6 @@
 package org.apache.seata.common.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -42,6 +33,16 @@ import org.apache.hc.core5.net.URIBuilder;
 import org.apache.hc.core5.net.WWWFormCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class HttpClientUtil {
 
@@ -139,10 +140,9 @@ public class HttpClientUtil {
         return null;
     }
 
-
     // get request
-    public static CloseableHttpResponse doGet(String url, Map<String, String> param, Map<String, String> header,
-        int timeout) throws IOException {
+    public static CloseableHttpResponse doGet(
+            String url, Map<String, String> param, Map<String, String> header, int timeout) throws IOException {
         try {
             URIBuilder builder = new URIBuilder(url);
             if (param != null) {

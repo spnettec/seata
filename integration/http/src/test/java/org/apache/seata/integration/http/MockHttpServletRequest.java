@@ -16,10 +16,9 @@
  */
 package org.apache.seata.integration.http;
 
-import org.apache.seata.core.context.RootContext;
-
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
+import org.apache.seata.core.context.RootContext;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -283,6 +282,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public RequestDispatcher getRequestDispatcher(String path) {
         return null;
     }
+
     @Override
     public int getRemotePort() {
         return 0;

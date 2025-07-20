@@ -132,8 +132,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
         PREFERRED_NETWORKS = CONFIG.getConfig(getPreferredNetworks());
     }
 
-    private RaftRegistryServiceImpl() {
-    }
+    private RaftRegistryServiceImpl() {}
 
     /**
      * Gets instance.
@@ -414,7 +413,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
 
     private static boolean watch() throws RetryableException {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+        header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
         Map<String, String> param = new HashMap<>();
         String clusterName = CURRENT_TRANSACTION_CLUSTER_NAME;
         Map<String, Long> groupTerms = METADATA.getClusterTerm(clusterName);
@@ -430,7 +429,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
             try (CloseableHttpResponse response =
                     HttpClientUtil.doPost("http://" + tcAddress + "/metadata/v1/watch", param, header, 30000)) {
                 if (response != null) {
-                    StatusLine statusLine = response.getStatusLine();
+                    StatusLine statusLine = new StatusLine(response);
                     if (statusLine != null && statusLine.getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
                         if (StringUtils.isNotBlank(USERNAME) && StringUtils.isNotBlank(PASSWORD)) {
                             throw new RetryableException("Authentication failed!");
@@ -503,7 +502,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
             try (CloseableHttpResponse httpResponse =
                     HttpClientUtil.doGet("http://" + tcAddress + "/metadata/v1/cluster", param, header, 1000)) {
                 if (httpResponse != null) {
-                    int statusCode = httpResponse.getStatusLine().getStatusCode();
+                    int statusCode = httpResponse.getCode();
                     if (statusCode == HttpStatus.SC_OK) {
                         response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
                     } else if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
@@ -530,6 +529,8 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
                 }
             } catch (IOException e) {
                 throw new RetryableException(e.getMessage(), e);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -549,7 +550,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
         try (CloseableHttpResponse httpResponse =
                 HttpClientUtil.doPost("http://" + tcAddress + "/api/v1/auth/login", param, header, 1000)) {
             if (httpResponse != null) {
-                if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                if (httpResponse.getCode() == HttpStatus.SC_OK) {
                     response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
                     JsonNode jsonNode = OBJECT_MAPPER.readTree(response);
                     String codeStatus = jsonNode.get("code").asText();
@@ -566,7 +567,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
                             "Authentication failed! you should configure the correct username and password.");
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             throw new RetryableException(e.getMessage(), e);
         }
     }

@@ -17,8 +17,10 @@
 package org.apache.seata.rm.datasource.undo.parser;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.serializer.SerializerFeature;
-import com.alibaba.fastjson2.serializer.SimplePropertyPreFilter;
+import com.alibaba.fastjson2.JSONReader;
+import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.filter.Filter;
+import com.alibaba.fastjson2.filter.SimplePropertyPreFilter;
 import org.apache.seata.common.Constants;
 import org.apache.seata.common.executor.Initialize;
 import org.apache.seata.common.loader.LoadLevel;
@@ -53,14 +55,14 @@ public class FastjsonUndoLogParser implements UndoLogParser, Initialize {
 
     @Override
     public byte[] encode(BranchUndoLog branchUndoLog) {
-        String json = JSON.toJSONString(
-                branchUndoLog, filter, SerializerFeature.WriteClassName, SerializerFeature.WriteDateUseDateFormat);
+        String json = JSON.toJSONString(branchUndoLog, new Filter[] {filter}, JSONWriter.Feature.WriteClassName);
         return json.getBytes(Constants.DEFAULT_CHARSET);
     }
 
     @Override
     public BranchUndoLog decode(byte[] bytes) {
         String text = new String(bytes, Constants.DEFAULT_CHARSET);
-        return JSON.parseObject(text, BranchUndoLog.class);
+        return JSON.parseObject(
+                text, BranchUndoLog.class, JSONReader.Feature.SupportClassForName, JSONReader.Feature.SupportAutoType);
     }
 }
