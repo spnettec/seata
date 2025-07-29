@@ -171,8 +171,8 @@ public class HttpClientUtil {
     public static CloseableHttpResponse doPostJson(
             String url, String jsonBody, Map<String, String> headers, int timeout) throws IOException {
         RequestConfig requestConfig = RequestConfig.custom()
-                .setSocketTimeout(timeout)
-                .setConnectTimeout(timeout)
+                .setConnectionRequestTimeout(timeout, TimeUnit.MILLISECONDS)
+                .setConnectTimeout(timeout, TimeUnit.MILLISECONDS)
                 .build();
 
         HttpPost post = new HttpPost(url);
