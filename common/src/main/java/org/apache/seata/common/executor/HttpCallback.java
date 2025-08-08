@@ -14,30 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.seata.compressor.zstd;
-
-import com.github.luben.zstd.Zstd;
+package org.apache.seata.common.executor;
 
 /**
- * the Zstd Util
+ * The interface HttpCallback.
  *
+ * @param <T> the type parameter
  */
-public class ZstdUtil {
+public interface HttpCallback<T> {
 
-    public static byte[] compress(byte[] bytes) {
-        if (bytes == null) {
-            throw new NullPointerException("bytes is null");
-        }
-        return Zstd.compress(bytes);
-    }
+    /**
+     * Called when the HTTP request is successful.
+     *
+     * @param result the result of the HTTP request
+     */
+    void onSuccess(T result);
 
-    public static byte[] decompress(byte[] bytes) {
-        if (bytes == null) {
-            throw new NullPointerException("bytes is null");
-        }
-        long size = Zstd.decompressedSize(bytes);
-        byte[] decompressBytes = new byte[(int) size];
-        Zstd.decompress(decompressBytes, bytes);
-        return decompressBytes;
-    }
+    /**
+     * Called when the HTTP request fails.
+     *
+     * @param e the exception that occurred during the HTTP request
+     */
+    void onFailure(Throwable e);
+
+    /**
+     * Called when the HTTP request is cancelled.
+     */
+    void onCancelled();
 }
