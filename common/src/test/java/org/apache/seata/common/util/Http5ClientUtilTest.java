@@ -216,7 +216,7 @@ class Http5ClientUtilTest {
         Map<String, String> headers = new HashMap<>();
         headers.put("Accept", "application/json");
 
-        Http5ClientUtil.doGetHttp("https://www.apache.org/", headers, callback, 1);
+        Http5ClientUtil.doGetHttp("https://www.apache.org/", headers, callback, 5);
         assertTrue(latch.await(10, TimeUnit.SECONDS));
     }
 
