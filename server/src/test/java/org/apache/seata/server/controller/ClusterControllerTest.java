@@ -22,7 +22,7 @@ import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.seata.common.holder.ObjectHolder;
 import org.apache.seata.common.util.HttpClientUtil;
-import org.apache.seata.server.DynamicPortTestConfig;
+import org.apache.seata.server.BaseSpringBootTest;
 import org.apache.seata.server.cluster.listener.ClusterChangeEvent;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,10 +30,9 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -43,13 +42,17 @@ import java.util.Map;
 import static org.apache.seata.common.ConfigurationKeys.SERVER_SERVICE_PORT_CAMEL;
 import static org.apache.seata.common.Constants.OBJECT_KEY_SPRING_APPLICATION_CONTEXT;
 
-@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Import(DynamicPortTestConfig.class)
-class ClusterControllerTest {
+class ClusterControllerTest extends BaseSpringBootTest {
+
+    private static Environment environment;
+    private static int port;
 
     @BeforeAll
-    public static void setUp(ApplicationContext context) {}
+    public static void setUp(ApplicationContext context) {
+        environment = context.getEnvironment();
+        port = Integer.parseInt(environment.getProperty(SERVER_SERVICE_PORT_CAMEL, "18091"));
+    }
 
     @Test
     @Order(1)
@@ -59,7 +62,6 @@ class ClusterControllerTest {
         header.put(HttpHeaders.KEEP_ALIVE, "close");
         Map<String, String> param = new HashMap<>();
         param.put("default-test", "1");
-        int port = Integer.parseInt(System.getProperty(SERVER_SERVICE_PORT_CAMEL, "8091"));
         try (CloseableHttpResponse response = HttpClientUtil.doPost(
                 "http://127.0.0.1:" + port + "/metadata/v1/watch?timeout=3000", param, header, 5000)) {
             if (response != null) {
@@ -91,7 +93,6 @@ class ClusterControllerTest {
             }
         });
         thread.start();
-        int port = Integer.parseInt(System.getProperty(SERVER_SERVICE_PORT_CAMEL, "8091"));
         try (CloseableHttpResponse response =
                 HttpClientUtil.doPost("http://127.0.0.1:" + port + "/metadata/v1/watch", param, header, 30000)) {
             if (response != null) {
@@ -106,7 +107,6 @@ class ClusterControllerTest {
     @Test
     @Order(3)
     void testXssFilterBlocked_queryParam() throws Exception {
-        int port = Integer.parseInt(System.getProperty(SERVER_SERVICE_PORT_CAMEL, "8091"));
         String malicious = "<script>alert('xss')</script>";
         Map<String, String> header = new HashMap<>();
         header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
@@ -129,7 +129,6 @@ class ClusterControllerTest {
         Map<String, String> params = new HashMap<>();
         params.put("testParam", "<script>alert('xss')</script>");
 
-        int port = Integer.parseInt(System.getProperty(SERVER_SERVICE_PORT_CAMEL, "8091"));
         try (CloseableHttpResponse response = HttpClientUtil.doPost(
                 "http://127.0.0.1:" + port + "/metadata/v1/watch?timeout=3000", params, headers, 5000)) {
             Assertions.assertEquals(HttpStatus.SC_BAD_REQUEST, response.getCode());
@@ -144,7 +143,6 @@ class ClusterControllerTest {
 
         String jsonBody = "{\"testParam\":\"<script>alert('xss')</script>\"}";
 
-        int port = Integer.parseInt(System.getProperty(SERVER_SERVICE_PORT_CAMEL, "8091"));
         try (CloseableHttpResponse response = HttpClientUtil.doPostJson(
                 "http://127.0.0.1:" + port + "/metadata/v1/watch?timeout=3000", jsonBody, headers, 5000)) {
             Assertions.assertEquals(HttpStatus.SC_BAD_REQUEST, response.getCode());
@@ -161,7 +159,6 @@ class ClusterControllerTest {
         Map<String, String> params = new HashMap<>();
         params.put("safeParam", "123");
 
-        int port = Integer.parseInt(System.getProperty(SERVER_SERVICE_PORT_CAMEL, "8091"));
         try (CloseableHttpResponse response = HttpClientUtil.doPost(
                 "http://127.0.0.1:" + port + "/metadata/v1/watch?timeout=3000", params, headers, 5000)) {
             Assertions.assertEquals(HttpStatus.SC_BAD_REQUEST, response.getCode());
@@ -177,7 +174,6 @@ class ClusterControllerTest {
 
         String jsonBody = "{\"testParam\":\"<script>alert('xss')</script>\"}";
 
-        int port = Integer.parseInt(System.getProperty(SERVER_SERVICE_PORT_CAMEL, "8091"));
         try (CloseableHttpResponse response = HttpClientUtil.doPostJson(
                 "http://127.0.0.1:" + port + "/metadata/v1/watch?timeout=3000&urlParam="
                         + URLEncoder.encode("<script>alert('xss')</script>", String.valueOf(StandardCharsets.UTF_8)),

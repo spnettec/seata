@@ -19,35 +19,20 @@ package org.apache.seata.spring.boot.autoconfigure.properties.server.filter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-
 public class ServerHttpFilterPropertiesTest {
 
     @Test
     public void testServerHttpFilterProperties() {
         ServerHttpFilterProperties serverHttpFilterProperties = new ServerHttpFilterProperties();
 
-        ServerHttpFilterProperties.Xss xss = new ServerHttpFilterProperties.Xss();
-
-        serverHttpFilterProperties.setXss(xss);
-
         Assertions.assertTrue(serverHttpFilterProperties.isEnabled());
-        Assertions.assertTrue(serverHttpFilterProperties.getXss().isEnabled());
-        Assertions.assertEquals(
-                "<script>", serverHttpFilterProperties.getXss().getKeywords().get(0));
     }
 
     @Test
     public void testServerHttpFilterPropertiesUnDefaultValue() {
         ServerHttpFilterProperties serverHttpFilterProperties = new ServerHttpFilterProperties();
         serverHttpFilterProperties.setEnabled(false);
-        ServerHttpFilterProperties.Xss xss = new ServerHttpFilterProperties.Xss();
-        xss.setKeywords(Collections.singletonList("<alert>"));
-        serverHttpFilterProperties.setXss(xss);
 
         Assertions.assertFalse(serverHttpFilterProperties.isEnabled());
-        Assertions.assertTrue(serverHttpFilterProperties.getXss().isEnabled());
-        Assertions.assertEquals(
-                "<alert>", serverHttpFilterProperties.getXss().getKeywords().get(0));
     }
 }
