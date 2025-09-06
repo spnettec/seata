@@ -565,7 +565,7 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
         return Arrays.stream(urlListStr.split(",")).collect(Collectors.toList());
     }
 
-    private static void refreshToken(String tcAddress) throws RetryableException {
+    private static void refreshToken(String namingServerAddress) throws RetryableException {
         // if username and password is not in config , return
         if (StringUtils.isBlank(USERNAME) || StringUtils.isBlank(PASSWORD)) {
             return;
@@ -578,7 +578,7 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
         header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
         String response = null;
         try (CloseableHttpResponse httpResponse =
-                HttpClientUtil.doPost("http://" + tcAddress + "/api/v1/auth/login", param, header, 1000)) {
+                HttpClientUtil.doPost("http://" + namingServerAddress + "/api/v1/auth/login", param, header, 1000)) {
             if (httpResponse != null) {
                 if (httpResponse.getCode() == HttpStatus.SC_OK) {
                     response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
