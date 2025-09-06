@@ -188,15 +188,14 @@ class ClusterControllerTest extends BaseSpringBootTest {
     @Order(8)
     void testXssFilterBlocked_formParamWithUserCustomKeyWords() throws Exception {
         Map<String, String> headers = new HashMap<>();
-        headers.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+        headers.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
 
         Map<String, String> params = new HashMap<>();
         params.put("testParam", "custom1");
 
         try (CloseableHttpResponse response = HttpClientUtil.doPost(
                 "http://127.0.0.1:" + port + "/metadata/v1/watch?timeout=3000", params, headers, 5000)) {
-            Assertions.assertEquals(
-                    HttpStatus.SC_BAD_REQUEST, response.getStatusLine().getStatusCode());
+            Assertions.assertEquals(HttpStatus.SC_BAD_REQUEST, response.getCode());
         }
     }
 }
