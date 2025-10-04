@@ -102,8 +102,10 @@
         <postgresql.version>42.6.2</postgresql.version>
         <h2.version>1.4.181</h2.version>
         <mariadb.version>3.3.2</mariadb.version>
+        <kingbase.version>9.0.0</kingbase.version>
+        <oscar.version>4.1.152</oscar.version>
         <!-- db connection pool -->
-        <druid.version>1.2.20</druid.version>
+        <druid.version>1.2.25</druid.version>
         <commons-dbcp2.version>2.13.0</commons-dbcp2.version>
         <hikari.version>7.0.0</hikari.version>
         <caffeine.version>3.2.2</caffeine.version>
@@ -815,6 +817,16 @@
                 <groupId>org.apache.fury</groupId>
                 <artifactId>fury-core</artifactId>
                 <version>${fury.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.kingbase</groupId>
+                <artifactId>kingbase8</artifactId>
+                <version>${kingbase.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.shentongdata</groupId>
+                <artifactId>oscarJDBC8</artifactId>
+                <version>${oscar.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
