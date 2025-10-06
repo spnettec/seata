@@ -89,7 +89,7 @@
         <protobuf.version>4.31.1</protobuf.version>
         <grpc.version>1.74.0</grpc.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
-        <kotlin-maven-plugin.version>1.9.21</kotlin-maven-plugin.version>
+        <kotlin-maven-plugin.version>2.2.20</kotlin-maven-plugin.version>
         <!-- Check -->
         <maven-pmd-plugin.version>3.8</maven-pmd-plugin.version>
         <maven.surefire.version>2.22.2</maven.surefire.version>
