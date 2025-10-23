@@ -102,7 +102,7 @@ public class DefaultHttpExecutor extends AbstractHttpExecutor {
     @Override
     public <K> K convertResult(HttpResponse response, Class<K> clazz) {
 
-        if (HttpResponse.class.isAssignableFrom(clazz)) {
+        if (clazz == HttpResponse.class) {
             return (K) response;
         }
         return null;

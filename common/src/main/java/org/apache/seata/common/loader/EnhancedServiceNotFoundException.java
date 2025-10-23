@@ -16,13 +16,11 @@
  */
 package org.apache.seata.common.loader;
 
-import org.apache.commons.lang3.exception.ContextedRuntimeException;
-
 /**
  * The type Enhanced service not found exception.
  *
  */
-public class EnhancedServiceNotFoundException extends ContextedRuntimeException {
+public class EnhancedServiceNotFoundException extends RuntimeException {
     private static final long serialVersionUID = 7748438218914409019L;
 
     /**
