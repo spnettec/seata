@@ -18,23 +18,19 @@ package org.apache.seata.discovery.registry.etcd3;
 
 import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
-import io.etcd.jetcd.KV;
 import io.etcd.jetcd.Watch;
+import io.etcd.jetcd.launcher.Etcd;
 import io.etcd.jetcd.launcher.EtcdCluster;
-import io.etcd.jetcd.launcher.EtcdClusterFactory;
 import io.etcd.jetcd.options.DeleteOption;
 import io.etcd.jetcd.options.GetOption;
 import io.etcd.jetcd.watch.WatchResponse;
 import org.apache.seata.discovery.registry.RegistryService;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.net.InetSocketAddress;
-import java.net.URI;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -46,45 +42,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EtcdRegistryServiceImplTest {
     private static final String REGISTRY_KEY_PREFIX = "registry-seata-";
     private static final String CLUSTER_NAME = "default";
+
+    private static final EtcdCluster etcd =
+            Etcd.builder().withClusterName(CLUSTER_NAME).withNodes(1).build();
+
+    private final Client client =
+            Client.builder().endpoints(etcd.clientEndpoints()).build();
     private static final String HOST = "127.0.0.1";
     private static final int PORT = 8091;
 
-    private static EtcdCluster etcd;
-    private static Client client;
-    private static List<URI> clientEndpoints;
-
     @BeforeAll
-    public static void beforeAll() {
-        etcd = EtcdClusterFactory.buildCluster(CLUSTER_NAME, 1, false);
-        etcd.start();
-        clientEndpoints = etcd.getClientEndpoints();
-        client = Client.builder().endpoints(clientEndpoints).build();
+    public static void beforeClass() throws Exception {
+        System.setProperty(
+                EtcdRegistryServiceImpl.TEST_ENDPONT,
+                etcd.clientEndpoints().get(0).toString());
     }
 
     @AfterAll
-    public static void afterAll() {
-        if (client != null) {
-            client.close();
-        }
-        if (etcd != null) {
-            etcd.close();
-        }
-        System.clearProperty(EtcdRegistryServiceImpl.TEST_ENDPONT);
-    }
-
-    @BeforeEach
-    public void setUp() {
-        String endpoint = clientEndpoints.get(0).toString();
-        System.setProperty(EtcdRegistryServiceImpl.TEST_ENDPONT, endpoint);
-    }
-
-    @AfterEach
-    public void tearDown() throws Exception {
-        KV kvClient = client.getKVClient();
-        ByteSequence keyPrefix = buildRegistryKeyPrefix();
-        DeleteOption deleteOption =
-                DeleteOption.newBuilder().withPrefix(keyPrefix).build();
-        kvClient.delete(keyPrefix, deleteOption).get();
+    public static void afterClass() throws Exception {
+        System.setProperty(EtcdRegistryServiceImpl.TEST_ENDPONT, "");
     }
 
     @Test

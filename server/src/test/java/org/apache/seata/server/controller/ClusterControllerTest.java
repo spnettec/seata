@@ -16,10 +16,13 @@
  */
 package org.apache.seata.server.controller;
 
+import okhttp3.Protocol;
+import okhttp3.Response;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
+import org.apache.seata.common.executor.HttpCallback;
 import org.apache.seata.common.holder.ObjectHolder;
 import org.apache.seata.common.util.HttpClientUtil;
 import org.apache.seata.server.BaseSpringBootTest;
@@ -170,7 +173,7 @@ class ClusterControllerTest extends BaseSpringBootTest {
 
         String malicious = "<script>alert('xss')</script>";
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+        header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
 
         HttpCallback<Response> callback = new HttpCallback<Response>() {
             @Override
@@ -209,7 +212,7 @@ class ClusterControllerTest extends BaseSpringBootTest {
 
         String malicious = "<script>alert('xss')</script>";
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+        header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
 
         Map<String, String> params = new HashMap<>();
         params.put("key", malicious);

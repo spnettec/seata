@@ -18,7 +18,7 @@ package org.apache.seata.common.util;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.seata.common.executor.HttpCallback;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
