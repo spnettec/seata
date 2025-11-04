@@ -124,6 +124,24 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- junit5 -->
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit-jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- spring-framework CVE-2022-22965-->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring-framework.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!-- spring-boot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -348,10 +366,6 @@
                     <exclusion>
                         <groupId>com.alipay.sofa</groupId>
                         <artifactId>hessian</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.alipay.sofa</groupId>
-                        <artifactId>bolt</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>

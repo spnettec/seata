@@ -38,9 +38,14 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.apache.seata.common.ConfigurationKeys.SERVER_SERVICE_PORT_CAMEL;
 import static org.apache.seata.common.Constants.OBJECT_KEY_SPRING_APPLICATION_CONTEXT;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ClusterControllerTest extends BaseSpringBootTest {
@@ -75,6 +80,44 @@ class ClusterControllerTest extends BaseSpringBootTest {
 
     @Test
     @Order(2)
+    void watchTimeoutTest_withHttp2() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+
+        Map<String, String> params = new HashMap<>();
+        params.put("default-test", "1");
+
+        HttpCallback<Response> callback = new HttpCallback<Response>() {
+            @Override
+            public void onSuccess(Response response) {
+                Assertions.assertNotNull(response);
+                Assertions.assertEquals(Protocol.H2_PRIOR_KNOWLEDGE, response.protocol());
+                Assertions.assertEquals(HttpStatus.SC_NOT_MODIFIED, response.code());
+                latch.countDown();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Assertions.fail("Should not fail");
+            }
+
+            @Override
+            public void onCancelled() {
+                Assertions.fail("Should not be cancelled");
+            }
+        };
+
+        HttpClientUtil.doPostWithHttp2(
+                "http://127.0.0.1:" + port + "/metadata/v1/watch?timeout=3000", params, headers, callback);
+        // Currently, the server side does not have the ability to send http2 responses,
+        // so if no response is received here, it will definitely time out
+        Assertions.assertFalse(latch.await(5, TimeUnit.SECONDS));
+    }
+
+    @Test
+    @Order(3)
     void watch() throws Exception {
         Map<String, String> header = new HashMap<>();
         header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
@@ -105,7 +148,7 @@ class ClusterControllerTest extends BaseSpringBootTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void testXssFilterBlocked_queryParam() throws Exception {
         String malicious = "<script>alert('xss')</script>";
         Map<String, String> header = new HashMap<>();
@@ -121,7 +164,118 @@ class ClusterControllerTest extends BaseSpringBootTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
+    void testXssFilterBlocked_queryParam_withGetHttp2() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        String malicious = "<script>alert('xss')</script>";
+        Map<String, String> header = new HashMap<>();
+        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+
+        HttpCallback<Response> callback = new HttpCallback<Response>() {
+            @Override
+            public void onSuccess(Response response) {
+                assertNotNull(response);
+                Assertions.assertEquals(Protocol.H2_PRIOR_KNOWLEDGE, response.protocol());
+                Assertions.assertEquals(HttpStatus.SC_BAD_REQUEST, response.code());
+                latch.countDown();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                fail("Should not fail");
+            }
+
+            @Override
+            public void onCancelled() {
+                fail("Should not be cancelled");
+            }
+        };
+
+        HttpClientUtil.doGetWithHttp2(
+                "http://127.0.0.1:" + port + "/metadata/v1/watch?timeout=3000&testParam="
+                        + URLEncoder.encode(malicious, String.valueOf(StandardCharsets.UTF_8)),
+                header,
+                callback,
+                5000);
+
+        assertTrue(latch.await(10, TimeUnit.SECONDS));
+    }
+
+    @Test
+    @Order(6)
+    void testXssFilterBlocked_formParam_withPostHttp2() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        String malicious = "<script>alert('xss')</script>";
+        Map<String, String> header = new HashMap<>();
+        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+
+        Map<String, String> params = new HashMap<>();
+        params.put("key", malicious);
+
+        HttpCallback<Response> callback = new HttpCallback<Response>() {
+            @Override
+            public void onSuccess(Response response) {
+                assertNotNull(response);
+                Assertions.assertEquals(Protocol.H2_PRIOR_KNOWLEDGE, response.protocol());
+                Assertions.assertEquals(HttpStatus.SC_BAD_REQUEST, response.code());
+                latch.countDown();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                fail("Should not fail");
+            }
+
+            @Override
+            public void onCancelled() {
+                fail("Should not be cancelled");
+            }
+        };
+
+        HttpClientUtil.doPostWithHttp2("http://127.0.0.1:" + port + "/random", params, header, callback, 5000);
+
+        assertTrue(latch.await(10, TimeUnit.SECONDS));
+    }
+
+    @Test
+    @Order(7)
+    void testXssFilterBlocked_bodyParam_withPostHttp2() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        String malicious = "<script>alert('xss')</script>";
+        Map<String, String> header = new HashMap<>();
+
+        String jsonBody = "{\"key\":\"" + malicious + "\"}";
+
+        HttpCallback<Response> callback = new HttpCallback<Response>() {
+            @Override
+            public void onSuccess(Response response) {
+                assertNotNull(response);
+                Assertions.assertEquals(Protocol.H2_PRIOR_KNOWLEDGE, response.protocol());
+                Assertions.assertEquals(HttpStatus.SC_BAD_REQUEST, response.code());
+                latch.countDown();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                fail("Should not fail");
+            }
+
+            @Override
+            public void onCancelled() {
+                fail("Should not be cancelled");
+            }
+        };
+
+        HttpClientUtil.doPostWithHttp2("http://127.0.0.1:" + port + "/random", jsonBody, header, callback, 5000);
+
+        assertTrue(latch.await(10, TimeUnit.SECONDS));
+    }
+
+    @Test
+    @Order(8)
     void testXssFilterBlocked_formParam() throws Exception {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
@@ -136,7 +290,7 @@ class ClusterControllerTest extends BaseSpringBootTest {
     }
 
     @Test
-    @Order(5)
+    @Order(9)
     void testXssFilterBlocked_jsonBody() throws Exception {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
@@ -150,7 +304,7 @@ class ClusterControllerTest extends BaseSpringBootTest {
     }
 
     @Test
-    @Order(6)
+    @Order(10)
     void testXssFilterBlocked_headerParam() throws Exception {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
@@ -166,7 +320,7 @@ class ClusterControllerTest extends BaseSpringBootTest {
     }
 
     @Test
-    @Order(7)
+    @Order(11)
     void testXssFilterBlocked_multiSource() throws Exception {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
@@ -185,7 +339,7 @@ class ClusterControllerTest extends BaseSpringBootTest {
     }
 
     @Test
-    @Order(8)
+    @Order(12)
     void testXssFilterBlocked_formParamWithUserCustomKeyWords() throws Exception {
         Map<String, String> headers = new HashMap<>();
         headers.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
