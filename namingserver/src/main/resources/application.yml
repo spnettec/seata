@@ -14,11 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 server:
   port: 8081
-
 spring:
+  threads:
+    virtual:
+      enabled: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   application:
     name: seata-namingserver
 logging:

@@ -648,7 +648,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.lz4</groupId>
+            <groupId>at.yawk.lz4</groupId>
             <artifactId>lz4-java</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -680,7 +680,6 @@
             </snapshots>
         </repository>
 
-    </repositories>
     <build>
         <extensions>
             <extension>
@@ -698,19 +697,6 @@
             </resource>
         </resources>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven-source-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- Shade -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

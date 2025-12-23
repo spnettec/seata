@@ -16,16 +16,14 @@
  */
 package org.apache.seata.namingserver.filter;
 
-import jakarta.servlet.*;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
-import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
-import org.apache.hc.client5.http.async.methods.SimpleRequestProducer;
-import org.apache.hc.client5.http.async.methods.SimpleResponseConsumer;
-import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
-import org.apache.hc.client5.http.protocol.HttpClientContext;
-import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.seata.common.metadata.ClusterRole;
 import org.apache.seata.common.metadata.Node;
 import org.apache.seata.common.metadata.namingserver.NamingServerNode;
@@ -37,10 +35,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -54,15 +53,15 @@ public class ConsoleRemotingFilter implements Filter {
 
     private final NamingManager namingManager;
 
-    private final CloseableHttpAsyncClient httpAsyncClient;
+    private final RestTemplate restTemplate;
 
     private final Pattern urlPattern = Pattern.compile(CONSOLE_PATTERN);
 
     private final Logger logger = LoggerFactory.getLogger(ConsoleRemotingFilter.class);
 
-    public ConsoleRemotingFilter(NamingManager namingManager, CloseableHttpAsyncClient httpAsyncClient) {
+    public ConsoleRemotingFilter(NamingManager namingManager, RestTemplate restTemplate) {
         this.namingManager = namingManager;
-        this.httpAsyncClient = httpAsyncClient;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -80,7 +79,7 @@ public class ConsoleRemotingFilter implements Filter {
                 String vgroup = request.getParameter("vgroup");
                 if (StringUtils.isNotBlank(namespace)
                         && (StringUtils.isNotBlank(cluster) || StringUtils.isNotBlank(vgroup))) {
-                    List<Node> list = null;
+                    List<NamingServerNode> list = null;
                     if (StringUtils.isNotBlank(vgroup)) {
                         list = namingManager.getInstancesByVgroupAndNamespace(
                                 namespace,
@@ -110,63 +109,40 @@ public class ConsoleRemotingFilter implements Filter {
 
                             // Create the HttpEntity with headers and body
                             HttpEntity<byte[]> httpEntity = new HttpEntity<>(request.getCachedBody(), headers);
-
-                            // Forward the request
-                            AsyncContext asyncContext = servletRequest.startAsync();
-                            asyncContext.setTimeout(5000L);
-                            httpAsyncClient.execute(
-                                    SimpleRequestProducer.create(SimpleRequestBuilder.create(request.getMethod())
-                                            .setUri(targetUrl)
-                                            .build()),
-                                    SimpleResponseConsumer.create(),
-                                    HttpClientContext.create(),
-                                    new FutureCallback<>() {
-
-                                        @Override
-                                        public void completed(SimpleHttpResponse simpleHttpResponse) {
-                                            // Copy response headers and status code
-                                            Arrays.stream(simpleHttpResponse.getHeaders())
-                                                    .forEach((header) -> {
-                                                        response.addHeader(header.getName(), header.getValue());
-                                                    });
-                                            response.setStatus(simpleHttpResponse.getCode());
-                                            // Write response body
-                                            Optional.ofNullable(simpleHttpResponse
-                                                            .getBody()
-                                                            .getBodyBytes())
-                                                    .ifPresent(body -> {
-                                                        try (ServletOutputStream outputStream =
-                                                                response.getOutputStream()) {
-                                                            outputStream.write(body);
-                                                            outputStream.flush();
-                                                        } catch (IOException e) {
-                                                            logger.error(e.getMessage(), e);
-                                                        }
-                                                    });
-                                            asyncContext.complete();
-                                        }
-
-                                        @Override
-                                        public void failed(Exception ex) {
-                                            try {
-                                                logger.error(ex.getMessage(), ex);
-                                                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                                            } finally {
-                                                asyncContext.complete();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void cancelled() {
-                                            response.setStatus(HttpStatus.BAD_REQUEST.value());
-                                            asyncContext.complete();
-                                        }
-                                    });
+                            HttpMethod httpMethod;
+                            try {
+                                httpMethod = HttpMethod.valueOf(request.getMethod());
+                            } catch (IllegalArgumentException ex) {
+                                logger.error("Unsupported HTTP method: {}", request.getMethod(), ex);
+                                response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+                                return;
+                            }
+                            try {
+                                ResponseEntity<byte[]> responseEntity = restTemplate.exchange(
+                                        URI.create(targetUrl), httpMethod, httpEntity, byte[].class);
+                                responseEntity.getHeaders().forEach((key, value) -> {
+                                    value.forEach(v -> response.addHeader(key, v));
+                                });
+                                response.setStatus(
+                                        responseEntity.getStatusCode().value());
+                                Optional.ofNullable(responseEntity.getBody()).ifPresent(body -> {
+                                    try (ServletOutputStream outputStream = response.getOutputStream()) {
+                                        outputStream.write(body);
+                                        outputStream.flush();
+                                    } catch (IOException e) {
+                                        logger.error(e.getMessage(), e);
+                                    }
+                                });
+                            } catch (Exception ex) {
+                                logger.error(ex.getMessage(), ex);
+                                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                            }
+                            return;
                         }
                     }
                 }
             }
-            filterChain.doFilter(servletRequest, servletResponse);
         }
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 }

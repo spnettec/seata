@@ -145,6 +145,12 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.apache.fory</groupId>
+            <artifactId>fory-core</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>cn.com.kingbase</groupId>
             <artifactId>kingbase8</artifactId>
             <version>9.0.0</version>

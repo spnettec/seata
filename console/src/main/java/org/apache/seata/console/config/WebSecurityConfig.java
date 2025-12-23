@@ -16,33 +16,39 @@
  */
 package org.apache.seata.console.config;
 
+import org.apache.seata.common.util.StringUtils;
 import org.apache.seata.console.filter.JwtAuthenticationTokenFilter;
 import org.apache.seata.console.security.CustomUserDetailsServiceImpl;
 import org.apache.seata.console.security.JwtAuthenticationEntryPoint;
 import org.apache.seata.console.utils.JwtTokenUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import java.util.Arrays;
 
 /**
  * Spring security config
+ *
  */
 @Configuration(proxyBeanMethods = false)
+@EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
@@ -66,59 +72,72 @@ public class WebSecurityConfig {
      */
     public static final String TOKEN_PREFIX = "Bearer ";
 
-    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    @Autowired
+    private CustomUserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
+
+    @Autowired
+    private JwtTokenUtils tokenProvider;
+
+    @Autowired
+    private Environment env;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer(Environment env) {
-        return (web) -> {
-            String ignoreURLs = env.getProperty("seata.security.ignore.urls", "/**");
-            for (String ignoreURL : ignoreURLs.trim().split(SECURITY_IGNORE_URLS_SPILT_CHAR)) {
-                web.ignoring().requestMatchers(AntPathRequestMatcher.antMatcher(ignoreURL.trim()));
+    public AuthenticationManager authenticationManager() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return new ProviderManager(authenticationProvider);
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        RequestMatcher[] ignoredMatchers = buildAntMatchers(env.getProperty("seata.security.ignore.urls", "/**"));
+        return web -> {
+            if (ignoredMatchers.length > 0) {
+                web.ignoring().requestMatchers(ignoredMatchers);
             }
         };
     }
 
     @Bean
-    public SecurityFilterChain authFilterChain(
-            HttpSecurity http,
-            PasswordEncoder passwordEncoder,
-            JwtTokenUtils tokenProvider,
-            CustomUserDetailsServiceImpl userDetailsService,
-            JwtAuthenticationEntryPoint unauthorizedHandler)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager)
             throws Exception {
-        http.authorizeHttpRequests(authorizeHttpRequestsConfigurer ->
-                        authorizeHttpRequestsConfigurer.anyRequest().authenticated())
-                // custom token authorize exception handler
-                .exceptionHandling(exceptionHandlingConfigurer ->
-                        exceptionHandlingConfigurer.authenticationEntryPoint(unauthorizedHandler))
-                // since we use jwt, session is not necessary
-                .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .disable())
-                // since we use jwt, csrf is not necessary
-                .csrf(AbstractHttpConfigurer::disable)
+        RequestMatcher[] csrfIgnored = buildAntMatchers(env.getProperty("seata.security.csrf-ignore-urls"));
+
+        http.authenticationManager(authenticationManager)
+                .authorizeHttpRequests(authz -> authz.anyRequest().authenticated())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrf -> {
+                    if (csrfIgnored.length > 0) {
+                        csrf.ignoringRequestMatchers(csrfIgnored);
+                    }
+                    csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+                })
                 .addFilterBefore(
                         new JwtAuthenticationTokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .headers(headers -> headers.cacheControl(cache -> {}));
 
-                // disable cache
-                .headers(a -> a.cacheControl(Customizer.withDefaults()));
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
         return http.build();
     }
 
-    /**
-     * Password encoder password encoder.
-     *
-     * @return the password encoder
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    private RequestMatcher[] buildAntMatchers(String patterns) {
+        if (StringUtils.isBlank(patterns)) {
+            return new RequestMatcher[0];
+        }
+        return Arrays.stream(patterns.trim().split(SECURITY_IGNORE_URLS_SPILT_CHAR))
+                .map(String::trim)
+                .filter(StringUtils::isNotBlank)
+                // PathPatternParser using the new version of Security cannot directly achieve the same matching effect
+                // as the deprecated Ant style mode /**/*.css
+                .map(AntPathRequestMatcher::new)
+                .toArray(RequestMatcher[]::new);
     }
 }

@@ -37,26 +37,11 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- Spring Framework -->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-framework-bom</artifactId>
-                <version>${spring-framework-for-server.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <!-- Spring Boot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot-for-server.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-framework-bom</artifactId>
-                    </exclusion>
-                </exclusions>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -191,7 +176,7 @@
                         <appRoot>/seata-naming-server</appRoot>
                         <workingDirectory>/seata-naming-server</workingDirectory>
                         <ports>
-                            <port>8080</port>
+                            <port>8081</port>
                         </ports>
                         <labels>
                             <name>seata-naming-server</name>

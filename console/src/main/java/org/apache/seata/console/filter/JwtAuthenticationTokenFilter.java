@@ -35,7 +35,7 @@ import java.io.IOException;
  */
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
-    private JwtTokenUtils tokenProvider;
+    private final JwtTokenUtils tokenProvider;
 
     /**
      * Instantiates a new Jwt authentication token filter.
@@ -52,7 +52,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         String jwt = resolveToken(request);
 
         if (jwt != null
-                && !"".equals(jwt.trim())
+                && !jwt.trim().isEmpty()
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (this.tokenProvider.validateToken(jwt)) {
                 /**
