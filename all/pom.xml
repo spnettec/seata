@@ -769,7 +769,7 @@
                     <excludeDependencies>
                         <!-- Exclude dependencies that need to be shaded. -->
                         <dependency>io.seata:seata-all</dependency>
-                        <dependency>com.github.heyoulin.seata:*</dependency>
+                        <dependency>org.apache.seata:*</dependency>
                     </excludeDependencies>
                 </configuration>
             </plugin>

@@ -80,6 +80,7 @@
         <fst.version>2.57</fst.version>
         <groovy.version>2.4.21</groovy.version>
         <zstd.version>1.5.5-6</zstd.version>
+        <jackson.version>2.18.3</jackson.version>
         <xstream.version>1.4.21</xstream.version>
 
         <jwt.version>0.12.5</jwt.version>
@@ -117,7 +118,8 @@
         <kotlin.version>1.9.23</kotlin.version>
         <kotlin-coroutines.version>1.8.0</kotlin-coroutines.version>
         <native-lib-loader.version>2.5.0</native-lib-loader.version>
-
+        <mockito.version>4.11.0</mockito.version>
+        <mockito-inline.version>4.11.0</mockito-inline.version>
         <!--  for fury  -->
         <fury.version>0.10.3</fury.version>
         <fory.version>0.12.3</fory.version>
