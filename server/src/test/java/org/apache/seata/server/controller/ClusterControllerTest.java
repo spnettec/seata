@@ -154,7 +154,7 @@ class ClusterControllerTest extends BaseSpringBootTest {
         CountDownLatch latch = new CountDownLatch(1);
 
         Map<String, String> headers = new HashMap<>();
-        headers.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+        headers.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
 
         Map<String, String> params = new HashMap<>();
         params.put("default-test", "1");
