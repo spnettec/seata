@@ -31,8 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Nonnull;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
@@ -184,7 +182,7 @@ public class RestControllerBeanPostProcessorTest {
 
         @GetMapping("/update")
         public String updateMethod(
-                @RequestParam(value = "userName") String name, @Nonnull @RequestParam(required = false) Integer age) {
+                @RequestParam(value = "userName") String name, @RequestParam(required = false) Integer age) {
             return "update";
         }
     }

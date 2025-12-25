@@ -16,8 +16,8 @@
  */
 package org.apache.seata.apm.skywalking.plugin;
 
-import com.alipay.sofa.common.profile.StringUtil;
 import io.netty.channel.Channel;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.seata.apm.skywalking.plugin.common.SWSeataUtils;
 import org.apache.seata.core.protocol.AbstractMessage;
 import org.apache.seata.core.protocol.RpcMessage;
@@ -63,7 +63,7 @@ public class NettyRemotingClientSendSyncInterceptor implements InstanceMethodsAr
         }
 
         String xid = SWSeataUtils.convertXid(rpcMessage);
-        if (StringUtil.isNotBlank(xid)) {
+        if (StringUtils.isNotBlank(xid)) {
             activeSpan.tag(new StringTag(20, "Seata.xid"), xid);
         }
     }
