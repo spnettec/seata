@@ -24,8 +24,10 @@ import org.apache.seata.namingserver.listener.Watcher;
 import org.apache.seata.namingserver.manager.ClusterWatcherManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -41,7 +43,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 public class ClusterWatcherManagerTest {
 
@@ -64,9 +68,9 @@ public class ClusterWatcherManagerTest {
     @BeforeEach
     void setUp() {
         clusterWatcherManager = new ClusterWatcherManager();
-        Mockito.when(asyncContext.getResponse()).thenReturn(response);
-        Mockito.when(asyncContext.getRequest()).thenReturn(request);
-        Mockito.when(request.getRemoteAddr()).thenReturn(TEST_CLIENT_ENDPOINT);
+        lenient().when(asyncContext.getResponse()).thenReturn(response);
+        lenient().when(asyncContext.getRequest()).thenReturn(request);
+        lenient().when(request.getRemoteAddr()).thenReturn(TEST_CLIENT_ENDPOINT);
 
         Map<String, Queue<Watcher<?>>> watchers =
                 (Map<String, Queue<Watcher<?>>>) ReflectionTestUtils.getField(clusterWatcherManager, "WATCHERS");
