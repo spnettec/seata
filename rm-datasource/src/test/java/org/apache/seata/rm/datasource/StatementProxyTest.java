@@ -45,7 +45,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.List;
 
-@TestMethodOrder(MethodOrderer.Alphanumeric.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class StatementProxyTest {
 
     private static List<String> returnValueColumnLabels = Lists.newArrayList("id", "name");

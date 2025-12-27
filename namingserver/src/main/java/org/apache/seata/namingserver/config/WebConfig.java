@@ -47,7 +47,7 @@ public class WebConfig {
                 HttpClients.custom().setConnectionManager(connectionManager).build();
         // Create a request factory with the HttpClient
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
-        requestFactory.setConnectTimeout(DEFAULT_REQUEST_TIMEOUT); // Connection timeout in milliseconds
+        requestFactory.setConnectionRequestTimeout(DEFAULT_REQUEST_TIMEOUT); // Connection timeout in milliseconds
         requestFactory.setReadTimeout(DEFAULT_REQUEST_TIMEOUT); // Read timeout in milliseconds
         // Create and return a RestTemplate with the custom request factory
         return new RestTemplate(requestFactory);

@@ -57,7 +57,7 @@ public class HttpDetector implements ProtocolDetector {
 
     private boolean startsWith(ByteBuf buffer, String prefix) {
         for (int i = 0; i < prefix.length(); i++) {
-            if (buffer.getByte(i) != (byte) prefix.charAt(i)) {
+            if (buffer.capacity() <= i || buffer.getByte(i) != (byte) prefix.charAt(i)) {
                 return false;
             }
         }

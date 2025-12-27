@@ -39,7 +39,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.util.Arrays;
@@ -98,9 +98,9 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() {
+    public AuthenticationManager authenticationManager(PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
         return new ProviderManager(authenticationProvider);
     }
 
@@ -160,7 +160,7 @@ public class WebSecurityConfig {
                 .filter(StringUtils::isNotBlank)
                 // PathPatternParser using the new version of Security cannot directly achieve the same matching effect
                 // as the deprecated Ant style mode /**/*.css
-                .map(AntPathRequestMatcher::new)
+                .map(PathPatternRequestMatcher::pathPattern)
                 .toArray(RequestMatcher[]::new);
     }
 }

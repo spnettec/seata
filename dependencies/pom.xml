@@ -69,7 +69,7 @@
         <sofa.registry.version>6.3.0</sofa.registry.version>
         <motan.version>1.2.2</motan.version>
         <jcommander.version>1.82</jcommander.version>
-        <bucket4j.version>8.14.0</bucket4j.version>
+        <bucket4j.version>8.15.0</bucket4j.version>
         <commons-compress.version>1.27.1</commons-compress.version>
         <ant.version>1.10.14</ant.version>
         <lz4.version>1.8.1</lz4.version>
@@ -81,12 +81,12 @@
         <fst.version>2.57</fst.version>
         <groovy.version>2.4.21</groovy.version>
         <zstd.version>1.5.5-6</zstd.version>
-        <jackson.version>2.18.3</jackson.version>
+        <jackson.version>2.20.1</jackson.version>
         <xstream.version>1.4.21</xstream.version>
 
         <jwt.version>0.12.5</jwt.version>
         <prometheus.client.version>0.16.0</prometheus.client.version>
-        <jackson.databind.version>2.17.0</jackson.databind.version>
+        <jackson-annotations>2.20</jackson-annotations>
         <logback.version>1.5.6</logback.version>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <kafka-appender.version>0.2.0-RC2</kafka-appender.version>
@@ -881,7 +881,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-annotations}</version>
             </dependency>
             <dependency>
                 <groupId>cn.com.kingbase</groupId>

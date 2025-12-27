@@ -25,7 +25,7 @@ import org.apache.seata.spring.boot.autoconfigure.properties.registry.RegistryNa
 import org.apache.seata.spring.boot.autoconfigure.properties.registry.RegistryProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.web.server.autoconfigure.ServerProperties;
 import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
