@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -442,15 +441,16 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
                 throw new NamingRegistryException(
                         "cannot lookup server list in vgroup: " + vGroup + ", http code: " + response.getCode());
             }
-            String jsonResponse = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+            if (response.getEntity() == null) {
+                throw new NamingRegistryException("Response body is null for vgroup: " + vGroup);
+            }
+            String jsonResponse = response.getEntity().toString();
             // jsonResponse -> MetaResponse
             MetaResponse metaResponse = OBJECT_MAPPER.readValue(jsonResponse, new TypeReference<MetaResponse>() {});
             return handleMetadata(metaResponse, vGroup);
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
             throw new RemoteException();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
         }
     }
 

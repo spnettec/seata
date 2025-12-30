@@ -16,7 +16,8 @@
  */
 package org.apache.seata.namingserver;
 
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.apache.seata.common.metadata.Cluster;
 import org.apache.seata.common.metadata.ClusterRole;
 import org.apache.seata.common.metadata.Node;
@@ -33,11 +34,9 @@ import org.apache.seata.namingserver.manager.NamingManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -56,7 +55,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 class NamingManagerTest {
 
@@ -66,7 +64,10 @@ class NamingManagerTest {
     private ApplicationContext applicationContext;
 
     @Mock
-    private CloseableHttpResponse httpResponse;
+    private Response httpResponse;
+
+    @Mock
+    private ResponseBody responseBody;
 
     private MockedStatic<HttpClientUtil> mockedHttpClientUtil;
 
@@ -77,6 +78,8 @@ class NamingManagerTest {
         ReflectionTestUtils.setField(namingManager, "heartbeatTimeThreshold", 500000);
         ReflectionTestUtils.setField(namingManager, "heartbeatCheckTimePeriod", 10000000);
 
+        Mockito.when(httpResponse.code()).thenReturn(200);
+        Mockito.when(httpResponse.body()).thenReturn(responseBody);
         mockedHttpClientUtil = Mockito.mockStatic(HttpClientUtil.class);
         mockedHttpClientUtil
                 .when(() -> HttpClientUtil.doGet(anyString(), anyMap(), anyMap(), anyInt()))
@@ -226,7 +229,7 @@ class NamingManagerTest {
         node.getMetadata().put(CONSTANT_GROUP, vGroups);
         namingManager.registerInstance(node, namespace, clusterName, unitName);
 
-        Mockito.when(httpResponse.getCode()).thenReturn(200);
+        Mockito.when(httpResponse.code()).thenReturn(200);
         Result<String> result = namingManager.createGroup(namespace, vGroup, clusterName, unitName);
         assertFalse(result.isSuccess());
         vGroup = "test-vGroup2";
@@ -290,7 +293,8 @@ class NamingManagerTest {
         nodeList.add(node);
         unit.setNamingInstanceList(nodeList);
 
-        Mockito.when(httpResponse.getCode()).thenReturn(200);
+        Mockito.when(httpResponse.code()).thenReturn(200);
+        Mockito.when(httpResponse.body()).thenReturn(responseBody);
 
         mockedHttpClientUtil
                 .when(() -> HttpClientUtil.doGet(anyString(), anyMap(), anyMap(), anyInt()))

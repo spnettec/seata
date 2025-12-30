@@ -18,10 +18,9 @@ package org.apache.seata.discovery.registry.raft;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.apache.hc.core5.http.HttpStatus;
-import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.apache.hc.core5.http.message.StatusLine;
 import org.apache.seata.common.metadata.MetadataResponse;
 import org.apache.seata.common.metadata.Node;
 import org.apache.seata.common.util.*;
@@ -74,12 +73,12 @@ class RaftRegistryServiceImplTest {
 
         try (MockedStatic<HttpClientUtil> mockedStatic = Mockito.mockStatic(HttpClientUtil.class)) {
 
-            CloseableHttpResponse mockResponse = mock(CloseableHttpResponse.class);
-            StatusLine mockStatusLine = mock(StatusLine.class);
+            ResponseBody mockResponseBody = mock(ResponseBody.class);
+            Response mockResponse = mock(Response.class);
 
-            when(mockResponse.getEntity()).thenReturn(new StringEntity(responseBody));
-            when(mockResponse.getCode()).thenReturn(HttpStatus.SC_OK);
-            when(mockStatusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
+            when(mockResponseBody.string()).thenReturn(responseBody);
+            when(mockResponse.code()).thenReturn(HttpStatus.SC_OK);
+            when(mockResponse.body()).thenReturn(mockResponseBody);
 
             when(HttpClientUtil.doPost(any(String.class), any(Map.class), any(Map.class), any(int.class)))
                     .thenReturn(mockResponse);
@@ -99,19 +98,19 @@ class RaftRegistryServiceImplTest {
     @Test
     public void testRefreshTokenSuccess()
             throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException,
-                    NoSuchFieldException {
+            NoSuchFieldException {
         String jwtToken = "newToken";
         String responseBody =
                 "{\"code\":\"200\",\"message\":\"success\",\"data\":\"" + jwtToken + "\",\"success\":true}";
 
         try (MockedStatic<HttpClientUtil> mockedStatic = Mockito.mockStatic(HttpClientUtil.class)) {
 
-            CloseableHttpResponse mockResponse = mock(CloseableHttpResponse.class);
-            StatusLine mockStatusLine = mock(StatusLine.class);
+            ResponseBody mockResponseBody = mock(ResponseBody.class);
+            Response mockResponse = mock(Response.class);
 
-            when(mockResponse.getEntity()).thenReturn(new StringEntity(responseBody));
-            when(mockResponse.getCode()).thenReturn(HttpStatus.SC_OK);
-            when(mockStatusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
+            when(mockResponseBody.string()).thenReturn(responseBody);
+            when(mockResponse.code()).thenReturn(HttpStatus.SC_OK);
+            when(mockResponse.body()).thenReturn(mockResponseBody);
 
             when(HttpClientUtil.doPost(any(String.class), any(Map.class), any(Map.class), any(int.class)))
                     .thenReturn(mockResponse);
@@ -133,7 +132,7 @@ class RaftRegistryServiceImplTest {
     @Test
     public void testSecureTTL()
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException,
-                    InterruptedException {
+            InterruptedException {
         Field tokenTimeStamp = RaftRegistryServiceImpl.class.getDeclaredField("tokenTimeStamp");
         tokenTimeStamp.setAccessible(true);
         tokenTimeStamp.setLong(RaftRegistryServiceImpl.class, System.currentTimeMillis());
