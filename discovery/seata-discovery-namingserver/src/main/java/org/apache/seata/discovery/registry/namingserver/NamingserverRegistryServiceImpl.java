@@ -16,16 +16,10 @@
  */
 package org.apache.seata.discovery.registry.namingserver;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import okhttp3.Response;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
-import org.apache.hc.core5.http.ParseException;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.seata.common.ConfigurationKeys;
 import org.apache.seata.common.exception.AuthenticationFailedException;
 import org.apache.seata.common.exception.RetryableException;
@@ -46,6 +40,11 @@ import org.apache.seata.config.ConfigurationFactory;
 import org.apache.seata.discovery.registry.RegistryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -111,7 +110,9 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
     private static final int HEALTH_CHECK_THRESHOLD =
             1; // namingserver is considered unhealthy if failing in healthy check more than 1 times
     private volatile long term = 0;
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .build();
     private volatile boolean isSubscribed = false;
     private static final Configuration FILE_CONFIG = ConfigurationFactory.CURRENT_FILE_INSTANCE;
     private String namingServerAddressCache;
@@ -141,7 +142,6 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
     }
 
     private NamingserverRegistryServiceImpl() {
-        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         String heartBeatKey = String.join(FILE_CONFIG_SPLIT_CHAR, FILE_ROOT_REGISTRY, REGISTRY_TYPE, HEART_BEAT_KEY);
         healthcheckPeriod = FILE_CONFIG.getInt(heartBeatKey, healthcheckPeriod);
         List<String> urlList = getNamingAddrs();
@@ -229,8 +229,8 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
             }
             header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
 
-            try (CloseableHttpResponse response = HttpClientUtil.doPost(url, jsonBody, header, 3000)) {
-                int statusCode = response.getCode();
+            try (Response response = HttpClientUtil.doPost(url, jsonBody, header, 3000)) {
+                int statusCode = response.code();
                 if (statusCode == 200) {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("instance has been registered successfully:{}", statusCode);
@@ -248,8 +248,8 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
         url = HTTP_PREFIX + url + "/naming/v1/health";
         Map<String, String> header = new HashMap<>();
         header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
-        try (CloseableHttpResponse response = HttpClientUtil.doGet(url, null, header, 3000)) {
-            int statusCode = response.getCode();
+        try (Response response = HttpClientUtil.doGet(url, null, header, 3000)) {
+            int statusCode = response.code();
             return statusCode == 200;
         } catch (Exception e) {
             return false;
@@ -273,8 +273,8 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
             url += params;
             Map<String, String> header = new HashMap<>();
             header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
-            try (CloseableHttpResponse response = HttpClientUtil.doPost(url, jsonBody, header, 3000)) {
-                int statusCode = response.getCode();
+            try (Response response = HttpClientUtil.doPost(url, jsonBody, header, 3000)) {
+                int statusCode = response.code();
                 if (statusCode == 200) {
                     LOGGER.info("instance has been unregistered successfully:{}", statusCode);
                 } else {
@@ -356,9 +356,9 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
         if (StringUtils.isNotBlank(jwtToken)) {
             header.put(AUTHORIZATION_HEADER, jwtToken);
         }
-        try (CloseableHttpResponse response = HttpClientUtil.doPost(watchAddr, (String) null, header, 30000)) {
+        try (Response response = HttpClientUtil.doPost(watchAddr, (String) null, header, 30000)) {
             if (response != null) {
-                return response.getCode() == HttpStatus.SC_OK;
+                return response.code() == HttpStatus.SC_OK;
             }
         } catch (Exception e) {
             LOGGER.error("watch failed: {}", e.getMessage());
@@ -436,17 +436,17 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
         if (StringUtils.isNotBlank(jwtToken)) {
             header.put(AUTHORIZATION_HEADER, jwtToken);
         }
-        try (CloseableHttpResponse response = HttpClientUtil.doGet(url, paraMap, header, 3000)) {
-            if (response == null || response.getCode() != HttpStatus.SC_OK) {
-                throw new NamingRegistryException(
-                        "cannot lookup server list in vgroup: " + vGroup + ", http code: " + response.getCode());
+        try (Response response = HttpClientUtil.doGet(url, paraMap, header, 3000)) {
+            if (response == null || response.code() != HttpStatus.SC_OK) {
+                throw new NamingRegistryException("cannot lookup server list in vgroup: " + vGroup + ", http code: "
+                        + (response != null ? response.code() : -1));
             }
-            if (response.getEntity() == null) {
+            if (response.body() == null) {
                 throw new NamingRegistryException("Response body is null for vgroup: " + vGroup);
             }
-            String jsonResponse = response.getEntity().toString();
+            String jsonResponse = response.body().string();
             // jsonResponse -> MetaResponse
-            MetaResponse metaResponse = OBJECT_MAPPER.readValue(jsonResponse, new TypeReference<MetaResponse>() {});
+            MetaResponse metaResponse = OBJECT_MAPPER.readValue(jsonResponse, new TypeReference<>() {});
             return handleMetadata(metaResponse, vGroup);
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
@@ -577,20 +577,24 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
         Map<String, String> header = new HashMap<>();
         header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
         String response = null;
-        try (CloseableHttpResponse httpResponse =
+        try (Response httpResponse =
                 HttpClientUtil.doPost("http://" + namingServerAddress + "/api/v1/auth/login", param, header, 1000)) {
             if (httpResponse != null) {
-                if (httpResponse.getCode() == HttpStatus.SC_OK) {
-                    response = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-                    JsonNode jsonNode = OBJECT_MAPPER.readTree(response);
-                    String codeStatus = jsonNode.get("code").asText();
-                    if (!StringUtils.equals(codeStatus, "200")) {
-                        // authorized failed,throw exception to kill process
-                        throw new AuthenticationFailedException(
-                                "Authentication failed! you should configure the correct username and password.");
+                if (httpResponse.code() == HttpStatus.SC_OK) {
+                    if (httpResponse.body() != null) {
+                        response = httpResponse.body().string();
+                        JsonNode jsonNode = OBJECT_MAPPER.readTree(response);
+                        String codeStatus = jsonNode.get("code").asText();
+                        if (!StringUtils.equals(codeStatus, "200")) {
+                            // authorized failed,throw exception to kill process
+                            throw new AuthenticationFailedException(
+                                    "Authentication failed! you should configure the correct username and password.");
+                        }
+                        jwtToken = jsonNode.get("data").asText();
+                        tokenTimeStamp = System.currentTimeMillis();
+                    } else {
+                        throw new AuthenticationFailedException("Authentication failed! Response body is null.");
                     }
-                    jwtToken = jsonNode.get("data").asText();
-                    tokenTimeStamp = System.currentTimeMillis();
                 } else {
                     // authorized failed,throw exception to kill process
                     throw new AuthenticationFailedException(
@@ -599,8 +603,6 @@ public class NamingserverRegistryServiceImpl implements RegistryService<NamingLi
             }
         } catch (IOException e) {
             throw new RetryableException(e.getMessage(), e);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
         }
     }
 

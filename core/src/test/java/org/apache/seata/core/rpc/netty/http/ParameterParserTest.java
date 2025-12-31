@@ -16,12 +16,12 @@
  */
 package org.apache.seata.core.rpc.netty.http;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.seata.common.rpc.http.HttpContext;
 import org.junit.jupiter.api.Test;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -42,7 +42,7 @@ class ParameterParserTest {
     private static final String DEFAULT_NONE = "\n\t\t\n\t\t\n\ue000\ue001\ue002\n\t\t\t\t\n";
 
     @Test
-    void testConvertParamMapWithSingleValue() throws JsonProcessingException {
+    void testConvertParamMapWithSingleValue() throws JacksonException {
         Map<String, List<String>> paramMap = new HashMap<>();
         paramMap.put("key1", Collections.singletonList("value1"));
         paramMap.put("key2", Collections.singletonList("value2"));
@@ -54,7 +54,7 @@ class ParameterParserTest {
     }
 
     @Test
-    void testConvertParamMapWithMultipleValues() throws JsonProcessingException {
+    void testConvertParamMapWithMultipleValues() throws JacksonException {
         Map<String, List<String>> paramMap = new HashMap<>();
         paramMap.put("key", Arrays.asList("value1", "value2", "value3"));
 
@@ -69,7 +69,7 @@ class ParameterParserTest {
     }
 
     @Test
-    void testConvertParamMapWithEmptyList() throws JsonProcessingException {
+    void testConvertParamMapWithEmptyList() throws JacksonException {
         Map<String, List<String>> paramMap = new HashMap<>();
         paramMap.put("emptyKey", Collections.emptyList());
 

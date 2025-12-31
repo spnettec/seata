@@ -17,7 +17,6 @@
 package org.apache.seata.saga.statelang.parser.impl;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
 import org.apache.seata.common.loader.LoadLevel;
 import org.apache.seata.saga.statelang.parser.JsonParser;
@@ -47,7 +46,7 @@ public class FastjsonParser implements JsonParser {
 
     @Override
     public boolean useAutoType(String json) {
-        return json != null && json.contains("\"@type\"");
+        return json != null && (json.contains("\"@type\"") || json.contains("\"@class\""));
     }
 
     @Override
@@ -77,7 +76,7 @@ public class FastjsonParser implements JsonParser {
         if (ignoreAutoType) {
             return JSON.parseObject(json, type);
         } else {
-            return JSON.parseObject(json, type, JSONReader.autoTypeFilter(type));
+            return JSON.parseObject(json.replaceAll("@class", "@type"), type);
         }
     }
 }

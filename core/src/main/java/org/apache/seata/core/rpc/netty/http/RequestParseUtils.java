@@ -16,9 +16,6 @@
  */
 package org.apache.seata.core.rpc.netty.http;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -29,6 +26,9 @@ import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import io.netty.handler.codec.http2.Http2Headers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -112,9 +112,9 @@ public final class RequestParseUtils {
                 JsonNode node = objectMapper.readTree(bodyString);
                 if (node instanceof ObjectNode) {
                     bodyNode = (ObjectNode) node;
-                    bodyNode.fields().forEachRemaining(entry -> jsonParams
+                    bodyNode.properties().forEach(entry -> jsonParams
                             .computeIfAbsent(entry.getKey(), k -> new ArrayList<>())
-                            .add(entry.getValue().asText()));
+                            .add(entry.getValue().asString()));
                 }
             } else if (lowerCaseContentType.contains("application/x-www-form-urlencoded")) {
                 bodyNode = objectMapper.createObjectNode();
@@ -171,9 +171,9 @@ public final class RequestParseUtils {
                 JsonNode node = objectMapper.readTree(body);
                 if (node instanceof ObjectNode) {
                     bodyNode = (ObjectNode) node;
-                    bodyNode.fields().forEachRemaining(entry -> jsonParams
+                    bodyNode.properties().forEach(entry -> jsonParams
                             .computeIfAbsent(entry.getKey(), k -> new ArrayList<>())
-                            .add(entry.getValue().asText()));
+                            .add(entry.getValue().asString()));
                 }
             } else if (lowerCaseContentType.contains("application/x-www-form-urlencoded")) {
                 bodyNode = objectMapper.createObjectNode();

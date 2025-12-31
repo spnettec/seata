@@ -16,7 +16,6 @@
  */
 package org.apache.seata.core.rpc.netty.http;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -40,6 +39,7 @@ import org.apache.seata.core.rpc.netty.http.filter.HttpRequestFilterManager;
 import org.apache.seata.core.rpc.netty.http.filter.HttpRequestParamWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;

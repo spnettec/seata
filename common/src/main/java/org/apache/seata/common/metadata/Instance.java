@@ -16,8 +16,8 @@
  */
 package org.apache.seata.common.metadata;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -162,7 +162,7 @@ public class Instance {
     public String toJsonString(ObjectMapper objectMapper) {
         try {
             return objectMapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }

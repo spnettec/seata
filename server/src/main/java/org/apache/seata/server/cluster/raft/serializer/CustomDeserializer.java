@@ -16,17 +16,16 @@
  */
 package org.apache.seata.server.cluster.raft.serializer;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.apache.seata.common.exception.ErrorCode;
 import org.apache.seata.common.exception.SeataRuntimeException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomDeserializer extends JsonDeserializer<Class<?>> {
+public class CustomDeserializer extends ValueDeserializer<Class<?>> {
 
     String oldPackage = "io.seata.server";
 
@@ -41,8 +40,7 @@ public class CustomDeserializer extends JsonDeserializer<Class<?>> {
     }
 
     @Override
-    public Class<?> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
-            throws IOException {
+    public Class<?> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
         String className = jsonParser.getValueAsString();
         if (className.startsWith(oldPackage)) {
             className = className.replaceFirst(oldPackage, currentPackage);

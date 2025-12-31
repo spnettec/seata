@@ -16,7 +16,6 @@
  */
 package org.apache.seata.rm.datasource.undo.parser;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.seata.common.loader.EnhancedServiceLoader;
 import org.apache.seata.rm.datasource.DataCompareUtils;
 import org.apache.seata.rm.datasource.sql.serial.SerialArray;
@@ -27,6 +26,7 @@ import org.apache.seata.rm.datasource.undo.UndoLogParser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
+import tools.jackson.databind.ObjectMapper;
 
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialClob;

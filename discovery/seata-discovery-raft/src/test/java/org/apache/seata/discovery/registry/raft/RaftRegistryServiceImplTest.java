@@ -16,8 +16,6 @@
  */
 package org.apache.seata.discovery.registry.raft;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.hc.core5.http.HttpStatus;
@@ -31,6 +29,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -98,7 +98,7 @@ class RaftRegistryServiceImplTest {
     @Test
     public void testRefreshTokenSuccess()
             throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException,
-            NoSuchFieldException {
+                    NoSuchFieldException {
         String jwtToken = "newToken";
         String responseBody =
                 "{\"code\":\"200\",\"message\":\"success\",\"data\":\"" + jwtToken + "\",\"success\":true}";
@@ -132,7 +132,7 @@ class RaftRegistryServiceImplTest {
     @Test
     public void testSecureTTL()
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException,
-            InterruptedException {
+                    InterruptedException {
         Field tokenTimeStamp = RaftRegistryServiceImpl.class.getDeclaredField("tokenTimeStamp");
         tokenTimeStamp.setAccessible(true);
         tokenTimeStamp.setLong(RaftRegistryServiceImpl.class, System.currentTimeMillis());
@@ -151,7 +151,7 @@ class RaftRegistryServiceImplTest {
      */
     @Test
     public void testSelectEndpoint()
-            throws JsonProcessingException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+            throws JacksonException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         String jsonString =
                 "{\"nodes\":[{\"control\":{\"host\":\"v-0.svc-l.default.svc.cluster.local\",\"port\":7091},\"transaction\":{\"host\":\"v-0.svc-l.default.svc.cluster.local\",\"port\":8091},\"internal\":{\"host\":\"v-0.svc-l.default.svc.cluster.local\",\"port\":9091},\"group\":\"default\",\"role\":\"LEADER\",\"version\":\"2.3.0-SNAPSHOT\",\"metadata\":{\"external\":[{\"host\":\"192.168.105.7\",\"controlPort\":30071,\"transactionPort\":30091},{\"host\":\"10.10.105.7\",\"controlPort\":30071,\"transactionPort\":30091}]}},{\"control\":{\"host\":\"v-2.svc-l.default.svc.cluster.local\",\"port\":7091},\"transaction\":{\"host\":\"v-2.svc-l.default.svc.cluster.local\",\"port\":8091},\"internal\":{\"host\":\"v-2.svc-l.default.svc.cluster.local\",\"port\":9091},\"group\":\"default\",\"role\":\"FOLLOWER\",\"version\":\"2.3.0-SNAPSHOT\",\"metadata\":{\"external\":[{\"host\":\"192.168.105.7\",\"controlPort\":30073,\"transactionPort\":30093},{\"host\":\"10.10.105.7\",\"controlPort\":30073,\"transactionPort\":30093}]}},{\"control\":{\"host\":\"v-1.svc-l.default.svc.cluster.local\",\"port\":7091},\"transaction\":{\"host\":\"v-1.svc-l.default.svc.cluster.local\",\"port\":8091},\"internal\":{\"host\":\"v-1.svc-l.default.svc.cluster.local\",\"port\":9091},\"group\":\"default\",\"role\":\"FOLLOWER\",\"version\":\"2.3.0-SNAPSHOT\",\"metadata\":{\"external\":[{\"host\":\"192.168.105.7\",\"controlPort\":30072,\"transactionPort\":30092},{\"host\":\"10.10.105.7\",\"controlPort\":30072,\"transactionPort\":30092}]}}],\"storeMode\":\"raft\",\"term\":1}";
 

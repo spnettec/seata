@@ -22,8 +22,8 @@ import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
 import jakarta.annotation.PostConstruct;
 import okhttp3.Response;
-import org.apache.http.entity.ContentType;
-import org.apache.http.protocol.HTTP;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.seata.common.NamingServerConstants;
 import org.apache.seata.common.metadata.Cluster;
 import org.apache.seata.common.metadata.ClusterRole;
@@ -41,8 +41,8 @@ import org.apache.seata.namingserver.entity.pojo.ClusterData;
 import org.apache.seata.namingserver.entity.vo.NamespaceVO;
 import org.apache.seata.namingserver.entity.vo.monitor.ClusterVO;
 import org.apache.seata.namingserver.listener.ClusterChangeEvent;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -217,7 +217,7 @@ public class NamingManager {
             params.put(CONSTANT_GROUP, vGroup);
             params.put(NamingServerConstants.CONSTANT_UNIT, actualUnitName);
             Map<String, String> header = new HashMap<>();
-            header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+            header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
 
             try (Response httpResponse = HttpClientUtil.doGet(httpUrl, params, header, 3000)) {
                 if (httpResponse == null || httpResponse.code() != 200) {
@@ -250,7 +250,7 @@ public class NamingManager {
             params.put(CONSTANT_GROUP, vGroup);
             params.put(NamingServerConstants.CONSTANT_UNIT, unitName);
             Map<String, String> header = new HashMap<>();
-            header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+            header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
             try (Response httpResponse = HttpClientUtil.doGet(httpUrl, params, header, 3000)) {
                 if (httpResponse == null || httpResponse.code() != 200) {
                     LOGGER.warn("remove vGroup in old cluster failed");
@@ -418,8 +418,8 @@ public class NamingManager {
         return readOnly
                 ? clusterData.getInstanceList()
                 : clusterData.getInstanceList().stream()
-                .filter(node -> node.getRole() == ClusterRole.LEADER || node.getRole() == ClusterRole.MEMBER)
-                .collect(Collectors.toList());
+                        .filter(node -> node.getRole() == ClusterRole.LEADER || node.getRole() == ClusterRole.MEMBER)
+                        .collect(Collectors.toList());
     }
 
     public List<NamingServerNode> getInstancesByVgroupAndNamespace(String namespace, String vgroup, boolean readOnly) {

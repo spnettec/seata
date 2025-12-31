@@ -17,15 +17,18 @@
 package org.apache.seata.saga.statelang.parser.impl;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.seata.common.loader.LoadLevel;
 import org.apache.seata.saga.statelang.parser.JsonParser;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.exc.JacksonIOException;
+import tools.jackson.databind.DefaultTyping;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,18 +38,24 @@ import java.util.List;
  */
 @LoadLevel(name = JacksonJsonParser.NAME)
 public class JacksonJsonParser implements JsonParser {
-
-    private final ObjectMapper objectMapperWithAutoType = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .enableDefaultTypingAsProperty(DefaultTyping.NON_FINAL, "@type")
+    private final ObjectMapper objectMapperWithAutoType = JsonMapper.builder()
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .enable(MapperFeature.PROPAGATE_TRANSIENT_MARKER)
-            .setSerializationInclusion(Include.NON_NULL);
+            .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(Include.NON_NULL))
+            .activateDefaultTyping(
+                    BasicPolymorphicTypeValidator.builder()
+                            .allowIfBaseType(Object.class)
+                            .build(),
+                    DefaultTyping.NON_FINAL,
+                    JsonTypeInfo.As.PROPERTY)
+            .build();
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
+    private final ObjectMapper objectMapper = JsonMapper.builder()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .disableDefaultTyping()
+            .deactivateDefaultTyping()
             .enable(MapperFeature.PROPAGATE_TRANSIENT_MARKER)
-            .setSerializationInclusion(Include.NON_NULL);
+            .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(Include.NON_NULL))
+            .build();
 
     public static final String NAME = "jackson";
 
@@ -62,7 +71,7 @@ public class JacksonJsonParser implements JsonParser {
 
     @Override
     public boolean useAutoType(String json) {
-        return json != null && json.contains("\"@type\"");
+        return json != null && (json.contains("\"@type\"") || json.contains("\"@class\""));
     }
 
     @Override
@@ -87,7 +96,7 @@ public class JacksonJsonParser implements JsonParser {
                     return objectMapperWithAutoType.writeValueAsString(o);
                 }
             }
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException("Parse object to json error", e);
         }
     }
@@ -101,9 +110,9 @@ public class JacksonJsonParser implements JsonParser {
             if (ignoreAutoType) {
                 return objectMapper.readValue(json, type);
             } else {
-                return objectMapperWithAutoType.readValue(json, type);
+                return objectMapperWithAutoType.readValue(json.replaceAll("@type", "@class"), type);
             }
-        } catch (IOException e) {
+        } catch (JacksonIOException e) {
             throw new RuntimeException("Parse json to object error", e);
         }
     }

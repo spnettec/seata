@@ -16,10 +16,10 @@
  */
 package org.apache.seata.core.rpc.netty.http;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.apache.seata.common.thread.NamedThreadFactory;
 import org.apache.seata.core.rpc.netty.NettyServerConfig;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;

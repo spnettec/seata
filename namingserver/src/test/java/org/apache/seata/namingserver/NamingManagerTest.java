@@ -34,11 +34,11 @@ import org.apache.seata.namingserver.manager.NamingManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
@@ -54,19 +54,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 
 @SpringBootTest
 class NamingManagerTest {
 
     private NamingManager namingManager;
 
-    @Mock
+    @MockitoBean
     private ApplicationContext applicationContext;
 
-    @Mock
     private Response httpResponse;
 
-    @Mock
     private ResponseBody responseBody;
 
     private MockedStatic<HttpClientUtil> mockedHttpClientUtil;
@@ -77,7 +76,8 @@ class NamingManagerTest {
         ReflectionTestUtils.setField(namingManager, "applicationContext", applicationContext);
         ReflectionTestUtils.setField(namingManager, "heartbeatTimeThreshold", 500000);
         ReflectionTestUtils.setField(namingManager, "heartbeatCheckTimePeriod", 10000000);
-
+        httpResponse = mock(Response.class);
+        responseBody = mock(ResponseBody.class);
         Mockito.when(httpResponse.code()).thenReturn(200);
         Mockito.when(httpResponse.body()).thenReturn(responseBody);
         mockedHttpClientUtil = Mockito.mockStatic(HttpClientUtil.class);

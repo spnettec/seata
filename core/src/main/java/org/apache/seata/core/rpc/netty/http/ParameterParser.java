@@ -16,23 +16,23 @@
  */
 package org.apache.seata.core.rpc.netty.http;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.seata.common.rpc.http.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 
 /**
  * A utility class for parsing HTTP request parameters and converting them into Java objects.
@@ -42,9 +42,10 @@ public class ParameterParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterParser.class);
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .configure(FAIL_ON_EMPTY_BEANS, false);
+            .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+            .build();
 
     private static final String DEFAULT_NONE = "\n\t\t\n\t\t\n\ue000\ue001\ue002\n\t\t\t\t\n";
 
@@ -69,7 +70,7 @@ public class ParameterParser {
 
     public static Object[] getArgValues(
             ParamMetaData[] paramMetaDatas, Method handleMethod, ObjectNode paramMap, HttpContext httpContext)
-            throws JsonProcessingException {
+            throws JacksonException {
         Class<?>[] parameterTypes = handleMethod.getParameterTypes();
         Parameter[] parameters = handleMethod.getParameters();
         return getParameters(parameterTypes, paramMetaDatas, parameters, paramMap, httpContext);
@@ -81,7 +82,7 @@ public class ParameterParser {
             Parameter[] parameters,
             ObjectNode paramMap,
             HttpContext httpContext)
-            throws JsonProcessingException {
+            throws JacksonException {
         int length = parameterTypes.length;
         Object[] ret = new Object[length];
         for (int i = 0; i < length; i++) {

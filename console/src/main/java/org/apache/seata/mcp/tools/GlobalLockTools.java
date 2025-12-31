@@ -16,9 +16,6 @@
  */
 package org.apache.seata.mcp.tools;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.seata.common.result.PageResult;
 import org.apache.seata.common.util.StringUtils;
 import org.apache.seata.mcp.core.constant.RPCConstant;
@@ -36,6 +33,9 @@ import org.slf4j.LoggerFactory;
 import org.springaicommunity.mcp.annotation.McpTool;
 import org.springaicommunity.mcp.annotation.McpToolParam;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -94,7 +94,7 @@ public class GlobalLockTools {
                 nameSpaceDetail, RPCConstant.GLOBAL_LOCK_BASE_URL + "/query", param, null, null);
         try {
             result = objectMapper.readValue(response, new TypeReference<PageResult<McpGlobalLockVO>>() {});
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             logger.error(e.getMessage());
         }
         if (result == null) {

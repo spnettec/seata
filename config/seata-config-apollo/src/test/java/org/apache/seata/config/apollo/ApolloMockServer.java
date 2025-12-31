@@ -17,12 +17,12 @@
 package org.apache.seata.config.apollo;
 
 import com.ctrip.framework.apollo.core.dto.ApolloConfig;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +62,7 @@ public class ApolloMockServer {
                     try {
                         result = loadMockData(appId, cluster, namespace);
                         return new MockResponse().setResponseCode(200).setBody(result);
-                    } catch (JsonProcessingException e) {
+                    } catch (JacksonException e) {
                     }
                 }
                 return new MockResponse().setResponseCode(404);
@@ -72,7 +72,7 @@ public class ApolloMockServer {
         System.setProperty("apollo.configService", "http://localhost:" + port);
     }
 
-    private String loadMockData(String appId, String Cluster, String namespace) throws JsonProcessingException {
+    private String loadMockData(String appId, String Cluster, String namespace) throws JacksonException {
         String fileName = "mock-" + namespace + ".properties";
         ApolloConfig apolloConfig = new ApolloConfig(appId, Cluster, namespace, "releaseKey");
         Properties properties = new Properties();

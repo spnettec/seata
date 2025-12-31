@@ -48,6 +48,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
+import tools.jackson.core.JacksonException;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -513,7 +514,7 @@ class NamingserverRegistryServiceImplTest {
                     .when(() -> HttpClientUtil.doGet(any(), any(), any(), anyInt()))
                     .thenReturn(mockResponse);
 
-            Assertions.assertThrows(IOException.class, () -> spyService.refreshGroup("testGroup"));
+            Assertions.assertThrows(JacksonException.class, () -> spyService.refreshGroup("testGroup"));
         }
     }
 

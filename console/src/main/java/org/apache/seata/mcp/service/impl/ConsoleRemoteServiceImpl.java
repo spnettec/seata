@@ -16,7 +16,6 @@
  */
 package org.apache.seata.mcp.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.seata.common.NamingServerLocalMarker;
 import org.apache.seata.common.exception.AuthenticationFailedException;
 import org.apache.seata.common.util.StringUtils;
@@ -38,6 +37,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 

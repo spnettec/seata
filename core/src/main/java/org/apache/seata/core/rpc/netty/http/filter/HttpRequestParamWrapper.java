@@ -16,7 +16,6 @@
  */
 package org.apache.seata.core.rpc.netty.http.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
@@ -26,6 +25,7 @@ import org.apache.seata.core.rpc.netty.http.RequestParseUtils;
 import org.apache.seata.core.rpc.netty.http.SimpleHttp2Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;

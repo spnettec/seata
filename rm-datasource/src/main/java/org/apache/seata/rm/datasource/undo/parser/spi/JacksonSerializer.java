@@ -16,8 +16,8 @@
  */
 package org.apache.seata.rm.datasource.undo.parser.spi;
 
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonSerializer;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.ValueSerializer;
 
 /**
  * The interface Jackson serializer.
@@ -38,12 +38,12 @@ public interface JacksonSerializer<T> {
      *
      * @return json serializer
      */
-    JsonSerializer<T> ser();
+    ValueSerializer<T> ser();
 
     /**
      * Jackson custom deserializer
      *
      * @return json deserializer
      */
-    JsonDeserializer<? extends T> deser();
+    ValueDeserializer<? extends T> deser();
 }

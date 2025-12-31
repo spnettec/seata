@@ -16,13 +16,10 @@
  */
 package org.apache.seata.discovery.registry.raft;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.Response;
-import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpStatus;
 import org.apache.seata.common.ConfigurationKeys;
 import org.apache.seata.common.exception.AuthenticationFailedException;
 import org.apache.seata.common.exception.NotSupportYetException;
@@ -42,6 +39,9 @@ import org.apache.seata.config.ConfigurationFactory;
 import org.apache.seata.discovery.registry.RegistryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -423,7 +423,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
                 header.put(AUTHORIZATION_HEADER, jwtToken);
             }
             try (Response response =
-                         HttpClientUtil.doPost("http://" + tcAddress + "/metadata/v1/watch", param, header, 30000)) {
+                    HttpClientUtil.doPost("http://" + tcAddress + "/metadata/v1/watch", param, header, 30000)) {
                 if (response != null) {
                     int statusCode = response.code();
                     if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
@@ -456,18 +456,18 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
                     aliveAddress.isEmpty()
                             ? aliveAddress
                             : aliveAddress.parallelStream()
-                            .filter(inetSocketAddress -> {
-                                // Since only follower will turn into leader, only the follower node needs to be
-                                // listened to
-                                return inetSocketAddress.getPort() != leaderAddress.getPort()
-                                        || !inetSocketAddress
-                                        .getAddress()
-                                        .getHostAddress()
-                                        .equals(leaderAddress
-                                                .getAddress()
-                                                .getHostAddress());
-                            })
-                            .collect(Collectors.toList()));
+                                    .filter(inetSocketAddress -> {
+                                        // Since only follower will turn into leader, only the follower node needs to be
+                                        // listened to
+                                        return inetSocketAddress.getPort() != leaderAddress.getPort()
+                                                || !inetSocketAddress
+                                                        .getAddress()
+                                                        .getHostAddress()
+                                                        .equals(leaderAddress
+                                                                .getAddress()
+                                                                .getHostAddress());
+                                    })
+                                    .collect(Collectors.toList()));
         } else {
             return RegistryService.super.refreshAliveLookup(transactionServiceGroup, aliveAddress);
         }
@@ -496,7 +496,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
             param.put("group", group);
             String response = null;
             try (Response httpResponse =
-                         HttpClientUtil.doGet("http://" + tcAddress + "/metadata/v1/cluster", param, header, 1000)) {
+                    HttpClientUtil.doGet("http://" + tcAddress + "/metadata/v1/cluster", param, header, 1000)) {
                 if (httpResponse != null) {
                     int statusCode = httpResponse.code();
                     if (statusCode == HttpStatus.SC_OK) {
@@ -523,7 +523,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
                     try {
                         metadataResponse = OBJECT_MAPPER.readValue(response, MetadataResponse.class);
                         METADATA.refreshMetadata(clusterName, metadataResponse);
-                    } catch (JsonProcessingException e) {
+                    } catch (JacksonException e) {
                         LOGGER.error(e.getMessage(), e);
                     }
                 }
@@ -546,7 +546,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
         header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
         String response = null;
         try (Response httpResponse =
-                     HttpClientUtil.doPost("http://" + tcAddress + "/api/v1/auth/login", param, header, 1000)) {
+                HttpClientUtil.doPost("http://" + tcAddress + "/api/v1/auth/login", param, header, 1000)) {
             if (httpResponse != null) {
                 if (httpResponse.code() == HttpStatus.SC_OK) {
                     if (httpResponse.body() != null) {

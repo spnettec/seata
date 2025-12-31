@@ -16,9 +16,6 @@
  */
 package org.apache.seata.server.filter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.seata.common.loader.LoadLevel;
 import org.apache.seata.common.util.CollectionUtils;
 import org.apache.seata.common.util.StringUtils;
@@ -28,6 +25,9 @@ import org.apache.seata.core.exception.HttpRequestFilterException;
 import org.apache.seata.core.rpc.netty.http.filter.HttpFilterContext;
 import org.apache.seata.core.rpc.netty.http.filter.HttpRequestFilter;
 import org.apache.seata.core.rpc.netty.http.filter.HttpRequestFilterChain;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +85,7 @@ public class XSSHttpRequestFilter implements HttpRequestFilter {
             // malicious modifications at runtime.
             this.xssKeywords = Collections.unmodifiableList(new ArrayList<>(mergedKeywords));
 
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new IllegalArgumentException(
                     "Invalid format for configuration 'server.http.filter.xss.keywords'. "
                             + "Expected a JSON array like [\"<script>\", \"vbscript:\"], but got: "

@@ -16,25 +16,24 @@
  */
 package org.apache.seata.server.cluster.raft.serializer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.seata.common.loader.LoadLevel;
 import org.apache.seata.core.serializer.Serializer;
-
-import java.io.IOException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
 
 /**
  */
 @LoadLevel(name = "JACKSON")
 public class JacksonSerializer implements Serializer {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER;
 
     static {
         SimpleModule module = new SimpleModule();
         module.addDeserializer(Class.class, new CustomDeserializer());
-        OBJECT_MAPPER.registerModule(module);
+        OBJECT_MAPPER = JsonMapper.builder().addModule(module).build();
     }
 
     @Override
@@ -42,19 +41,15 @@ public class JacksonSerializer implements Serializer {
         try {
             JsonInfo jsonInfo = new JsonInfo(OBJECT_MAPPER.writeValueAsBytes(t), t.getClass());
             return OBJECT_MAPPER.writeValueAsBytes(jsonInfo);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
     public <T> T deserialize(byte[] bytes) {
-        try {
-            JsonInfo jsonInfo = OBJECT_MAPPER.readValue(bytes, JsonInfo.class);
-            return (T) OBJECT_MAPPER.readValue(jsonInfo.getObj(), jsonInfo.getClz());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        JsonInfo jsonInfo = OBJECT_MAPPER.readValue(bytes, JsonInfo.class);
+        return (T) OBJECT_MAPPER.readValue(jsonInfo.getObj(), jsonInfo.getClz());
     }
 
     static class JsonInfo {

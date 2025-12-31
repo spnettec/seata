@@ -16,9 +16,6 @@
  */
 package org.apache.seata.server.storage.redis;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.seata.common.exception.StoreException;
 import org.apache.seata.common.io.FileLoader;
 import org.slf4j.Logger;
@@ -26,6 +23,9 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisDataException;
 import redis.clients.jedis.exceptions.JedisNoScriptException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -139,7 +139,7 @@ public class LuaParser {
     public static <T> T getObjectFromJson(String json, Class<T> classz) {
         try {
             return OBJECT_MAPPER.readValue(json, classz);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new StoreException(e.getMessage());
         }
     }
@@ -148,7 +148,7 @@ public class LuaParser {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             return objectMapper.readValue(json, new TypeReference<List<T>>() {});
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new StoreException(e.getMessage());
         }
     }

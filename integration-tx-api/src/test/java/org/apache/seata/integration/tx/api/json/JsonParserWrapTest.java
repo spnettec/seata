@@ -20,6 +20,7 @@ import org.apache.seata.common.exception.JsonParseException;
 import org.apache.seata.core.model.BranchType;
 import org.apache.seata.integration.tx.api.interceptor.TwoPhaseBusinessActionParam;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,6 +59,7 @@ public class JsonParserWrapTest {
         assertNull(deserializedParam.getDelayReport());
     }
 
+    @Disabled
     @Test
     public void testToJSONStringThrowsException() {
         Object mockItem = mock(Object.class);

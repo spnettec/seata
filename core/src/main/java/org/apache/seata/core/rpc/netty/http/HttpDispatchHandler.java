@@ -16,8 +16,6 @@
  */
 package org.apache.seata.core.rpc.netty.http;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -40,6 +38,8 @@ import org.apache.seata.core.rpc.netty.http.filter.HttpRequestFilterManager;
 import org.apache.seata.core.rpc.netty.http.filter.HttpRequestParamWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -147,7 +147,7 @@ public class HttpDispatchHandler extends BaseHttpChannelHandler<HttpRequest> {
     }
 
     private void sendResponse(ChannelHandlerContext ctx, boolean keepAlive, Object result, HttpFilterContext<?> context)
-            throws JsonProcessingException {
+            throws JacksonException {
         FullHttpResponse response;
         if (result != null) {
             byte[] body = OBJECT_MAPPER.writeValueAsBytes(result);

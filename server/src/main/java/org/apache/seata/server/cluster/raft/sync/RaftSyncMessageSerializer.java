@@ -16,7 +16,6 @@
  */
 package org.apache.seata.server.cluster.raft.sync;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import org.apache.seata.common.exception.ErrorCode;
 import org.apache.seata.common.exception.SeataRuntimeException;
 import org.apache.seata.common.loader.EnhancedServiceLoader;
@@ -26,6 +25,7 @@ import org.apache.seata.core.serializer.SerializerType;
 import org.apache.seata.server.cluster.raft.sync.msg.RaftSyncMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -120,7 +120,7 @@ public class RaftSyncMessageSerializer {
             LOGGER.error("Failed to read raft synchronization log: {}", e.getMessage(), e);
             if (e instanceof RuntimeException) {
                 Throwable cause = e.getCause();
-                if (cause instanceof JsonMappingException) {
+                if (cause instanceof JacksonException) {
                     Throwable jsonCause = cause.getCause();
                     if (jsonCause instanceof SeataRuntimeException) {
                         throw (SeataRuntimeException) jsonCause;

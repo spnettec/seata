@@ -16,8 +16,6 @@
  */
 package org.apache.seata.common.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -31,6 +29,8 @@ import okhttp3.Response;
 import org.apache.seata.common.executor.HttpCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -150,7 +150,7 @@ public class HttpClientUtil {
             Request request = buildRequest(url, headers, requestBody, "POST");
             OkHttpClient client = createHttp2ClientWithTimeout(timeoutMillis);
             executeAsync(client, request, callback);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             LOGGER.error(e.getMessage(), e);
             callback.onFailure(e);
         }
@@ -180,7 +180,7 @@ public class HttpClientUtil {
     }
 
     private static RequestBody createRequestBody(Map<String, String> params, String contentType)
-            throws JsonProcessingException {
+            throws JacksonException {
         if (params == null || params.isEmpty()) {
             return RequestBody.create(new byte[0]);
         }

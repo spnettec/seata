@@ -16,21 +16,20 @@
  */
 package org.apache.seata.integration.tx.api.json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public class JsonParserImpl implements JsonParser {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = JsonMapper.builder().build();
 
     @Override
-    public String toJSONString(Object object) throws IOException {
+    public String toJSONString(Object object) {
         return mapper.writeValueAsString(object);
     }
 
     @Override
-    public <T> T parseObject(String text, Class<T> clazz) throws IOException {
+    public <T> T parseObject(String text, Class<T> clazz) {
         return mapper.readValue(text, clazz);
     }
 

@@ -16,8 +16,6 @@
  */
 package org.apache.seata.rm.datasource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.seata.common.LockStrategyMode;
 import org.apache.seata.common.exception.ShouldNeverHappenException;
 import org.apache.seata.common.util.CollectionUtils;
@@ -26,6 +24,8 @@ import org.apache.seata.core.context.GlobalLockConfigHolder;
 import org.apache.seata.core.exception.TransactionException;
 import org.apache.seata.core.model.GlobalLockConfig;
 import org.apache.seata.rm.datasource.undo.SQLUndoLog;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.sql.SQLException;
 import java.sql.Savepoint;
@@ -305,7 +305,7 @@ public class ConnectionContext {
         if (!this.applicationData.isEmpty()) {
             try {
                 return MAPPER.writeValueAsString(this.applicationData);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 throw new TransactionException(e.getMessage(), e);
             }
         }

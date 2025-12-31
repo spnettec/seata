@@ -16,7 +16,6 @@
  */
 package org.apache.seata.server.transaction.at;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.seata.common.exception.StoreException;
 import org.apache.seata.common.util.StringUtils;
 import org.apache.seata.core.exception.BranchTransactionException;
@@ -27,8 +26,9 @@ import org.apache.seata.core.rpc.RemotingServer;
 import org.apache.seata.server.coordinator.AbstractCore;
 import org.apache.seata.server.session.BranchSession;
 import org.apache.seata.server.session.GlobalSession;
+import tools.jackson.core.exc.JacksonIOException;
+import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,7 +70,7 @@ public class ATCore extends AbstractCore {
                 if (clientSkipCheckLock instanceof Boolean) {
                     skipCheckLock = (boolean) clientSkipCheckLock;
                 }
-            } catch (IOException e) {
+            } catch (JacksonIOException e) {
                 LOGGER.error("failed to get application data: {}", e.getMessage(), e);
             }
         }
