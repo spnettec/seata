@@ -36,6 +36,7 @@ import tools.jackson.core.JsonToken;
 import tools.jackson.core.exc.JacksonIOException;
 import tools.jackson.core.type.WritableTypeId;
 import tools.jackson.databind.*;
+import tools.jackson.databind.cfg.DateTimeFeature;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import tools.jackson.databind.jsontype.TypeSerializer;
@@ -180,10 +181,9 @@ public class JacksonUndoLogParser implements UndoLogParser, Initialize {
         module.addSerializer(SerialArray.class, serialArraySerializer);
         module.addDeserializer(SerialArray.class, serialArrayDeserializer);
         registerDmdbTimestampModuleIfPresent();
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-        mapper.registerModule(javaTimeModule);
         mapper = JsonMapper.builder()
                 .addModule(module)
+                .enable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .activateDefaultTyping(
                         BasicPolymorphicTypeValidator.builder()
@@ -606,11 +606,11 @@ public class JacksonUndoLogParser implements UndoLogParser, Initialize {
     /**
      * the class of deserialize SerialArray type
      */
-    private static class SerialArrayDeserializer extends JsonDeserializer<SerialArray> {
+    private static class SerialArrayDeserializer extends ValueDeserializer<SerialArray> {
         @Override
-        public SerialArray deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        public SerialArray deserialize(JsonParser p, DeserializationContext ctxt) {
             try {
-                JsonNode node = p.getCodec().readTree(p);
+                JsonNode node = p.objectReadContext().readTree(p);
                 SerialArray serialArray = new SerialArray();
 
                 if (node.has("baseType") && !node.get("baseType").isNull()) {
