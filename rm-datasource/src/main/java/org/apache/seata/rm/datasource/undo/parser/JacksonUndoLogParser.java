@@ -180,6 +180,8 @@ public class JacksonUndoLogParser implements UndoLogParser, Initialize {
         module.addSerializer(SerialArray.class, serialArraySerializer);
         module.addDeserializer(SerialArray.class, serialArrayDeserializer);
         registerDmdbTimestampModuleIfPresent();
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        mapper.registerModule(javaTimeModule);
         mapper = JsonMapper.builder()
                 .addModule(module)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -604,11 +606,11 @@ public class JacksonUndoLogParser implements UndoLogParser, Initialize {
     /**
      * the class of deserialize SerialArray type
      */
-    private static class SerialArrayDeserializer extends ValueDeserializer<SerialArray> {
+    private static class SerialArrayDeserializer extends JsonDeserializer<SerialArray> {
         @Override
-        public SerialArray deserialize(JsonParser p, DeserializationContext ctxt) {
+        public SerialArray deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             try {
-                JsonNode node = p.objectReadContext().readTree(p);
+                JsonNode node = p.getCodec().readTree(p);
                 SerialArray serialArray = new SerialArray();
 
                 if (node.has("baseType") && !node.get("baseType").isNull()) {
