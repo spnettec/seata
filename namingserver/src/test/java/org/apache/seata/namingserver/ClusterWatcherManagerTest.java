@@ -22,13 +22,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.seata.namingserver.listener.ClusterChangeEvent;
 import org.apache.seata.namingserver.listener.Watcher;
 import org.apache.seata.namingserver.manager.ClusterWatcherManager;
+import org.apache.seata.namingserver.metrics.NoOpNamingMetricsManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -43,10 +46,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ClusterWatcherManagerTest {
 
     private ClusterWatcherManager clusterWatcherManager;
@@ -60,7 +62,12 @@ public class ClusterWatcherManagerTest {
     @Mock
     private HttpServletRequest request;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     private final String TEST_GROUP = "testGroup";
+    private final String TEST_NAMESPACE = "testNamespace";
+    private final String TEST_CLUSTER = "testCluster";
     private final int TEST_TIMEOUT = 5000;
     private final Long TEST_TERM = 1000L;
     private final String TEST_CLIENT_ENDPOINT = "127.0.0.1";
@@ -68,9 +75,13 @@ public class ClusterWatcherManagerTest {
     @BeforeEach
     void setUp() {
         clusterWatcherManager = new ClusterWatcherManager();
-        lenient().when(asyncContext.getResponse()).thenReturn(response);
-        lenient().when(asyncContext.getRequest()).thenReturn(request);
-        lenient().when(request.getRemoteAddr()).thenReturn(TEST_CLIENT_ENDPOINT);
+        // Inject dependencies to avoid null pointer
+        ReflectionTestUtils.setField(clusterWatcherManager, "metricsManager", new NoOpNamingMetricsManager());
+        ReflectionTestUtils.setField(clusterWatcherManager, "eventPublisher", eventPublisher);
+
+        Mockito.when(asyncContext.getResponse()).thenReturn(response);
+        Mockito.when(asyncContext.getRequest()).thenReturn(request);
+        Mockito.when(request.getRemoteAddr()).thenReturn(TEST_CLIENT_ENDPOINT);
 
         Map<String, Queue<Watcher<?>>> watchers =
                 (Map<String, Queue<Watcher<?>>>) ReflectionTestUtils.getField(clusterWatcherManager, "WATCHERS");
@@ -140,7 +151,7 @@ public class ClusterWatcherManagerTest {
         assertNotNull(watchers);
         assertNotNull(updateTime);
 
-        ClusterChangeEvent zeroTermEvent = new ClusterChangeEvent(this, TEST_GROUP, 0);
+        ClusterChangeEvent zeroTermEvent = new ClusterChangeEvent(this, TEST_GROUP, TEST_NAMESPACE, TEST_CLUSTER, 0);
         clusterWatcherManager.onChangeEvent(zeroTermEvent);
 
         assertEquals(0, updateTime.size());
@@ -149,7 +160,8 @@ public class ClusterWatcherManagerTest {
         assertNotNull(watchers.get(TEST_GROUP));
         assertEquals(1, watchers.get(TEST_GROUP).size());
 
-        ClusterChangeEvent event = new ClusterChangeEvent(this, TEST_GROUP, TEST_TERM + 1);
+        ClusterChangeEvent event =
+                new ClusterChangeEvent(this, TEST_GROUP, TEST_NAMESPACE, TEST_CLUSTER, TEST_TERM + 1);
         clusterWatcherManager.onChangeEvent(event);
 
         Mockito.verify(response).setStatus(HttpServletResponse.SC_OK);
@@ -250,7 +262,7 @@ public class ClusterWatcherManagerTest {
                 new Watcher<>(TEST_GROUP, asyncContext, TEST_TIMEOUT, TEST_TERM, TEST_CLIENT_ENDPOINT);
         clusterWatcherManager.registryWatcher(watcher);
 
-        ClusterChangeEvent minus1TermEvent = new ClusterChangeEvent(this, TEST_GROUP, -1);
+        ClusterChangeEvent minus1TermEvent = new ClusterChangeEvent(this, TEST_GROUP, TEST_NAMESPACE, TEST_CLUSTER, -1);
         clusterWatcherManager.onChangeEvent(minus1TermEvent);
 
         Map<String, Long> updateTime =

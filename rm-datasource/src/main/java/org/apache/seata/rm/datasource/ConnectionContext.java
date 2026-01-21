@@ -17,15 +17,16 @@
 package org.apache.seata.rm.datasource;
 
 import org.apache.seata.common.LockStrategyMode;
+import org.apache.seata.common.exception.JsonParseException;
 import org.apache.seata.common.exception.ShouldNeverHappenException;
+import org.apache.seata.common.json.JsonSerializer;
+import org.apache.seata.common.json.JsonSerializerFactory;
 import org.apache.seata.common.util.CollectionUtils;
 import org.apache.seata.common.util.StringUtils;
 import org.apache.seata.core.context.GlobalLockConfigHolder;
 import org.apache.seata.core.exception.TransactionException;
 import org.apache.seata.core.model.GlobalLockConfig;
 import org.apache.seata.rm.datasource.undo.SQLUndoLog;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 
 import java.sql.SQLException;
 import java.sql.Savepoint;
@@ -59,10 +60,9 @@ public class ConnectionContext {
         }
     };
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-
     private String xid;
     private Long branchId;
+    private final JsonSerializer jsonSerializer = JsonSerializerFactory.getSerializer("jackson");
     private boolean isGlobalLockRequire;
     private Savepoint currentSavepoint = DEFAULT_SAVEPOINT;
     private boolean autoCommitChanged;
@@ -304,8 +304,8 @@ public class ConnectionContext {
 
         if (!this.applicationData.isEmpty()) {
             try {
-                return MAPPER.writeValueAsString(this.applicationData);
-            } catch (JacksonException e) {
+                return jsonSerializer.toJSONString(this.applicationData, true, false);
+            } catch (JsonParseException e) {
                 throw new TransactionException(e.getMessage(), e);
             }
         }
