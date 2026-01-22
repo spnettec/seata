@@ -18,16 +18,18 @@ package org.apache.seata.common.json.impl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 import org.apache.seata.common.exception.JsonParseException;
 import org.apache.seata.common.json.JsonSerializer;
 import org.apache.seata.common.loader.LoadLevel;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DefaultTyping;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import tools.jackson.databind.jsontype.PolymorphicTypeValidator;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,36 +45,36 @@ public class JacksonJsonSerializer implements JsonSerializer {
 
     private final ObjectMapper objectMapperWithAutoType;
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
 
     public JacksonJsonSerializer() {
-        this.defaultObjectMapper = new ObjectMapper()
+        this.defaultObjectMapper = JsonMapper.builder()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .disableDefaultTyping()
-                .enable(MapperFeature.PROPAGATE_TRANSIENT_MARKER)
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-        this.objectMapperWithAutoType = new ObjectMapper()
+                .configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)
+                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .build();
+        PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
+                .allowIfBaseType(Object.class)
+                .build();
+        this.objectMapperWithAutoType = JsonMapper.builder()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .enableDefaultTypingAsProperty(DefaultTyping.NON_FINAL, "@type")
-                .enable(MapperFeature.PROPAGATE_TRANSIENT_MARKER)
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-        this.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        this.mapper.activateDefaultTyping(
-                this.mapper.getPolymorphicTypeValidator(),
-                ObjectMapper.DefaultTyping.NON_FINAL,
-                JsonTypeInfo.As.PROPERTY);
-        this.mapper.setConfig(this.mapper.getSerializationConfig().with(MapperFeature.PROPAGATE_TRANSIENT_MARKER));
-        this.mapper.setConfig(this.mapper.getDeserializationConfig().with(MapperFeature.PROPAGATE_TRANSIENT_MARKER));
-        this.mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                .configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)
+                .activateDefaultTypingAsProperty(ptv, DefaultTyping.NON_FINAL, "@type")
+                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .build();
+        this.mapper = JsonMapper.builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .activateDefaultTyping(ptv, DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY)
+                .configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)
+                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .build();
     }
 
     @Override
     public String toJSONString(Object object) {
         try {
             return mapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new JsonParseException("Jackson serialize error", e);
         }
     }
@@ -84,7 +86,7 @@ public class JacksonJsonSerializer implements JsonSerializer {
         }
         try {
             return mapper.readValue(text, clazz);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new JsonParseException("Jackson deserialize error", e);
         }
     }
@@ -96,7 +98,7 @@ public class JacksonJsonSerializer implements JsonSerializer {
         }
         try {
             return objectMapperWithAutoType.readValue(text, objectMapperWithAutoType.constructType(type));
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new JsonParseException("Jackson deserialize error", e);
         }
     }
@@ -133,7 +135,7 @@ public class JacksonJsonSerializer implements JsonSerializer {
                     return objectMapperWithAutoType.writeValueAsString(o);
                 }
             }
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new JsonParseException("Jackson serialize error", e);
         }
     }
@@ -152,7 +154,7 @@ public class JacksonJsonSerializer implements JsonSerializer {
             } else {
                 return objectMapperWithAutoType.readValue(json, type);
             }
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new JsonParseException("Jackson deserialize error", e);
         }
     }

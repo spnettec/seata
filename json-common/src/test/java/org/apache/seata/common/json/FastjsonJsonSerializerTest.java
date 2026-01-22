@@ -16,7 +16,7 @@
  */
 package org.apache.seata.common.json;
 
-import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson2.TypeReference;
 import org.apache.seata.common.exception.JsonParseException;
 import org.apache.seata.common.json.impl.FastjsonJsonSerializer;
 import org.apache.seata.common.json.impl.JacksonJsonSerializer;
