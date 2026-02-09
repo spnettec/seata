@@ -59,7 +59,7 @@
         <jettison.version>1.5.4</jettison.version>
         <consul-clients.version>1.4.5</consul-clients.version>
         <nacos-client.version>3.0.2.B</nacos-client.version>
-        <etcd-client-v3.version>0.8.5</etcd-client-v3.version>
+        <etcd-client-v3.version>0.8.6</etcd-client-v3.version>
         <testcontainers.version>1.21.4</testcontainers.version>
         <guava.version>33.5.0-jre</guava.version>
         <javax-inject.version>1</javax-inject.version>
@@ -81,19 +81,20 @@
         <fst.version>2.57</fst.version>
         <groovy.version>2.4.21</groovy.version>
         <zstd.version>1.5.5-6</zstd.version>
-        <jackson.version>3.0.3</jackson.version>
+        <jackson.version>3.0.4</jackson.version>
         <xstream.version>1.4.21</xstream.version>
-
+        <checker-qual.version>3.53.1</checker-qual.version>
+        <error_prone_annotations.version>2.47.0</error_prone_annotations.version>
         <jwt.version>0.12.5</jwt.version>
         <prometheus.client.version>0.16.0</prometheus.client.version>
-        <jackson-annotations>2.20</jackson-annotations>
-        <logback.version>1.5.23</logback.version>
+        <jackson-annotations>2.21</jackson-annotations>
+        <logback.version>1.5.28</logback.version>
         <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
         <kafka-appender.version>0.2.0-RC2</kafka-appender.version>
         <kafka-clients.version>3.7.0</kafka-clients.version>
 
         <!-- redis -->
-        <jedis.version>5.2.0</jedis.version>
+        <jedis.version>7.0.0</jedis.version>
 
         <!-- # for database -->
         <!-- db -->
@@ -189,6 +190,16 @@
             </dependency>
 
             <!-- the 3rd part -->
+            <dependency>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker-qual</artifactId>
+                <version>${checker-qual.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_annotations</artifactId>
+                <version>${error_prone_annotations.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.alibaba.fastjson2</groupId>
                 <artifactId>fastjson2</artifactId>

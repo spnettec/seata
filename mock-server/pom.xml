@@ -54,11 +54,6 @@
         </plugins>
     </build>
 
-    <properties>
-        <spring-boot-for-server.version>3.4.5</spring-boot-for-server.version>
-        <spring-framework-for-server.version>6.2.6</spring-framework-for-server.version>
-        <snakeyaml-for-server.version>2.4</snakeyaml-for-server.version>
-    </properties>
     <dependencyManagement>
         <dependencies>
             <!-- junit5 -->
@@ -74,7 +69,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
-                <version>${spring-framework-for-server.version}</version>
+                <version>${spring-framework.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -83,7 +78,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot-for-server.version}</version>
+                <version>${spring-boot.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.springframework</groupId>
@@ -100,7 +95,7 @@
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
-                <version>${snakeyaml-for-server.version}</version>
+                <version>${snakeyaml.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
