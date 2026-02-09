@@ -42,8 +42,8 @@ import org.apache.seata.namingserver.entity.vo.NamespaceVO;
 import org.apache.seata.namingserver.entity.vo.monitor.ClusterVO;
 import org.apache.seata.namingserver.listener.ClusterChangeEvent;
 import org.apache.seata.namingserver.metrics.NamingServerMetricsManager;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -224,7 +224,7 @@ public class NamingManager {
             params.put(CONSTANT_GROUP, vGroup);
             params.put(NamingServerConstants.CONSTANT_UNIT, actualUnitName);
             Map<String, String> header = new HashMap<>();
-            header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+            header.put("Content-Type", "application/x-www-form-urlencoded");
 
             try (Response httpResponse = HttpClientUtil.doGet(httpUrl, params, header, 3000)) {
                 if (httpResponse == null || httpResponse.code() != 200) {
@@ -257,7 +257,7 @@ public class NamingManager {
             params.put(CONSTANT_GROUP, vGroup);
             params.put(NamingServerConstants.CONSTANT_UNIT, unitName);
             Map<String, String> header = new HashMap<>();
-            header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+            header.put("Content-Type", "application/x-www-form-urlencoded");
             try (Response httpResponse = HttpClientUtil.doGet(httpUrl, params, header, 3000)) {
                 if (httpResponse == null || httpResponse.code() != 200) {
                     LOGGER.warn("remove vGroup in old cluster failed");
