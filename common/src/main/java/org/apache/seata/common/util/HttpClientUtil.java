@@ -16,8 +16,6 @@
  */
 package org.apache.seata.common.util;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.MediaType;
@@ -28,6 +26,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -297,7 +297,7 @@ public class HttpClientUtil {
             String contentType = headers != null ? headers.get("Content-Type") : "";
             RequestBody requestBody = createRequestBody(params, contentType);
             return watch(url, headers, requestBody, "POST", eventType, HTTP2_WATCH_READ_TIMEOUT_SECONDS_DEFAULT);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             LOGGER.error("Failed to create request body", e);
             throw new IOException("Failed to create request body", e);
         }
@@ -314,7 +314,7 @@ public class HttpClientUtil {
             String contentType = headers != null ? headers.get("Content-Type") : "";
             RequestBody requestBody = createRequestBody(params, contentType);
             return watch(url, headers, requestBody, "POST", eventType, readTimeoutSeconds);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             LOGGER.error("Failed to create request body", e);
             throw new IOException("Failed to create request body", e);
         }

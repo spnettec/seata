@@ -16,7 +16,6 @@
  */
 package org.apache.seata.common.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -26,6 +25,7 @@ import org.apache.seata.common.Constants;
 import org.apache.seata.common.exception.FrameworkException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Iterator;
