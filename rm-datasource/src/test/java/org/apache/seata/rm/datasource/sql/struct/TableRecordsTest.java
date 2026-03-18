@@ -19,7 +19,10 @@ package org.apache.seata.rm.datasource.sql.struct;
 import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidStatementConnection;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.json.JsonMapper;
 import com.google.common.collect.Lists;
 import org.apache.seata.common.exception.ShouldNeverHappenException;
 import org.apache.seata.rm.datasource.DataSourceProxy;
@@ -34,10 +37,6 @@ import org.apache.seata.sqlparser.util.JdbcConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.cfg.DateTimeFeature;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -245,10 +244,7 @@ public class TableRecordsTest {
 
     private Connection getPhysicsConnection(DruidDataSource dataSource) throws SQLException {
         Connection connection = dataSource.getConnection().getConnection();
-        if (connection instanceof DruidStatementConnection) {
-            return ((DruidStatementConnection) connection).getConnection();
-        }
-        return connection;
+        return connection.unwrap(Connection.class);
     }
 
     @Test
