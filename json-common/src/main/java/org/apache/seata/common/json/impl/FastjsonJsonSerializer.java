@@ -17,9 +17,11 @@
 package org.apache.seata.common.json.impl;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONReader;
-import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.parser.Feature;
+import com.alibaba.fastjson2.parser.ParserConfig;
+import com.alibaba.fastjson2.serializer.SerializerFeature;
 import org.apache.seata.common.exception.JsonParseException;
+import org.apache.seata.common.json.JsonAllowlistManager;
 import org.apache.seata.common.json.JsonSerializer;
 import org.apache.seata.common.loader.LoadLevel;
 
@@ -31,20 +33,40 @@ import java.lang.reflect.Type;
 @LoadLevel(name = FastjsonJsonSerializer.NAME)
 public class FastjsonJsonSerializer implements JsonSerializer {
 
-    private static final JSONWriter.Feature[] SERIALIZER_FEATURES =
-            new JSONWriter.Feature[] {JSONWriter.Feature.WriteClassName};
+    private static final SerializerFeature[] SERIALIZER_FEATURES = new SerializerFeature[] {
+        SerializerFeature.DisableCircularReferenceDetect,
+        SerializerFeature.WriteDateUseDateFormat,
+        SerializerFeature.WriteClassName
+    };
 
-    private static final JSONWriter.Feature[] SERIALIZER_FEATURES_PRETTY =
-            new JSONWriter.Feature[] {JSONWriter.Feature.WriteClassName, JSONWriter.Feature.PrettyFormat};
+    private static final SerializerFeature[] SERIALIZER_FEATURES_PRETTY = new SerializerFeature[] {
+        SerializerFeature.DisableCircularReferenceDetect,
+        SerializerFeature.WriteDateUseDateFormat,
+        SerializerFeature.WriteClassName,
+        SerializerFeature.PrettyFormat
+    };
 
-    private static final JSONWriter.Feature[] FEATURES_PRETTY =
-            new JSONWriter.Feature[] {JSONWriter.Feature.PrettyFormat};
+    private static final SerializerFeature[] FEATURES_PRETTY = new SerializerFeature[] {
+        SerializerFeature.DisableCircularReferenceDetect,
+        SerializerFeature.WriteDateUseDateFormat,
+        SerializerFeature.PrettyFormat
+    };
 
-    private static final JSONReader.Feature[] READER_FEATURES_SUPPORT_AUTO_TYPE =
-            new JSONReader.Feature[] {JSONReader.Feature.SupportAutoType, JSONReader.Feature.FieldBased};
+    private static final Feature[] READER_FEATURES_SUPPORT_AUTO_TYPE =
+            new Feature[] {Feature.SupportAutoType, Feature.OrderedField};
 
-    private static final JSONReader.Feature[] READER_FEATURES_IGNORE_AUTO_TYPE =
-            new JSONReader.Feature[] {JSONReader.Feature.FieldBased};
+    private static final Feature[] READER_FEATURES_IGNORE_AUTO_TYPE =
+            new Feature[] {Feature.IgnoreAutoType, Feature.OrderedField};
+
+    private static final ParserConfig ALLOWLIST_PARSER_CONFIG = new ParserConfig();
+
+    static {
+        ALLOWLIST_PARSER_CONFIG.setAutoTypeSupport(true);
+        ALLOWLIST_PARSER_CONFIG.addAutoTypeCheckHandler((typeName, expectClass, features) -> {
+            JsonAllowlistManager.getInstance().checkClass(typeName);
+            return null;
+        });
+    }
 
     public static final String NAME = "fastjson";
 
@@ -75,8 +97,11 @@ public class FastjsonJsonSerializer implements JsonSerializer {
             return null;
         }
         try {
-            return JSON.parseObject(text, type);
+            return JSON.parseObject(text, type, ALLOWLIST_PARSER_CONFIG, Feature.SupportAutoType, Feature.OrderedField);
+        } catch (SecurityException e) {
+            throw e;
         } catch (Exception e) {
+            rethrowIfSecurityException(e);
             throw new JsonParseException("FastJSON deserialize error", e);
         }
     }
@@ -97,15 +122,15 @@ public class FastjsonJsonSerializer implements JsonSerializer {
         try {
             if (prettyPrint) {
                 if (ignoreAutoType) {
-                    return JSON.toJSONString(object, "yyyy-MM-dd HH:mm:ss", FEATURES_PRETTY);
+                    return JSON.toJSONString(object, FEATURES_PRETTY);
                 } else {
-                    return JSON.toJSONString(object, "yyyy-MM-dd HH:mm:ss", SERIALIZER_FEATURES_PRETTY);
+                    return JSON.toJSONString(object, SERIALIZER_FEATURES_PRETTY);
                 }
             } else {
                 if (ignoreAutoType) {
                     return JSON.toJSONString(object);
                 } else {
-                    return JSON.toJSONString(object, "yyyy-MM-dd HH:mm:ss", SERIALIZER_FEATURES);
+                    return JSON.toJSONString(object, SERIALIZER_FEATURES);
                 }
             }
         } catch (Exception e) {
@@ -122,13 +147,28 @@ public class FastjsonJsonSerializer implements JsonSerializer {
             if ("[]".equals(text)) {
                 return (T) new java.util.ArrayList<>();
             }
+
             if (ignoreAutoType) {
                 return JSON.parseObject(text, type, READER_FEATURES_IGNORE_AUTO_TYPE);
             } else {
-                return JSON.parseObject(text, type, READER_FEATURES_SUPPORT_AUTO_TYPE);
+                return JSON.parseObject(
+                        text, type, ALLOWLIST_PARSER_CONFIG, Feature.SupportAutoType, Feature.OrderedField);
             }
+        } catch (SecurityException e) {
+            throw e;
         } catch (Exception e) {
+            rethrowIfSecurityException(e);
             throw new JsonParseException("FastJSON deserialize error", e);
+        }
+    }
+
+    private static void rethrowIfSecurityException(Throwable e) {
+        Throwable cause = e.getCause();
+        while (cause != null) {
+            if (cause instanceof SecurityException) {
+                throw (SecurityException) cause;
+            }
+            cause = cause.getCause();
         }
     }
 }
