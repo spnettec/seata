@@ -76,9 +76,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <snakeyaml.version>2.5</snakeyaml.version>
         <!-- The version of spring-boot for 'spring-boot-dependencies' and 'spring-boot-maven-plugin' -->
-        <spring-boot.version>4.0.4</spring-boot.version>
+        <spring-boot.version>4.0.5</spring-boot.version>
         <spring-framework.version>7.0.6</spring-framework.version>
-        <netty.version>4.2.10.Final</netty.version>
+        <netty.version>4.2.12.Final</netty.version>
         <bucket4j.version>8.17.0</bucket4j.version>
         <!-- Maven plugin versions -->
         <!-- Build -->
