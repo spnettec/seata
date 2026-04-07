@@ -19,6 +19,7 @@ package org.apache.seata.server.cluster.raft.serializer;
 import org.apache.seata.common.loader.LoadLevel;
 import org.apache.seata.core.serializer.Serializer;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.module.SimpleModule;
@@ -33,7 +34,10 @@ public class JacksonSerializer implements Serializer {
     static {
         SimpleModule module = new SimpleModule();
         module.addDeserializer(Class.class, new CustomDeserializer());
-        OBJECT_MAPPER = JsonMapper.builder().addModule(module).build();
+        OBJECT_MAPPER = JsonMapper.builder()
+                .addModule(module)
+                .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false)
+                .build();
     }
 
     @Override

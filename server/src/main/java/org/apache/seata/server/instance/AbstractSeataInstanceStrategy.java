@@ -16,6 +16,9 @@
  */
 package org.apache.seata.server.instance;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.annotation.Resource;
 import org.apache.seata.common.metadata.Instance;
 import org.apache.seata.common.thread.NamedThreadFactory;
 import org.apache.seata.core.protocol.Version;
@@ -28,9 +31,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.server.autoconfigure.ServerProperties;
 import org.springframework.context.ApplicationContext;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;

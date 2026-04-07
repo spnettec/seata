@@ -148,11 +148,6 @@
             </dependency>
             <dependency>
                 <groupId>com.github.heyoulin.seata</groupId>
-                <artifactId>seata-discovery-sofa</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.heyoulin.seata</groupId>
                 <artifactId>seata-discovery-raft</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -169,11 +164,6 @@
             <dependency>
                 <groupId>com.github.heyoulin.seata</groupId>
                 <artifactId>seata-dubbo-alibaba</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.heyoulin.seata</groupId>
-                <artifactId>seata-sofa-rpc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

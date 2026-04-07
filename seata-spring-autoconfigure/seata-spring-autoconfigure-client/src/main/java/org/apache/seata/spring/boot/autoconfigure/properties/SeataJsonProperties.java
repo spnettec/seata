@@ -16,11 +16,10 @@
  */
 package org.apache.seata.spring.boot.autoconfigure.properties;
 
+import jakarta.annotation.PostConstruct;
 import org.apache.seata.common.json.JsonAllowlistManager;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 import static org.apache.seata.spring.boot.autoconfigure.StarterConstants.JSON_PREFIX;
 

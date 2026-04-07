@@ -16,9 +16,8 @@
  */
 package org.apache.seata.spring.annotation;
 
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-
-import javax.annotation.Nullable;
 
 /**
  * The Scanner checker for {@link GlobalTransactionScanner}

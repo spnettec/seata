@@ -40,7 +40,6 @@
         <brpc.version>3.0.5</brpc.version>
         <hsf.version>1.8.3</hsf.version>
         <dubbo.alibaba.version>2.6.12</dubbo.alibaba.version>
-        <sofa.rpc.version>5.12.0</sofa.rpc.version>
         <fastjson2.version>2.0.60</fastjson2.version>
         <protostuff.version>1.8.0</protostuff.version>
         <config.version>1.4.3</config.version>
@@ -53,10 +52,10 @@
         <apache-zookeeper.version>3.9.3</apache-zookeeper.version>
         <curator.version>5.8.0</curator.version>
         <spring-context-support.version>1.0.11</spring-context-support.version>
-        <apollo-client.version>2.4.0</apollo-client.version>
+        <apollo-client.version>2.5.0</apollo-client.version>
         <mock-jedis.version>0.4.0</mock-jedis.version>
-        <eureka-clients.version>1.10.18</eureka-clients.version>
-        <jettison.version>1.5.4</jettison.version>
+        <eureka-clients.version>2.0.6</eureka-clients.version>
+        <jettison.version>1.5.5</jettison.version>
         <consul-clients.version>1.4.5</consul-clients.version>
         <nacos-client.version>3.0.2.B</nacos-client.version>
         <etcd-client-v3.version>0.8.6</etcd-client-v3.version>
@@ -66,9 +65,8 @@
         <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
         <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
         <archaius-core.version>0.7.12</archaius-core.version>
-        <sofa.registry.version>6.3.0</sofa.registry.version>
-        <motan.version>1.2.2</motan.version>
-        <jcommander.version>1.82</jcommander.version>
+        <motan.version>1.2.6</motan.version>
+        <jcommander.version>3.0</jcommander.version>
         <bucket4j.version>8.16.0</bucket4j.version>
         <commons-compress.version>1.28.0</commons-compress.version>
         <ant.version>1.10.14</ant.version>
@@ -81,17 +79,17 @@
         <fst.version>2.57</fst.version>
         <groovy.version>2.4.21</groovy.version>
         <zstd.version>1.5.5-6</zstd.version>
-        <jackson.version>3.0.4</jackson.version>
+        <jackson.version>3.1.1</jackson.version>
         <xstream.version>1.4.21</xstream.version>
         <checker-qual.version>3.53.1</checker-qual.version>
         <error_prone_annotations.version>2.47.0</error_prone_annotations.version>
         <jwt.version>0.12.5</jwt.version>
         <prometheus.client.version>0.16.0</prometheus.client.version>
         <jackson-annotations>2.21</jackson-annotations>
-        <logback.version>1.5.28</logback.version>
+        <logback.version>1.5.32</logback.version>
         <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
         <kafka-appender.version>0.2.0-RC2</kafka-appender.version>
-        <kafka-clients.version>3.7.0</kafka-clients.version>
+        <kafka-clients.version>4.2.0</kafka-clients.version>
 
         <!-- redis -->
         <jedis.version>7.0.0</jedis.version>
@@ -387,48 +385,6 @@
                 <version>${curator.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alipay.sofa</groupId>
-                <artifactId>registry-client-all</artifactId>
-                <version>${sofa.registry.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.alipay.sofa.lookout</groupId>
-                        <artifactId>lookout-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.alipay.sofa</groupId>
-                        <artifactId>hessian</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.alipay.sofa</groupId>
-                <artifactId>registry-test</artifactId>
-                <version>${sofa.registry.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.alipay.sofa</groupId>
-                        <artifactId>bolt</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>log4j-over-slf4j</artifactId>
-                        <groupId>org.slf4j</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>log4j-jcl</artifactId>
-                        <groupId>org.apache.logging.log4j</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>log4j-core</artifactId>
-                        <groupId>org.apache.logging.log4j</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>log4j-api</artifactId>
-                        <groupId>org.apache.logging.log4j</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
                 <artifactId>caffeine</artifactId>
                 <version>${caffeine.version}</version>
@@ -485,6 +441,11 @@
                         <artifactId>antlr-runtime</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.eureka</groupId>
+                <artifactId>eureka-client-jersey3</artifactId>
+                <version>${eureka-clients.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.jettison</groupId>
@@ -614,7 +575,7 @@
             </dependency>
             <!--only used for seata-server-->
             <dependency>
-                <groupId>com.beust</groupId>
+                <groupId>org.jcommander</groupId>
                 <artifactId>jcommander</artifactId>
                 <version>${jcommander.version}</version>
             </dependency>

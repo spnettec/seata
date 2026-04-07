@@ -122,6 +122,9 @@ public class RaftSnapshotSerializer {
             LOGGER.error("Failed to read raft snapshot: {}", e.getMessage(), e);
             if (e instanceof RuntimeException) {
                 Throwable cause = e.getCause();
+                if (cause instanceof SeataRuntimeException) {
+                    throw (SeataRuntimeException) cause;
+                }
                 if (cause instanceof JacksonException) {
                     Throwable jsonCause = cause.getCause();
                     if (jsonCause instanceof SeataRuntimeException) {

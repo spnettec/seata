@@ -17,6 +17,7 @@
 package org.apache.seata.spring.annotation;
 
 import com.google.common.collect.ImmutableSet;
+import jakarta.annotation.Nullable;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.apache.commons.lang3.ArrayUtils;
@@ -67,7 +68,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;

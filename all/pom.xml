@@ -128,11 +128,6 @@
         </dependency>
         <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
-            <artifactId>seata-discovery-sofa</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-discovery-raft</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -169,11 +164,6 @@
         <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-dubbo-alibaba</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.heyoulin.seata</groupId>
-            <artifactId>seata-sofa-rpc</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -481,11 +471,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.alipay.sofa</groupId>
-            <artifactId>registry-client-all</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.alibaba.spring</groupId>
             <artifactId>spring-context-support</artifactId>
             <scope>provided</scope>
@@ -543,17 +528,6 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alipay.sofa</groupId>
-            <artifactId>sofa-rpc-all</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.grpc</groupId>
-                    <artifactId>grpc-netty-shaded</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.weibo</groupId>

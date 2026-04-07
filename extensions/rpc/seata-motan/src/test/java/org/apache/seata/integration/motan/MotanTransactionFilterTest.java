@@ -24,10 +24,12 @@ import org.apache.seata.core.context.RootContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static java.lang.Thread.sleep;
+
 class MotanTransactionFilterTest {
 
     private static final String SERVICE_GROUP = "motan";
-    private static final String SERVICE_VERSION = "1.0.0";
+    private static final String SERVICE_VERSION = "1.2.6";
     private static final int SERVICE_PORT = 8004;
     private static final String PROTOCOL_ID = "motan";
     private static final String PROTOCOL_NAME = "motan";
@@ -50,7 +52,7 @@ class MotanTransactionFilterTest {
         serviceConfig.setVersion(SERVICE_VERSION);
         RegistryConfig registryConfig = new RegistryConfig();
         registryConfig.setRegProtocol("local");
-        registryConfig.setCheck(false);
+        registryConfig.setCheck("false");
         serviceConfig.setRegistry(registryConfig);
         ProtocolConfig protocol = new ProtocolConfig();
         protocol.setId(PROTOCOL_ID);
@@ -74,6 +76,11 @@ class MotanTransactionFilterTest {
         refererConfig.setProtocol(protocol);
         refererConfig.setDirectUrl("localhost:" + SERVICE_PORT);
         XIDService service = refererConfig.getRef();
+        try {
+            sleep(1000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         Assertions.assertEquals(service.getXid(), XID);
     }
 }

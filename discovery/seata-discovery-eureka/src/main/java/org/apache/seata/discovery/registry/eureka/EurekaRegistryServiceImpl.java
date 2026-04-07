@@ -20,11 +20,11 @@ import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.appinfo.providers.EurekaConfigBasedInstanceInfoProvider;
 import com.netflix.config.ConfigurationManager;
-import com.netflix.discovery.DefaultEurekaClientConfig;
-import com.netflix.discovery.DiscoveryClient;
-import com.netflix.discovery.EurekaClient;
-import com.netflix.discovery.EurekaEventListener;
+import com.netflix.discovery.*;
 import com.netflix.discovery.shared.Application;
+import com.netflix.discovery.shared.transport.jersey.TransportClientFactories;
+import com.netflix.discovery.shared.transport.jersey3.Jersey3TransportClientFactories;
+import jakarta.ws.rs.client.ClientRequestFilter;
 import org.apache.seata.common.exception.EurekaRegistryException;
 import org.apache.seata.common.lock.ResourceLock;
 import org.apache.seata.common.util.CollectionUtils;
@@ -222,7 +222,10 @@ public class EurekaRegistryServiceImpl implements RegistryService<EurekaEventLis
                         ConfigurationManager.loadProperties(getEurekaProperties(needRegister));
                         InstanceInfo instanceInfo = new EurekaConfigBasedInstanceInfoProvider(instanceConfig).get();
                         applicationInfoManager = new ApplicationInfoManager(instanceConfig, instanceInfo);
-                        eurekaClient = new DiscoveryClient(applicationInfoManager, new DefaultEurekaClientConfig());
+                        TransportClientFactories<ClientRequestFilter> transportClientFactories =
+                                Jersey3TransportClientFactories.getInstance();
+                        eurekaClient = new DiscoveryClient(
+                                applicationInfoManager, new DefaultEurekaClientConfig(), transportClientFactories);
                     }
                 } catch (Exception e) {
                     clean();

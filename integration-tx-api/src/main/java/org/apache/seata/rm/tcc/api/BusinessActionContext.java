@@ -16,11 +16,11 @@
  */
 package org.apache.seata.rm.tcc.api;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.apache.seata.core.model.BranchType;
 import org.apache.seata.integration.tx.api.interceptor.ActionContextUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Map;
 

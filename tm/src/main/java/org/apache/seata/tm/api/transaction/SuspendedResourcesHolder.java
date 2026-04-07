@@ -16,7 +16,7 @@
  */
 package org.apache.seata.tm.api.transaction;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * Holder for suspended resources to support propagation or nested logic.

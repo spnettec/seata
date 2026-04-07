@@ -157,4 +157,6 @@
     </root>
     <logger name="org.springframework.security.config.annotation.web.builders.WebSecurity" level="ERROR"/>
     <logger name="org.springframework.security.web.DefaultSecurityFilterChain" level="ERROR"/>
+    <logger name="org.apache.kafka" level="WARN" />
+    <logger name="com.github.danielwegener.logback.kafka" level="WARN" />
 </configuration>

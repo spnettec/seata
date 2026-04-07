@@ -42,6 +42,5 @@
         <module>seata-http</module>
         <module>seata-http-jakarta</module>
         <module>seata-motan</module>
-        <module>seata-sofa-rpc</module>
     </modules>
 </project>

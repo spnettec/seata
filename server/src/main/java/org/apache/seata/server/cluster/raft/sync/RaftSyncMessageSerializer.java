@@ -120,6 +120,9 @@ public class RaftSyncMessageSerializer {
             LOGGER.error("Failed to read raft synchronization log: {}", e.getMessage(), e);
             if (e instanceof RuntimeException) {
                 Throwable cause = e.getCause();
+                if (cause instanceof SeataRuntimeException) {
+                    throw (SeataRuntimeException) cause;
+                }
                 if (cause instanceof JacksonException) {
                     Throwable jsonCause = cause.getCause();
                     if (jsonCause instanceof SeataRuntimeException) {

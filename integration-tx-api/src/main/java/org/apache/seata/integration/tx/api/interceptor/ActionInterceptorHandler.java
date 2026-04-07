@@ -16,6 +16,7 @@
  */
 package org.apache.seata.integration.tx.api.interceptor;
 
+import jakarta.annotation.Nonnull;
 import org.apache.seata.common.Constants;
 import org.apache.seata.common.exception.FrameworkException;
 import org.apache.seata.common.exception.SkipCallbackWrapperException;
@@ -36,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;

@@ -16,13 +16,13 @@
  */
 package org.apache.seata.spring.annotation.scannercheckers;
 
+import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.seata.common.loader.LoadLevel;
 import org.apache.seata.spring.annotation.ScannerChecker;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 

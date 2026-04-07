@@ -17,9 +17,9 @@
 package io.seata.core.context;
 
 import io.seata.core.model.BranchType;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 
 /**

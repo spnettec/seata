@@ -16,6 +16,8 @@
  */
 package org.apache.seata.spring.annotation;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.seata.core.rpc.netty.RmNettyRemotingClient;
 import org.apache.seata.integration.tx.api.interceptor.handler.ProxyInvocationHandler;
@@ -27,8 +29,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;

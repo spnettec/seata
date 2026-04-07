@@ -16,6 +16,8 @@
  */
 package org.apache.seata.integration.tx.api.interceptor;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.apache.seata.common.exception.FrameworkException;
 import org.apache.seata.common.json.JsonUtil;
 import org.apache.seata.common.util.CollectionUtils;
@@ -27,8 +29,6 @@ import org.apache.seata.rm.tcc.api.ParamType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
