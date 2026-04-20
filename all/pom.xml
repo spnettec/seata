@@ -492,7 +492,7 @@
         </dependency>
         <dependency>
             <groupId>com.netflix.eureka</groupId>
-            <artifactId>eureka-client</artifactId>
+            <artifactId>eureka-client-jersey3</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -521,8 +521,8 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

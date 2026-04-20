@@ -61,7 +61,7 @@
         <etcd-client-v3.version>0.8.6</etcd-client-v3.version>
         <testcontainers.version>1.21.4</testcontainers.version>
         <guava.version>33.5.0-jre</guava.version>
-        <javax-inject.version>1</javax-inject.version>
+        <jakarta.inject-api.version>2.0.1</jakarta.inject-api.version>
         <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
         <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
         <archaius-core.version>0.7.12</archaius-core.version>
@@ -87,6 +87,7 @@
         <prometheus.client.version>0.16.0</prometheus.client.version>
         <jackson-annotations>2.21</jackson-annotations>
         <logback.version>1.5.32</logback.version>
+        <slf4j.version>2.0.17</slf4j.version>
         <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
         <kafka-appender.version>0.2.0-RC2</kafka-appender.version>
         <kafka-clients.version>4.2.0</kafka-clients.version>
@@ -117,13 +118,15 @@
         <!-- # for kotlin -->
         <kotlin.version>1.9.23</kotlin.version>
         <kotlin-coroutines.version>1.8.0</kotlin-coroutines.version>
-        <native-lib-loader.version>2.5.0</native-lib-loader.version>
+
         <mockito.version>4.11.0</mockito.version>
         <mockito-inline.version>4.11.0</mockito-inline.version>
         <!--  for fury  -->
         <fury.version>0.10.3</fury.version>
         <fory.version>0.12.3</fory.version>
         <okhttp.version>4.12.0</okhttp.version>
+        <mockwebserver-version>4.12.0</mockwebserver-version>
+        <native-lib-loader.version>2.5.0</native-lib-loader.version>
     </properties>
 
     <dependencyManagement>
@@ -133,14 +136,6 @@
                 <groupId>tools.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
                 <version>${jackson3.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!-- Jackson 2.x BOM -->
-            <dependency>
-                <groupId>com.fasterxml.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>${jackson.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -426,13 +421,9 @@
             </dependency>
             <dependency>
                 <groupId>com.netflix.eureka</groupId>
-                <artifactId>eureka-client</artifactId>
+                <artifactId>eureka-client-jersey3</artifactId>
                 <version>${eureka-clients.version}</version>
                 <exclusions>
-                    <exclusion>
-                        <groupId>jakarta.servlet</groupId>
-                        <artifactId>jakarta.servlet-api</artifactId>
-                    </exclusion>
                     <exclusion>
                         <groupId>javax.servlet</groupId>
                         <artifactId>servlet-api</artifactId>
@@ -526,9 +517,9 @@
                 <version>${native-lib-loader.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject</artifactId>
-                <version>${javax-inject.version}</version>
+                <groupId>jakarta.inject</groupId>
+                <artifactId>jakarta.inject-api</artifactId>
+                <version>${jakarta.inject-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>jakarta.annotation</groupId>

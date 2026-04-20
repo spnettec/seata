@@ -37,17 +37,13 @@
         </dependency>
         <dependency>
             <groupId>com.netflix.eureka</groupId>
-            <artifactId>eureka-client</artifactId>
+            <artifactId>eureka-client-jersey3</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>com.thoughtworks.xstream</groupId>
                     <artifactId>xstream</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.eureka</groupId>
-            <artifactId>eureka-client-jersey3</artifactId>
         </dependency>
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
@@ -63,8 +59,8 @@
             <artifactId>archaius-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
         </dependency>
     </dependencies>
 </project>

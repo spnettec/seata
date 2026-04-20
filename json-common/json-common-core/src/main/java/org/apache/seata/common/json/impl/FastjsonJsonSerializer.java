@@ -19,7 +19,6 @@ package org.apache.seata.common.json.impl;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
-import com.alibaba.fastjson2.filter.AutoTypeBeforeHandler;
 import org.apache.seata.common.exception.JsonParseException;
 import org.apache.seata.common.json.JsonAllowlistManager;
 import org.apache.seata.common.json.JsonSerializer;
@@ -36,36 +35,28 @@ public class FastjsonJsonSerializer implements JsonSerializer {
 
     private static final Pattern AUTOTYPE_PATTERN = Pattern.compile("\"@type\"\\s*:");
 
-    // 默认序列化特性：禁用循环引用、日期格式化、写入类名
-    private static final JSONWriter.Feature[] SERIALIZER_FEATURES = {
-            JSONWriter.Feature.ReferenceDetection, // Fastjson2 默认开启，此处若要禁用需配合 ! 符号或逻辑处理，但通常建议保留
-            JSONWriter.Feature.WriteCallbacks,
-            JSONWriter.Feature.WriteClassName
+    // 序列化特性
+    private static final JSONWriter.Feature[] SERIALIZER_FEATURES = new JSONWriter.Feature[] {
+        JSONWriter.Feature.WriteClassName, // 写入 @type
+        JSONWriter.Feature.FieldBased // 基于字段访问，提高 Saga 场景兼容性
     };
 
-    private static final JSONWriter.Feature[] SERIALIZER_FEATURES_PRETTY = {
-            JSONWriter.Feature.WriteClassName,
-            JSONWriter.Feature.PrettyFormat
+    private static final JSONWriter.Feature[] SERIALIZER_FEATURES_PRETTY = new JSONWriter.Feature[] {
+        JSONWriter.Feature.WriteClassName, JSONWriter.Feature.FieldBased, JSONWriter.Feature.PrettyFormat
     };
 
-    private static final JSONWriter.Feature[] FEATURES_PRETTY = {
-            JSONWriter.Feature.PrettyFormat
-    };
+    private static final JSONWriter.Feature[] FEATURES_PRETTY =
+            new JSONWriter.Feature[] {JSONWriter.Feature.FieldBased, JSONWriter.Feature.PrettyFormat};
 
-    // 读取特性
-    private static final JSONReader.Feature[] READER_FEATURES_SUPPORT_AUTO_TYPE = {
-            JSONReader.Feature.SupportAutoType,
-            JSONReader.Feature.FieldBased
-    };
+    // 反序列化特性：移除已弃用的 SupportAutoType
+    private static final JSONReader.Feature[] READER_FEATURES =
+            new JSONReader.Feature[] {JSONReader.Feature.FieldBased};
 
-    private static final JSONReader.Feature[] READER_FEATURES_IGNORE_AUTO_TYPE = {
-            JSONReader.Feature.FieldBased
-    };
-
-    // Fastjson2 使用 AutoTypeBeforeHandler 替代 AutoTypeCheckHandler
-    private static final AutoTypeBeforeHandler ALLOWLIST_HANDLER = (typeName, expectClass, features) -> {
+    // 使用 Handler 替代全局开关，这是 Fastjson2 推荐的安全做法
+    private static final JSONReader.AutoTypeBeforeHandler ALLOWLIST_HANDLER = (typeName, expectClass, features) -> {
+        // 如果 checkClass 抛出异常，会被下方的 catch 捕获
         JsonAllowlistManager.getInstance().checkClass(typeName);
-        return null;
+        return null; // 返回 null 表示允许加载该类，但由 Fastjson2 默认逻辑解析
     };
 
     public static final String NAME = "fastjson";
@@ -75,7 +66,7 @@ public class FastjsonJsonSerializer implements JsonSerializer {
         try {
             return JSON.toJSONString(object);
         } catch (Exception e) {
-            throw new JsonParseException("FastJSON2 serialize error", e);
+            throw new JsonParseException("FastJSON serialize error", e);
         }
     }
 
@@ -87,7 +78,7 @@ public class FastjsonJsonSerializer implements JsonSerializer {
         try {
             return JSON.parseObject(text, clazz);
         } catch (Exception e) {
-            throw new JsonParseException("FastJSON2 deserialize error", e);
+            throw new JsonParseException("FastJSON deserialize error", e);
         }
     }
 
@@ -97,13 +88,13 @@ public class FastjsonJsonSerializer implements JsonSerializer {
             return null;
         }
         try {
-            // 使用 Context 来注入白名单处理器
-            return JSON.parseObject(text, type, JSONReader.Context.of(ALLOWLIST_HANDLER, READER_FEATURES_SUPPORT_AUTO_TYPE));
+            // 直接传入 Handler，Fastjson2 会在遇到 @type 时自动回调它
+            return JSON.parseObject(text, type, ALLOWLIST_HANDLER, READER_FEATURES);
         } catch (SecurityException e) {
             throw e;
         } catch (Exception e) {
             rethrowIfSecurityException(e);
-            throw new JsonParseException("FastJSON2 deserialize error", e);
+            throw new JsonParseException("FastJSON deserialize error", e);
         }
     }
 
@@ -125,12 +116,10 @@ public class FastjsonJsonSerializer implements JsonSerializer {
                         ? JSON.toJSONString(object, FEATURES_PRETTY)
                         : JSON.toJSONString(object, SERIALIZER_FEATURES_PRETTY);
             } else {
-                return ignoreAutoType
-                        ? JSON.toJSONString(object)
-                        : JSON.toJSONString(object, SERIALIZER_FEATURES);
+                return ignoreAutoType ? JSON.toJSONString(object) : JSON.toJSONString(object, SERIALIZER_FEATURES);
             }
         } catch (Exception e) {
-            throw new JsonParseException("FastJSON2 serialize error", e);
+            throw new JsonParseException("FastJSON serialize error", e);
         }
     }
 
@@ -145,15 +134,15 @@ public class FastjsonJsonSerializer implements JsonSerializer {
             }
 
             if (ignoreAutoType) {
-                return JSON.parseObject(text, type, READER_FEATURES_IGNORE_AUTO_TYPE);
+                return JSON.parseObject(text, type, READER_FEATURES);
             } else {
-                return JSON.parseObject(text, type, JSONReader.Context.of(ALLOWLIST_HANDLER, READER_FEATURES_SUPPORT_AUTO_TYPE));
+                return JSON.parseObject(text, type, ALLOWLIST_HANDLER, READER_FEATURES);
             }
         } catch (SecurityException e) {
             throw e;
         } catch (Exception e) {
             rethrowIfSecurityException(e);
-            throw new JsonParseException("FastJSON2 deserialize error", e);
+            throw new JsonParseException("FastJSON deserialize error", e);
         }
     }
 
