@@ -86,8 +86,8 @@
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <!-- Compiler -->
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
-        <protobuf.version>4.34.0</protobuf.version>
-        <grpc.version>1.79.0</grpc.version>
+        <protobuf.version>4.34.1</protobuf.version>
+        <grpc.version>1.80.0</grpc.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <kotlin-maven-plugin.version>2.2.20</kotlin-maven-plugin.version>
         <!-- Check -->
