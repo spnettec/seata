@@ -97,7 +97,7 @@
         <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
         <license-maven-plugin.version>4.0</license-maven-plugin.version>
         <mojo-license-maven-plugin.version>1.20</mojo-license-maven-plugin.version>
-        <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
+        <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <spotless-maven-plugin.version>2.44.3</spotless-maven-plugin.version>
         <palantirJavaFormat.version>2.38.0</palantirJavaFormat.version>
         <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>

@@ -36,26 +36,23 @@ import static org.apache.seata.namingserver.contants.NamingConstant.DEFAULT_REQU
 public class WebConfig {
 
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    public RestClient restClient(RestClient.Builder restClientBuilder) {
         HttpClient httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofMillis(DEFAULT_REQUEST_TIMEOUT))
-                .followRedirects(HttpClient.Redirect.NORMAL)
+                .version(HttpClient.Version.HTTP_1_1)
                 .build();
-
         JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpClient);
-        requestFactory.setReadTimeout(Duration.ofMillis(DEFAULT_REQUEST_TIMEOUT));
-
-        return builder.requestFactory(() -> requestFactory).build();
+        requestFactory.setReadTimeout(Duration.ofMillis(Math.max(DEFAULT_REQUEST_TIMEOUT, DEFAULT_WRITE_TIMEOUT)));
+        return restClientBuilder.requestFactory(requestFactory).build();
     }
 
     @Bean
-    public FilterRegistrationBean<Filter> consoleRemotingFilter(
-            NamingManager namingManager, RestTemplate restTemplate) {
-        ConsoleRemotingFilter consoleRemotingFilter = new ConsoleRemotingFilter(namingManager, restTemplate);
+    public FilterRegistrationBean<Filter> consoleRemotingFilter(NamingManager namingManager, RestClient restClient) {
+        ConsoleRemotingFilter consoleRemotingFilter = new ConsoleRemotingFilter(namingManager, restClient);
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setFilter(consoleRemotingFilter);
         registration.addUrlPatterns("/*");
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        registration.setOrder(Ordered.LOWEST_PRECEDENCE);
         return registration;
     }
 }
