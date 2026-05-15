@@ -301,7 +301,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
 
     private static boolean watchHttp1(String clusterName) throws RetryableException {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+        header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
         Map<String, String> param = new HashMap<>();
         Map<String, Long> groupTerms = METADATA.getClusterTerm(clusterName);
         groupTerms.forEach((k, v) -> param.put(k, String.valueOf(v)));
@@ -355,7 +355,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
         }
 
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+        header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
 
         Map<String, String> param = new HashMap<>();
         groupTerms.forEach((k, v) -> param.put(k, String.valueOf(v)));
@@ -759,7 +759,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
     private static void acquireClusterMetaData(String clusterName, String group) throws RetryableException {
         String tcAddress = queryHttpAddress(clusterName, group);
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
+        header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_FORM_URLENCODED.getMimeType());
         if (isTokenExpired()) {
             refreshToken(tcAddress);
         }

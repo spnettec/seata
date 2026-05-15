@@ -149,7 +149,8 @@ class HttpTest {
             if (paramType == PARAM_TYPE_MAP) {
                 response = httpExecuter.executeGet(HOST, GET_PATH, params, CloseableHttpResponse.class);
             } else if (paramType == PARAM_TYPE_BEAN) {
-                response = httpExecuter.executeGet(HOST, GET_PATH, convertParamOfBean(person), CloseableHttpResponse.class);
+                response = httpExecuter.executeGet(
+                        HOST, GET_PATH, convertParamOfBean(person), CloseableHttpResponse.class);
             } else {
                 response = httpExecuter.executeGet(
                         HOST, GET_PATH, convertParamOfJsonString(str, Person.class), CloseableHttpResponse.class);

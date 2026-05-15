@@ -32,6 +32,11 @@
     <dependencies>
         <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
+            <artifactId>seata-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.heyoulin.seata</groupId>
             <artifactId>seata-discovery-core</artifactId>
             <version>${project.version}</version>
         </dependency>
