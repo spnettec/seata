@@ -63,6 +63,7 @@
         <guava.version>33.5.0-jre</guava.version>
         <jakarta.inject-api.version>2.0.1</jakarta.inject-api.version>
         <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
+        <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
         <archaius-core.version>0.7.12</archaius-core.version>
         <motan.version>1.2.6</motan.version>
@@ -119,6 +120,10 @@
         <kotlin.version>1.9.23</kotlin.version>
         <kotlin-coroutines.version>1.8.0</kotlin-coroutines.version>
 
+        <!-- # for web -->
+        <tomcat-embed.version>9.0.117</tomcat-embed.version>
+
+        <!-- # for test -->
         <mockito.version>4.11.0</mockito.version>
         <mockito-inline.version>4.11.0</mockito-inline.version>
         <!--  for fury  -->
@@ -532,6 +537,11 @@
                 <version>${jakarta.servlet-api.version}</version>
             </dependency>
             <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet-api.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.weibo</groupId>
                 <artifactId>motan-core</artifactId>
                 <version>${motan.version}</version>
@@ -680,6 +690,7 @@
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
                 <version>${groovy.version}</version>
+                <type>pom</type>
                 <exclusions>
                     <exclusion>
                         <groupId>org.junit.jupiter</groupId>
