@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -39,13 +40,14 @@ import static org.apache.seata.integration.http.AbstractHttpExecutor.convertPara
 
 class HttpTest {
 
-    private static final String HOST = "http://127.0.0.1:8081";
+    private static final String HOST_PREFIX = "http://127.0.0.1:";
     private static final String TEST_EXCEPTION = "/testException";
     private static final String GET_PATH = "/testGet";
     private static final String POST_PATH = "/testPost";
     public static final String XID = "127.0.0.1:8081:87654321";
     private static final int PARAM_TYPE_MAP = 1;
     private static final int PARAM_TYPE_BEAN = 2;
+    private String host;
 
     @Test
     void testGetProviderXID() {
@@ -75,7 +77,9 @@ class HttpTest {
     }
 
     public void providerStart() {
-        new MockWebServer().start(8081);
+        int port = getAvailablePort();
+        host = HOST_PREFIX + port;
+        new MockWebServer().start(port);
     }
 
     public static class Person {
@@ -122,11 +126,11 @@ class HttpTest {
             CloseableHttpResponse response;
 
             if (paramType == PARAM_TYPE_MAP) {
-                response = httpExecuter.executePost(HOST, POST_PATH, map, CloseableHttpResponse.class);
+                response = httpExecuter.executePost(host, POST_PATH, map, CloseableHttpResponse.class);
             } else if (paramType == PARAM_TYPE_BEAN) {
-                response = httpExecuter.executePost(HOST, POST_PATH, person, CloseableHttpResponse.class);
+                response = httpExecuter.executePost(host, POST_PATH, person, CloseableHttpResponse.class);
             } else {
-                response = httpExecuter.executePost(HOST, POST_PATH, str, CloseableHttpResponse.class);
+                response = httpExecuter.executePost(host, POST_PATH, str, CloseableHttpResponse.class);
             }
 
             return readStreamAsStr(response.getEntity().getContent());
@@ -147,13 +151,13 @@ class HttpTest {
             // support all type of parameter types
             CloseableHttpResponse response;
             if (paramType == PARAM_TYPE_MAP) {
-                response = httpExecuter.executeGet(HOST, GET_PATH, params, CloseableHttpResponse.class);
+                response = httpExecuter.executeGet(host, GET_PATH, params, CloseableHttpResponse.class);
             } else if (paramType == PARAM_TYPE_BEAN) {
                 response = httpExecuter.executeGet(
-                        HOST, GET_PATH, convertParamOfBean(person), CloseableHttpResponse.class);
+                        host, GET_PATH, convertParamOfBean(person), CloseableHttpResponse.class);
             } else {
                 response = httpExecuter.executeGet(
-                        HOST, GET_PATH, convertParamOfJsonString(str, Person.class), CloseableHttpResponse.class);
+                        host, GET_PATH, convertParamOfJsonString(str, Person.class), CloseableHttpResponse.class);
             }
             return readStreamAsStr(response.getEntity().getContent());
 
@@ -161,7 +165,7 @@ class HttpTest {
             /* if in Travis CI env, only mock method call */
             MockHttpExecuter mockHttpExecuter = new MockHttpExecuter();
             try {
-                return mockHttpExecuter.executeGet(HOST, GET_PATH, params, String.class);
+                return mockHttpExecuter.executeGet(host, GET_PATH, params, String.class);
             } catch (IOException ex) {
                 throw new RuntimeException(e);
             }
@@ -175,16 +179,24 @@ class HttpTest {
         params.put("age", "15");
         CloseableHttpResponse response;
         try {
-            response = httpExecuter.executeGet(HOST, TEST_EXCEPTION, params, CloseableHttpResponse.class);
+            response = httpExecuter.executeGet(host, TEST_EXCEPTION, params, CloseableHttpResponse.class);
             return readStreamAsStr(response.getEntity().getContent());
         } catch (IOException e) {
             /* if in Travis CI inv, only mock method call */
             MockHttpExecuter mockHttpExecuter = new MockHttpExecuter();
             try {
-                return mockHttpExecuter.executeGet(HOST, TEST_EXCEPTION, params, String.class);
+                return mockHttpExecuter.executeGet(host, TEST_EXCEPTION, params, String.class);
             } catch (IOException ex) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    private int getAvailablePort() {
+        try (ServerSocket socket = new ServerSocket(0)) {
+            return socket.getLocalPort();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
