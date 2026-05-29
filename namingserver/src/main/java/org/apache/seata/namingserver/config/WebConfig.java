@@ -19,18 +19,18 @@ package org.apache.seata.namingserver.config;
 import jakarta.servlet.Filter;
 import org.apache.seata.namingserver.filter.ConsoleRemotingFilter;
 import org.apache.seata.namingserver.manager.NamingManager;
-import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import java.net.http.HttpClient;
 import java.time.Duration;
 
 import static org.apache.seata.namingserver.contants.NamingConstant.DEFAULT_REQUEST_TIMEOUT;
+import static org.apache.seata.namingserver.contants.NamingConstant.DEFAULT_WRITE_TIMEOUT;
 
 @Configuration
 public class WebConfig {
