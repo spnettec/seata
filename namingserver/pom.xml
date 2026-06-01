@@ -33,6 +33,8 @@
     <properties>
         <spring-boot-for-server.version>${spring-boot.version}</spring-boot-for-server.version>
         <spring-framework-for-server.version>${spring-framework.version}</spring-framework-for-server.version>
+        <snakeyaml-for-server.version>${snakeyaml.version}</snakeyaml-for-server.version>
+        <tomcat-embed.version>11.0.22</tomcat-embed.version>
     </properties>
 
     <dependencyManagement>
@@ -45,10 +47,22 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- spring-framework  -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring-framework-for-server.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>seata-console</artifactId>
@@ -61,7 +75,26 @@
         <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>commons-compiler</artifactId>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>${snakeyaml-for-server.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat-embed.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-el</artifactId>
+            <version>${tomcat-embed.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
+            <version>${tomcat-embed.version}</version>
         </dependency>
 
         <!-- Force override explicit versions for key dependencies to bypass BOM conflict -->
