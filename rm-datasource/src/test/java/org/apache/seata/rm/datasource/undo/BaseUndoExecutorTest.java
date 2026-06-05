@@ -25,7 +25,6 @@ import org.apache.seata.sqlparser.SQLType;
 import org.apache.seata.sqlparser.struct.ColumnMeta;
 import org.apache.seata.sqlparser.struct.TableMeta;
 import org.apache.seata.sqlparser.util.JdbcConstants;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -325,7 +324,7 @@ public class BaseUndoExecutorTest extends BaseH2Test {
                 "The query format was incorrect. Captured SQL: " + executedSql);
     }
 
-    private static @NonNull TableRecords getTableRecords(TableMeta tableMeta) {
+    private static TableRecords getTableRecords(TableMeta tableMeta) {
         TableRecords beforeImage = new TableRecords();
         beforeImage.setTableName("table_name");
         beforeImage.setTableMeta(tableMeta);
