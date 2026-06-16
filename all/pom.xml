@@ -249,7 +249,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.heyoulin.seata</groupId>
-            <artifactId>seata-serializer-fury</artifactId>
+            <artifactId>seata-serializer-fory</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
