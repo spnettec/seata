@@ -745,7 +745,7 @@
                 <version>${jraft.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.heyoulin</groupId>
+                <groupId>com.github.heyoulin.sofa-bolt</groupId>
                 <artifactId>sofa-bolt</artifactId>
                 <version>${bolt.version}</version>
             </dependency>

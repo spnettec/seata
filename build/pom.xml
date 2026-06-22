@@ -148,6 +148,34 @@
         <mysql.copy.skip>true</mysql.copy.skip>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>yofc-maven-public</id>
+            <name>Yofc Public Repository Group</name>
+            <url>https://mesmaven.yofc.com/repository/yofc-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>yofc-maven-snapshot</id>
+            <name>YOFC Snapshots Repository</name>
+            <url>https://mesmaven.yofc.com/repository/yofc-snapshot/</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+        <repository>
+            <id>yofc-maven-release</id>
+            <name>YOFC Releases Repository</name>
+            <url>https://mesmaven.yofc.com/repository/yofc-release/</url>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+    </distributionManagement>
     <build>
         <pluginManagement>
             <plugins>

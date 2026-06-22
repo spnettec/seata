@@ -623,10 +623,6 @@
     </dependencies>
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
             <id>central-repos1</id>
             <name>Central Repository 2</name>
             <url>https://repo1.maven.org/maven2/</url>
@@ -644,6 +640,18 @@
             </snapshots>
         </repository>
 
+        <repository>
+            <id>yofc-maven-public</id>
+            <name>Yofc Public Repository Group</name>
+            <url>https://mesmaven.yofc.com/repository/yofc-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
     </repositories>
     <build>
         <extensions>
