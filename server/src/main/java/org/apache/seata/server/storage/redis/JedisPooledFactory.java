@@ -67,7 +67,7 @@ public class JedisPooledFactory {
         if (jedisPool == null) {
             synchronized (JedisPooledFactory.class) {
                 if (jedisPool == null) {
-                    Pool<Jedis> tempJedisPool;
+                    Pool<Jedis> tempJedisPool = null;
                     if (jedisPools != null && jedisPools.length > 0) {
                         tempJedisPool = jedisPools[0];
                     } else {
