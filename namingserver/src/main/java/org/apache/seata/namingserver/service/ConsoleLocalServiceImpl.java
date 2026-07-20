@@ -180,7 +180,7 @@ public class ConsoleLocalServiceImpl implements ConsoleApiService {
         try {
             namespace = objectMapper.writeValueAsString(namingManager.namespace());
         } catch (JacksonException e) {
-            LOGGER.error("Get NameSpace failed: {}", e.getMessage());
+            LOGGER.error("Get NameSpace failed:", e);
             return "Failed to get namespace";
         }
         return namespace;

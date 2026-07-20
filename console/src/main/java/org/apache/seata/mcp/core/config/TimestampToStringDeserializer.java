@@ -16,6 +16,7 @@
  */
 package org.apache.seata.mcp.core.config;
 
+import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
 import tools.jackson.databind.ValueDeserializer;
@@ -29,7 +30,7 @@ public class TimestampToStringDeserializer extends ValueDeserializer<String> {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public String deserialize(JsonParser p, DeserializationContext cxt) {
+    public String deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
         long timestamp = p.getLongValue();
         LocalDateTime dateTime =
                 Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();

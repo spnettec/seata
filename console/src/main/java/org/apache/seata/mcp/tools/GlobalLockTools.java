@@ -95,7 +95,7 @@ public class GlobalLockTools {
         try {
             result = objectMapper.readValue(response, new TypeReference<PageResult<McpGlobalLockVO>>() {});
         } catch (JacksonException e) {
-            logger.error(e.getMessage());
+            logger.error("Failed to parse global lock query response", e);
         }
         if (result == null) {
             return PageResult.failure("", "query global lock failed");

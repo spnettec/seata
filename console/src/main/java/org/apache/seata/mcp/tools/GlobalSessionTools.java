@@ -105,7 +105,7 @@ public class GlobalSessionTools {
         try {
             pageResult = objectMapper.readValue(result, new TypeReference<PageResult<McpGlobalSessionVO>>() {});
         } catch (JacksonException e) {
-            logger.error(e.getMessage());
+            logger.error("Failed to parse global session response", e);
         }
         if (pageResult == null) {
             return PageResult.failure("", "query global session failed");
