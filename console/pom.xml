@@ -32,6 +32,9 @@
     <description>console for Seata built with Maven</description>
 
     <properties>
+        <!-- required for java.net.http.HttpClient in RestClientConfig -->
+        <java.version>17</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
         <spring-boot-for-server.version>${spring-boot.version}</spring-boot-for-server.version>
         <spring-framework-for-server.version>${spring-framework.version}</spring-framework-for-server.version>
         <snakeyaml-for-server.version>${snakeyaml.version}</snakeyaml-for-server.version>
