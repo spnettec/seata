@@ -19,14 +19,17 @@ package org.apache.seata.integration.http;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.seata.common.util.BufferUtils;
 import org.apache.seata.core.context.RootContext;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
@@ -39,6 +42,11 @@ import static org.apache.seata.integration.http.AbstractHttpExecutor.convertPara
 import static org.apache.seata.integration.http.AbstractHttpExecutor.convertParamOfJsonString;
 
 class HttpTest {
+
+    @BeforeAll
+    static void configureJsonUtil() {
+        System.setProperty("seata.config.name", "http-test-registry");
+    }
 
     private static final String HOST_PREFIX = "http://127.0.0.1:";
     private static final String TEST_EXCEPTION = "/testException";
@@ -231,5 +239,31 @@ class HttpTest {
         Person person = JSON.parseObject(str, Person.class);
         map = convertParamOfBean(person);
         Assertions.assertEquals(expected, map);
+    }
+
+    @Test
+    void convertParamOfBeanConvertsNullStringToEmptyRequestParameter() {
+        Person person = new Person();
+        person.setAge(15);
+
+        Map<String, String> parameters = convertParamOfBean(person);
+
+        Assertions.assertEquals("", parameters.get("name"));
+        Assertions.assertEquals("15", parameters.get("age"));
+    }
+
+    @Test
+    void executeSerializesRequestBodyWithJsonUtil() throws Exception {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("name", "zhangsan");
+        payload.put("age", 15);
+        Method execute =
+                AbstractHttpExecutor.class.getDeclaredMethod("execute", String.class, String.class, Object.class);
+        execute.setAccessible(true);
+
+        StringEntity entity = (StringEntity)
+                execute.invoke(DefaultHttpExecutor.getInstance(), HOST_PREFIX + "8081", POST_PATH, payload);
+
+        Assertions.assertEquals("{\"name\":\"zhangsan\",\"age\":15}", readStreamAsStr(entity.getContent()));
     }
 }

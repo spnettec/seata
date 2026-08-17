@@ -16,8 +16,7 @@
  */
 package org.apache.seata.saga.statelang.parser.impl;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONWriter;
+import org.apache.seata.common.json.JsonUtil;
 import org.apache.seata.common.loader.LoadLevel;
 import org.apache.seata.saga.statelang.parser.JsonParser;
 
@@ -30,15 +29,6 @@ import org.apache.seata.saga.statelang.parser.JsonParser;
 @LoadLevel(name = FastjsonParser.NAME)
 public class FastjsonParser implements JsonParser {
 
-    private static final JSONWriter.Feature[] SERIALIZER_FEATURES =
-            new JSONWriter.Feature[] {JSONWriter.Feature.WriteClassName};
-
-    private static final JSONWriter.Feature[] SERIALIZER_FEATURES_PRETTY =
-            new JSONWriter.Feature[] {JSONWriter.Feature.WriteClassName, JSONWriter.Feature.PrettyFormat};
-
-    private static final JSONWriter.Feature[] FEATURES_PRETTY =
-            new JSONWriter.Feature[] {JSONWriter.Feature.PrettyFormat};
-
     public static final String NAME = "fastjson";
 
     @Override
@@ -48,37 +38,21 @@ public class FastjsonParser implements JsonParser {
 
     @Override
     public boolean useAutoType(String json) {
-        return json != null && (json.contains("\"@type\"") || json.contains("\"@class\""));
+        return JsonUtil.useAutoType(json);
     }
 
     @Override
     public String toJsonString(Object o, boolean prettyPrint) {
-        return toJsonString(o, false, prettyPrint);
+        return JsonUtil.toJSONString(o, false, prettyPrint);
     }
 
     @Override
     public String toJsonString(Object o, boolean ignoreAutoType, boolean prettyPrint) {
-        if (prettyPrint) {
-            if (ignoreAutoType) {
-                return JSON.toJSONString(o, FEATURES_PRETTY);
-            } else {
-                return JSON.toJSONString(o, SERIALIZER_FEATURES_PRETTY);
-            }
-        } else {
-            if (ignoreAutoType) {
-                return JSON.toJSONString(o);
-            } else {
-                return JSON.toJSONString(o, SERIALIZER_FEATURES);
-            }
-        }
+        return JsonUtil.toJSONString(o, ignoreAutoType, prettyPrint);
     }
 
     @Override
     public <T> T parse(String json, Class<T> type, boolean ignoreAutoType) {
-        if (ignoreAutoType) {
-            return JSON.parseObject(json, type);
-        } else {
-            return JSON.parseObject(json.replaceAll("@class", "@type"), type);
-        }
+        return JsonUtil.parseObject(json, type, ignoreAutoType);
     }
 }

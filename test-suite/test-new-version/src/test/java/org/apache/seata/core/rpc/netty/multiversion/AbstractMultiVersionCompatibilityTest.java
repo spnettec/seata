@@ -16,9 +16,6 @@
  */
 package org.apache.seata.core.rpc.netty.multiversion;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBufAllocator;
@@ -65,6 +62,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
@@ -88,9 +89,10 @@ public abstract class AbstractMultiVersionCompatibilityTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMultiVersionCompatibilityTest.class);
 
     // JSON ObjectMapper for pretty printing
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder()
             .enable(SerializationFeature.INDENT_OUTPUT)
-            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+            .build();
 
     /**
      * Convert object to pretty JSON format for logging
@@ -101,7 +103,7 @@ public abstract class AbstractMultiVersionCompatibilityTest {
         }
         try {
             return OBJECT_MAPPER.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             LOGGER.warn("Failed to convert object to JSON, using toString(): {}", e.getMessage());
             return obj.toString();
         }

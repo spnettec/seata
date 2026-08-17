@@ -16,8 +16,6 @@
  */
 package org.apache.seata.server.cluster.manager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -51,6 +49,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ import static org.apache.seata.common.DefaultValues.DEFAULT_SEATA_GROUP;
 @Component
 public class ClusterWatcherManager implements ClusterChangeListener {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder().build();
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -319,7 +320,7 @@ public class ClusterWatcherManager implements ClusterChangeListener {
 
             logger.debug("Sending watch event: group={}, term={}", group, metadataResponse.getTerm());
             return Constants.WATCH_EVENT_PREFIX + json + "\n";
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             logger.error("Failed to serialize MetadataResponse for group {}: {}", group, e.getMessage(), e);
             // Fallback: send minimal data
             String json = String.format(

@@ -16,13 +16,10 @@
  */
 package org.apache.seata.mcp.core.props;
 
-import jakarta.annotation.Nullable;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.mcp.server.common.autoconfigure.properties.McpServerProperties;
-import org.springframework.ai.mcp.server.common.autoconfigure.properties.McpServerSseProperties;
-import org.springframework.ai.mcp.server.common.autoconfigure.properties.McpServerStreamableHttpProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -41,24 +38,14 @@ public class MCPProperties {
 
     private final McpServerProperties mcpServerProperties;
 
-    private final McpServerSseProperties mcpServerSseProperties;
-
-    private final McpServerStreamableHttpProperties mcpServerStreamableHttpProperties;
-
     private final List<String> endpoints = new ArrayList<>();
 
     private final Logger logger = LoggerFactory.getLogger(MCPProperties.class);
 
     @Autowired
-    public MCPProperties(
-            @Nullable McpServerProperties mcpServerProperties,
-            Environment env,
-            @Nullable McpServerSseProperties serverSseProperties,
-            @Nullable McpServerStreamableHttpProperties serverStreamableHttpProperties) {
+    public MCPProperties(McpServerProperties mcpServerProperties, Environment env) {
         this.mcpServerProperties = mcpServerProperties;
         this.env = env;
-        this.mcpServerSseProperties = serverSseProperties;
-        this.mcpServerStreamableHttpProperties = serverStreamableHttpProperties;
     }
 
     public List<String> getEndpoints() {
@@ -80,12 +67,11 @@ public class MCPProperties {
 
         if (mcpServerProperties != null) {
             McpServerProperties.ServerProtocol protocol = mcpServerProperties.getProtocol();
-            if (protocol == McpServerProperties.ServerProtocol.SSE && mcpServerSseProperties != null) {
-                endpoints.add(mcpServerSseProperties.getSseEndpoint());
-                endpoints.add(mcpServerSseProperties.getSseMessageEndpoint());
-            } else if (protocol == McpServerProperties.ServerProtocol.STREAMABLE
-                    && mcpServerStreamableHttpProperties != null) {
-                endpoints.add(mcpServerStreamableHttpProperties.getMcpEndpoint());
+            if (protocol == McpServerProperties.ServerProtocol.SSE) {
+                endpoints.add(env.getProperty("spring.ai.mcp.server.sse-endpoint", "/sse"));
+                endpoints.add(env.getProperty("spring.ai.mcp.server.sse-message-endpoint", "/mcp/message"));
+            } else if (protocol == McpServerProperties.ServerProtocol.STREAMABLE) {
+                endpoints.add(env.getProperty("spring.ai.mcp.server.streamable-http.mcp-endpoint", "/mcp"));
             } else {
                 throw new IllegalStateException(
                         "MCP server properties not properly configured or unsupported protocol");

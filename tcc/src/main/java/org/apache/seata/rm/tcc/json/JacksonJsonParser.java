@@ -16,17 +16,10 @@
  */
 package org.apache.seata.rm.tcc.json;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.seata.common.Constants;
+import org.apache.seata.common.json.JsonUtil;
 import org.apache.seata.common.loader.LoadLevel;
 import org.apache.seata.integration.tx.api.json.JsonParser;
-import tools.jackson.databind.DefaultTyping;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.MapperFeature;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
 import java.io.IOException;
 
@@ -37,30 +30,14 @@ import java.io.IOException;
 @LoadLevel(name = Constants.JACKSON_JSON_PARSER_NAME)
 public class JacksonJsonParser implements JsonParser {
 
-    private final ObjectMapper mapper;
-
-    public JacksonJsonParser() {
-        this.mapper = JsonMapper.builder()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .activateDefaultTyping(
-                        BasicPolymorphicTypeValidator.builder()
-                                .allowIfBaseType(Object.class)
-                                .build(),
-                        DefaultTyping.NON_FINAL,
-                        JsonTypeInfo.As.PROPERTY)
-                .enable(MapperFeature.PROPAGATE_TRANSIENT_MARKER)
-                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
-                .build();
-    }
-
     @Override
     public String toJSONString(Object object) throws IOException {
-        return this.mapper.writeValueAsString(object);
+        return JsonUtil.toJSONString(object);
     }
 
     @Override
     public <T> T parseObject(String text, Class<T> clazz) throws IOException {
-        return this.mapper.readValue(text, clazz);
+        return JsonUtil.parseObject(text, clazz);
     }
 
     @Override

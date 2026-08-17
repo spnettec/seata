@@ -22,9 +22,11 @@ import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.seata.common.ConfigurationKeys;
 import org.apache.seata.common.exception.AuthenticationFailedException;
+import org.apache.seata.common.exception.JsonParseException;
 import org.apache.seata.common.exception.NotSupportYetException;
 import org.apache.seata.common.exception.ParseEndpointException;
 import org.apache.seata.common.exception.RetryableException;
+import org.apache.seata.common.json.JsonUtil;
 import org.apache.seata.common.metadata.ClusterWatchEvent;
 import org.apache.seata.common.metadata.Metadata;
 import org.apache.seata.common.metadata.MetadataResponse;
@@ -42,9 +44,6 @@ import org.apache.seata.core.protocol.Version;
 import org.apache.seata.discovery.registry.RegistryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -107,8 +106,6 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
     private static final Map<String, List<InetSocketAddress>> INIT_ADDRESSES = new HashMap<>();
 
     private static final Metadata METADATA = new Metadata();
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static volatile String CURRENT_TRANSACTION_SERVICE_GROUP;
 
@@ -795,7 +792,8 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
                 }
                 if (StringUtils.isNotBlank(response)) {
                     try {
-                        MetadataResponse metadataResponse = OBJECT_MAPPER.readValue(response, MetadataResponse.class);
+                        MetadataResponse metadataResponse =
+                                JsonUtil.parseObject(response, MetadataResponse.class, true);
                         if (CollectionUtils.isEmpty(metadataResponse.getNodes())) {
                             LOGGER.warn(
                                     "empty metadata nodes from cluster endpoint, clusterName={}, group={}, response={}",
@@ -805,7 +803,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
                             return;
                         }
                         METADATA.refreshMetadata(clusterName, metadataResponse);
-                    } catch (JacksonException e) {
+                    } catch (JsonParseException e) {
                         LOGGER.error(e.getMessage(), e);
                     }
                 }
@@ -831,13 +829,13 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
                 if (httpResponse.code() == HttpStatus.SC_OK) {
                     if (httpResponse.body() != null) {
                         response = httpResponse.body().string();
-                        JsonNode jsonNode = OBJECT_MAPPER.readTree(response);
-                        String codeStatus = jsonNode.get("code").asText();
+                        Map<String, Object> responseMap = JsonUtil.parseObject(response, Map.class, true);
+                        String codeStatus = String.valueOf(responseMap.get("code"));
                         if (!StringUtils.equals(codeStatus, "200")) {
                             throw new AuthenticationFailedException(
                                     "Authentication failed! you should configure the correct username and password.");
                         }
-                        jwtToken = jsonNode.get("data").asText();
+                        jwtToken = String.valueOf(responseMap.get("data"));
                         tokenTimeStamp = System.currentTimeMillis();
                     } else {
                         throw new AuthenticationFailedException("Authentication failed! Response body is null.");
@@ -847,7 +845,7 @@ public class RaftRegistryServiceImpl implements RegistryService<ConfigChangeList
                             "Authentication failed! you should configure the correct username and password.");
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | JsonParseException e) {
             throw new RetryableException(e.getMessage(), e);
         }
     }

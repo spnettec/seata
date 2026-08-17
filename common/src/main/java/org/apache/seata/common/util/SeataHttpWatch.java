@@ -23,9 +23,9 @@ import okhttp3.ResponseBody;
 import okio.BufferedSource;
 import org.apache.seata.common.Constants;
 import org.apache.seata.common.exception.FrameworkException;
+import org.apache.seata.common.json.JsonCodecFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -50,7 +50,6 @@ public class SeataHttpWatch<T>
     private final ResponseBody responseBody;
     private final BufferedSource source;
     private final Call call;
-    private final ObjectMapper objectMapper;
     private final Class<T> eventType;
 
     /**
@@ -139,7 +138,6 @@ public class SeataHttpWatch<T>
         this.responseBody = responseBody;
         this.source = responseBody.source();
         this.call = call;
-        this.objectMapper = new ObjectMapper();
         this.eventType = eventType;
     }
 
@@ -190,7 +188,7 @@ public class SeataHttpWatch<T>
      */
     private Response<T> parseEvent(String json) throws IOException {
         try {
-            T eventData = objectMapper.readValue(json, eventType);
+            T eventData = JsonCodecFactory.getCodec().parseObject(json, eventType);
             return new Response<>(Response.Type.UPDATE, eventData);
 
         } catch (Exception e) {
