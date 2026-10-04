@@ -22,6 +22,7 @@ import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
 import tools.jackson.databind.ValueDeserializer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,27 +32,18 @@ public class CustomDeserializer extends ValueDeserializer<Class<?>> {
 
     String currentPackage = "org.apache.seata.server";
 
-    private static final List<String> PERMIT_PACKAGES = new ArrayList<>();
-
-    static {
-        PERMIT_PACKAGES.add("org.apache.seata");
-        // The storage structure of vgroup is a map.
-        PERMIT_PACKAGES.add("java.util.HashMap");
-    }
-
     @Override
     public Class<?> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
         String className = jsonParser.getValueAsString();
-        if (className.startsWith(oldPackage)) {
-            className = className.replaceFirst(oldPackage, currentPackage);
+        if (className.startsWith(oldPackage + ".")) {
+            className = currentPackage + className.substring(oldPackage.length());
         }
-        for (String permitPackage : PERMIT_PACKAGES) {
-            if (className.startsWith(permitPackage)) {
-                try {
-                    return Class.forName(className);
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e.getMessage(), e);
-                }
+        // The storage structure of vgroup is a HashMap.
+        if (className.startsWith("org.apache.seata.") || "java.util.HashMap".equals(className)) {
+            try {
+                return Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e.getMessage(), e);
             }
         }
         throw new SeataRuntimeException(
