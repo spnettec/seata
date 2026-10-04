@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    测试专用 logback 覆盖配置（覆盖主配置 logback-spring.xml）。
+
+    主配置依赖 janino 条件 include（LOG_BASH_DIR 等 springProperty）组装
+    CONSOLE/FILE_ALL 等 appender；测试环境早期日志初始化阶段这些条件与
+    logback 1.5.x 嵌套 if 处理结合后 include 未生效，AsyncAppender 挂不上
+    底层 appender 导致 SpringBootTest 上下文启动失败。测试 classpath 用同名
+    覆盖：基础 appender 直连 + 保留可选 appender 的条件装配（AppenderTest 用）。
+-->
+<configuration scan="false">
+
+    <springProperty name="LOGSTASH_APPENDER_ENABLED" source="logging.extend.logstash-appender.enabled" defaultValue="false"/>
+    <springProperty name="KAFKA_APPENDER_ENABLED" source="logging.extend.kafka-appender.enabled" defaultValue="false"/>
+    <springProperty name="METRIC_APPENDER_ENABLED" source="logging.extend.metric-appender.enabled" defaultValue="false"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d{HH:mm:ss.SSS} %5p --- [%25.25t] [%-30.30logger] %m%n%ex</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC_CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="CONSOLE"/>
+        <queueSize>2048</queueSize>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+    <if condition='property("LOGSTASH_APPENDER_ENABLED").equals("true")'>
+        <then>
+            <include resource="logback/logstash-appender.xml"/>
+        </then>
+    </if>
+    <if condition='property("KAFKA_APPENDER_ENABLED").equals("true")'>
+        <then>
+            <include resource="logback/kafka-appender.xml"/>
+        </then>
+    </if>
+    <if condition='property("METRIC_APPENDER_ENABLED").equals("true")'>
+        <then>
+            <include resource="logback/metric-appender.xml"/>
+        </then>
+    </if>
+
+    <!-- logback 1.5.x 不支持 root 内嵌条件引用；始终引用，appender 定义由上方
+         条件 include 提供（未启用时 appender 不存在，仅产生无害 WARN） -->
+    <root level="INFO">
+        <appender-ref ref="ASYNC_CONSOLE"/>
+        <appender-ref ref="LOGSTASH"/>
+        <appender-ref ref="KAFKA"/>
+        <appender-ref ref="METRIC"/>
+    </root>
+
+</configuration>

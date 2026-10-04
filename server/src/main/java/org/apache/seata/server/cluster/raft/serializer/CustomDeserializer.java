@@ -22,10 +22,6 @@ import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
 import tools.jackson.databind.ValueDeserializer;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 public class CustomDeserializer extends ValueDeserializer<Class<?>> {
 
     String oldPackage = "io.seata.server";
