@@ -81,12 +81,5 @@
             <artifactId>jakarta.inject-api</artifactId>
         </dependency>
     
-        <!-- eureka-client(DiscoveryClient) 运行时依赖 Jackson2 databind，fork 主链路为 Jackson3
-             已在编译域排除；此处仅测试域加回，供 eurekaClient 为 null 时的惰性重建用例使用 -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <scope>test</scope>
-        </dependency>
 </dependencies>
 </project>
