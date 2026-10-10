@@ -16,19 +16,20 @@
  */
 package org.apache.seata.spring.boot.autoconfigure.properties.client;
 
+import org.apache.seata.common.holder.ObjectHolder;
 import org.apache.seata.common.loader.EnhancedServiceLoader;
 import org.apache.seata.config.Configuration;
 import org.apache.seata.config.ExtConfigurationProvider;
 import org.apache.seata.config.FileConfiguration;
-import org.apache.seata.config.springcloud.SpringApplicationContextProvider;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 
+import static org.apache.seata.common.Constants.OBJECT_KEY_SPRING_APPLICATION_CONTEXT;
+import static org.apache.seata.common.Constants.OBJECT_KEY_SPRING_CONFIGURABLE_ENVIRONMENT;
 import static org.apache.seata.spring.boot.autoconfigure.StarterConstants.LOAD_BALANCE_PREFIX;
 import static org.apache.seata.spring.boot.autoconfigure.StarterConstants.PROPERTY_BEAN_MAP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,7 +37,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  **/
-@Import(SpringApplicationContextProvider.class)
 @org.springframework.context.annotation.Configuration
 public class LoadBalancePropertiesTest {
     private static AnnotationConfigApplicationContext applicationContext;
@@ -44,6 +44,9 @@ public class LoadBalancePropertiesTest {
     @BeforeAll
     public static void initContext() {
         applicationContext = new AnnotationConfigApplicationContext(LoadBalancePropertiesTest.class);
+        ObjectHolder.INSTANCE.setObject(OBJECT_KEY_SPRING_APPLICATION_CONTEXT, applicationContext);
+        ObjectHolder.INSTANCE.setObject(
+                OBJECT_KEY_SPRING_CONFIGURABLE_ENVIRONMENT, applicationContext.getEnvironment());
     }
 
     @Bean

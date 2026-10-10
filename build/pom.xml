@@ -77,6 +77,7 @@
         <snakeyaml.version>2.7</snakeyaml.version>
         <!-- The version of spring-boot for 'spring-boot-dependencies' and 'spring-boot-maven-plugin' -->
         <spring-boot.version>4.1.1</spring-boot.version>
+        <jackson3.version>3.2.3</jackson3.version>
         <spring-framework.version>7.0.8</spring-framework.version>
         <netty.version>4.2.18.Final</netty.version>
         <nacos.version>3.3.0.B</nacos.version>
@@ -381,6 +382,17 @@
                                 <requireMavenVersion>
                                     <version>[3.6.0,)</version>
                                 </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[17,)</version>
+                                </requireJavaVersion>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>com.fasterxml.jackson.core:jackson-core</exclude>
+                                        <exclude>com.fasterxml.jackson.core:jackson-databind</exclude>
+                                    </excludes>
+                                    <searchTransitive>true</searchTransitive>
+                                    <message>This fork requires Jackson 3; Jackson annotations remain supported.</message>
+                                </bannedDependencies>
                             </rules>
                         </configuration>
                     </execution>

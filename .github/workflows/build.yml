@@ -18,9 +18,9 @@ name: "build"
 
 on:
   push:
-    branches: [ 2.x, develop, master ]
+    branches: [ 2.x, develop, master, heyoulin ]
   pull_request:
-    branches: [ 2.x, develop, master ]
+    branches: [ 2.x, develop, master, heyoulin ]
     types: [opened, reopened, synchronize]
     paths-ignore:
       - '**.md'
@@ -30,7 +30,28 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  # job 1: Test based on java 8, 17, 21 and 25.
+  # These modules can validate fork compatibility without the private Nacos artifacts.
+  fork-compatibility:
+    if: github.repository == 'spnettec/seata'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ 17, 21 ]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3.12.0
+        with:
+          distribution: 'zulu'
+          java-version: ${{ matrix.java }}
+          cache: maven
+      - name: Test Jackson 3 and upstream compatibility
+        run: >-
+          ./mvnw -B -ntp
+          -pl core,config/seata-config-core,sqlparser/seata-sqlparser-druid -am
+          -Dlicense.skip=true -Dcheckstyle.skip=true test
+
+  # job 1: Test based on Java 17, 21 and 25.
   build:
     name: "build"
     services:
@@ -52,14 +73,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 8, 17, 21, 25 ]
+        java: [ 17, 21, 25 ]
         # Optional capabilities default to false; service_tests enables Redis and Nacos.
         include:
-          - java: 8
-            service_tests: true
-            license_check: true
           - java: 17
             service_tests: true
+            license_check: true
           - java: 25
             service_tests: true
             coverage: true

@@ -38,6 +38,14 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Keep the fork Jackson 3 baseline ahead of the Spring Boot BOM. -->
+            <dependency>
+                <groupId>tools.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson3.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!-- junit5 -->
             <dependency>
                 <groupId>org.junit</groupId>

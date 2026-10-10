@@ -355,7 +355,7 @@ class Http2HttpHandlerTest {
                             .readTree(response.content().toString(StandardCharsets.UTF_8))
                             .asText());
             assertTrue(response.isEndStream());
-        } catch (java.io.IOException e) {
+        } catch (tools.jackson.core.JacksonException e) {
             throw new AssertionError("Response must contain valid JSON", e);
         } finally {
             response.release();

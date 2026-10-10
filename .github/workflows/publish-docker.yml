@@ -29,11 +29,13 @@ jobs:
   # job 1
   publish-images-to-dockerhub:
     name: "Publish images to DockerHub"
+    # Fork validation must not publish images on the inherited daily schedule.
+    if: github.repository == 'apache/incubator-seata'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        java: [ 8, 17, 21, 25 ]
+        java: [ 17, 21, 25 ]
     steps:
       # step 1
       - name: "Checkout"
@@ -47,18 +49,6 @@ jobs:
       # step 3
       - name: "Print maven version"
         run: ./mvnw -version
-      # step 4 based on java8
-      - name: "Publish images to DockerHub based on java8"
-        if: matrix.java == 8
-        env:
-          REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USER }}
-          REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
-        run: |
-          if [ "${{ github.ref_name }}" == "develop" ] || [ "${{ github.ref_name }}" == "snapshot"  || [ "${{ github.ref_name }}" == "2.x" ]; then
-            ./mvnw -T 4C clean package -Dimage.name=eclipse-temurin:8u422-b05-jdk -Pimage -DskipTests -e -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn;
-          else
-            ./mvnw -T 4C clean package -Dimage.name=eclipse-temurin:8u422-b05-jdk -Pimage,release-image-based-on-java8 -DskipTests -e -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn;
-          fi
       # step 4 based on java17
       - name: "Publish images to DockerHub based on java17"
         if: ${{ matrix.java == 17 && github.ref_name != 'develop' && github.ref_name != 'snapshot' && github.ref_name != '2.x' }}

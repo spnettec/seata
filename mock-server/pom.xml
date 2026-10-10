@@ -55,13 +55,21 @@
     </build>
 
     <properties>
-        <spring-boot-for-server.version>2.7.18</spring-boot-for-server.version>
-        <spring-framework-for-server.version>5.3.39</spring-framework-for-server.version>
+        <spring-boot-for-server.version>${spring-boot.version}</spring-boot-for-server.version>
+        <spring-framework-for-server.version>${spring-framework.version}</spring-framework-for-server.version>
         <snakeyaml-for-server.version>2.0</snakeyaml-for-server.version>
         <tomcat-embed.version>9.0.121</tomcat-embed.version>
     </properties>
     <dependencyManagement>
         <dependencies>
+            <!-- Keep the fork Jackson 3 baseline ahead of the Spring Boot BOM. -->
+            <dependency>
+                <groupId>tools.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson3.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!-- junit5 -->
             <dependency>
                 <groupId>org.junit</groupId>

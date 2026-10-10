@@ -18,8 +18,8 @@ package org.apache.seata.core.rpc.netty.mockserver;
 
 import org.apache.seata.rm.tcc.api.BusinessActionContext;
 import org.springframework.stereotype.Service;
-import vlsi.utils.CompactHashMap;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,8 +28,8 @@ import java.util.Map;
 @Service
 public class Action1Impl implements Action1 {
 
-    private static Map<String, Integer> commitMap = new CompactHashMap<>();
-    private static Map<String, Integer> rollbackMap = new CompactHashMap<>();
+    private static Map<String, Integer> commitMap = new HashMap<>();
+    private static Map<String, Integer> rollbackMap = new HashMap<>();
 
     @Override
     public String insert(Long reqId, Map<String, String> params) {
