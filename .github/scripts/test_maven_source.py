@@ -26,9 +26,10 @@ class SourceTests(unittest.TestCase):
                 with self.assertRaises(error):
                     selector.download('private', PATH)
         def curl(args, **kwargs):
-            self.assertEqual(args[-1], 'https://maven.pkg.github.com/spnettec/nacos/' + PATH)
+            self.assertEqual(args[-1], selector.GITHUB_RELEASES + PATH)
             self.assertNotIn('secret-for-test', ' '.join(args))
             self.assertIn('--max-time', args)
+            self.assertEqual(kwargs['input'], b'')
             os.write(kwargs['pass_fds'][0], DATA)
             return subprocess.CompletedProcess(args, 0, b'200', b'')
         with patch.dict('os.environ', {'PACKAGES_USER': 'tester', 'PACKAGES_TOKEN': 'secret-for-test'}):
@@ -75,10 +76,14 @@ class SourceTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, '404'):
             selector.stage(LOCK, fetch)
 
-    def test_missing_credentials_fail(self):
+    def test_github_download_needs_no_credentials(self):
+        def curl(args, **kwargs):
+            self.assertEqual(kwargs['input'], b'')
+            os.write(kwargs['pass_fds'][0], DATA)
+            return subprocess.CompletedProcess(args, 0, b'200', b'')
         with patch.dict('os.environ', {}, clear=True):
-            with self.assertRaisesRegex(RuntimeError, 'requires PACKAGES'):
-                selector.download('github', PATH)
+            with patch.object(selector.subprocess, 'run', side_effect=curl):
+                self.assertEqual(selector.download('github', PATH), DATA)
 
     def test_mismatched_bytes_fail_for_both_sources(self):
         for selected in ['private', 'github']:

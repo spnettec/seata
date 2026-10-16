@@ -410,16 +410,19 @@
         <!-- Explicit opt-in: keep the default YOFC deployment and all coordinates unchanged. -->
         <profile>
             <id>github</id>
+            <properties>
+                <github.maven.staging>${maven.multiModuleProjectDirectory}/target/github-maven-repository</github.maven.staging>
+            </properties>
             <distributionManagement>
                 <repository>
                     <id>github</id>
-                    <name>GitHub Packages</name>
-                    <url>https://maven.pkg.github.com/spnettec/seata</url>
+                    <name>GitHub Static Maven Staging</name>
+                    <url>file://${github.maven.staging}/releases</url>
                 </repository>
                 <snapshotRepository>
                     <id>github</id>
-                    <name>GitHub Packages</name>
-                    <url>https://maven.pkg.github.com/spnettec/seata</url>
+                    <name>GitHub Static Maven Staging</name>
+                    <url>file://${github.maven.staging}/snapshots</url>
                 </snapshotRepository>
             </distributionManagement>
         </profile>

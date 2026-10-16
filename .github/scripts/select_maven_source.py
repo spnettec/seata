@@ -17,6 +17,7 @@ import tempfile
 import xml.etree.ElementTree as ET
 
 PRIVATE = 'https://mesmaven.yofc.com/repository/yofc-public/'
+GITHUB_RELEASES = 'https://raw.githubusercontent.com/spnettec/maven-repository/master/releases/'
 NETWORK_ERRORS = {5, 6, 7, 28, 52, 55, 56}
 
 
@@ -29,11 +30,9 @@ def download(source, path):
         url = PRIVATE + path
         user, token = os.getenv('YOFC_MAVEN_USERNAME', ''), os.getenv('YOFC_MAVEN_PASSWORD', '')
     else:
-        repo = path.split('/')[3]
-        url = 'https://maven.pkg.github.com/spnettec/' + repo + '/' + path
-        user, token = os.getenv('PACKAGES_USER', ''), os.getenv('PACKAGES_TOKEN', '')
-        if not user or not token:
-            raise RuntimeError('GitHub fallback requires PACKAGES_USER and PACKAGES_TOKEN with read:packages and repository read access')
+        url = GITHUB_RELEASES + path
+        # Public static repository: never forward credentials to raw.githubusercontent.com.
+        user, token = '', ''
     config = ''
     if user or token:
         auth = base64.b64encode((user + ':' + token).encode()).decode()

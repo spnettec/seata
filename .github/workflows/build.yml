@@ -122,8 +122,6 @@ jobs:
         env:
           YOFC_MAVEN_USERNAME: ${{ secrets.YOFC_MAVEN_USERNAME }}
           YOFC_MAVEN_PASSWORD: ${{ secrets.YOFC_MAVEN_PASSWORD }}
-          PACKAGES_USER: ${{ vars.PACKAGES_USER || github.actor }}
-          PACKAGES_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN || github.token }}
         run: python3 .github/scripts/select_maven_source.py
       # step 6.1：Support GitHub Actions, local shell
       - name: Checkstyle
