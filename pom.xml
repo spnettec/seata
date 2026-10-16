@@ -596,18 +596,63 @@
                     </execution>
                     <execution>
                         <id>report</id>
-                        <phase>test</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>report-aggregate</id>
+                        <configuration>
+                            <includeCurrentProject>true</includeCurrentProject>
+                        </configuration>
                         <goals>
-                            <goal>report</goal>
                             <goal>report-aggregate</goal>
                         </goals>
-                        <phase>test</phase>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Verify generated coverage artifacts after all Surefire executions. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>validate-coverage-reports</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>run</goal></goals>
+                        <configuration>
+                            <target>
+                                <condition property="coverage.required">
+                                    <and>
+                                        <resourcecount when="greater" count="0">
+                                            <fileset dir="${project.build.directory}" erroronmissingdir="false" includes="surefire-reports/TEST-*.xml"/>
+                                        </resourcecount>
+                                        <resourcecount when="greater" count="0">
+                                            <fileset dir="${project.build.outputDirectory}" erroronmissingdir="false" includes="**/*.class"/>
+                                        </resourcecount>
+                                    </and>
+                                </condition>
+                                <fail message="Tests ran but JaCoCo execution data or HTML/XML reports are missing/empty.">
+                                    <condition>
+                                        <and>
+                                            <isset property="coverage.required"/>
+                                            <not>
+                                                <and>
+                                                    <length file="${project.build.directory}/jacoco.exec" length="0" when="greater"/>
+                                                    <length file="${project.reporting.outputDirectory}/jacoco/index.html" length="0" when="greater"/>
+                                                    <length file="${project.reporting.outputDirectory}/jacoco/jacoco.xml" length="0" when="greater"/>
+                                                    <length file="${project.reporting.outputDirectory}/jacoco-aggregate/index.html" length="0" when="greater"/>
+                                                    <length file="${project.reporting.outputDirectory}/jacoco-aggregate/jacoco.xml" length="0" when="greater"/>
+                                                </and>
+                                            </not>
+                                        </and>
+                                    </condition>
+                                </fail>
+                            </target>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
