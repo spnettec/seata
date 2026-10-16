@@ -116,5 +116,51 @@ python3 -m unittest discover -s .github/scripts -p 'test_maven_source.py'
 可能拒绝重复上传（409/422）；本任务没有通过真实 deploy 探测覆盖，也不保证可覆盖。
 若实际操作要求先删除旧版本再发布，需单独批准删除范围、保留备份、评估下载中断和
 下游缓存不一致，再人工执行；没有自动删除流程。版本变更由维护者决定。
-YOFC 的 redeploy 策略需要仓库管理权限读取；只读管理接口若返回 403，
-历史允许覆盖不代表当前策略，发布前需管理员确认。
+用户已确认 YOFC 私库已开放覆盖发布；本配置任务未通过真实部署验证覆盖成功。
+GitHub 同版本覆盖能力仍未验证，不能从私库策略推断 GitHub 行为。
+
+## 同版本覆盖发布后的清单刷新（显式操作）
+
+用户已确认私库允许覆盖发布；这不是本工具对 redeploy 的实测结果。
+版本是否变更仍由维护者决定。覆盖同版本后，旧 SHA-256 会使 CI 明确失败；
+不能通过删除校验、使用旧缓存或自动接受新内容来消除失败。
+
+1. 在另行授权的发布操作完成后，暂停对这些坐标的并发覆盖，确认两个目标都包含
+   同一批 POM/JAR 字节。GitHub 同版本覆盖能力仍未验证；若其拒绝覆盖，先停止，
+   由维护者决定后续方案。本工具不会发布、删除包或修改版本。
+2. 用已有安全环境提供私库读取凭据（如需要）以及 GitHub 的
+   `PACKAGES_USER` / `PACKAGES_TOKEN`（`read:packages` 与对应仓库读权限）。
+   本地工具不自动读取 Actions secret `PACKAGES_READ_TOKEN`，不要将凭据写入命令或 Git。
+3. 在每个消费仓库根目录显式生成候选清单：
+
+```sh
+candidate_dir=$(mktemp -d)
+python3 .github/scripts/refresh_artifact_lock.py \
+  --output "$candidate_dir/fork-artifacts.json"
+diff -u .github/fork-artifacts.json "$candidate_dir/fork-artifacts.json"
+```
+
+`diff` 返回 1 表示有待审阅差异。工具只读取现有清单中的路径，不增删坐标、
+不变更版本；逐文件从私库和 GitHub 读取内容，使用与 CI 相同的下载超时和认证实现。
+仅当每个文件两源 SHA-256 相等，才生成新的候选 JSON，并列出改变的旧/新摘要。
+候选文件必须不存在，不能指向当前清单；任何网络、认证、404、TLS 或内容冲突
+都会失败并保留原清单，不输出部分候选。刷新时**不进行单源回退**，因为更新信任基线
+必须核实两源一致；普通 CI 的“私库优先、仅网络故障回退”规则保持不变。
+
+如果只覆盖了私库、GitHub 仍是旧内容或尚未发布，则无法生成可安全回退的共同清单，
+应先处理发布/读取条件，而不是把这一情况静默视为同步完成。
+
+4. 审阅候选差异，确认符合本次已批准的覆盖内容，再由维护者显式替换：
+
+```sh
+cp "$candidate_dir/fork-artifacts.json" .github/fork-artifacts.json
+python3 -m unittest discover -s .github/scripts -p 'test_maven_source.py'
+python3 .github/scripts/select_maven_source.py
+git diff --check
+git diff -- .github/fork-artifacts.json
+```
+
+提交清单后再运行 CI。对共同依赖（例如 SOFA）须在 Nacos 和 Seata 两个消费仓库
+分别刷新并审阅，保证同路径摘要一致。工具不会自动提交、推送、调用 Maven，
+也不会在普通 CI 中调用刷新逻辑；CI 仅运行模拟刷新测试和已有清单校验。
+`--lock <路径>` 可指定显式维护的输入清单；新增依赖路径属于单独审阅范围。
