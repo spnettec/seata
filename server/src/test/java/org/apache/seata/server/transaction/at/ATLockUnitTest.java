@@ -22,6 +22,8 @@ import org.apache.seata.core.rpc.RemotingServer;
 import org.apache.seata.server.BaseSpringBootTest;
 import org.apache.seata.server.session.*;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 
@@ -29,8 +31,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class ATLockUnitTest extends BaseSpringBootTest {
-    @Test
-    void applicationDataControlsLockFlagsAndMalformedJsonFallsBack() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"invalid-json", "{", "\"not-an-object\""})
+    void applicationDataControlsLockFlagsAndMalformedJsonFallsBack(String malformedJson) throws Exception {
         ATCore core = new ATCore(mock(RemotingServer.class));
         GlobalSession global = mock(GlobalSession.class);
         BranchSession branch = mock(BranchSession.class);
@@ -38,7 +41,7 @@ class ATLockUnitTest extends BaseSpringBootTest {
         when(branch.getApplicationData()).thenReturn("{\"autoCommit\":false,\"skipCheckLock\":true}");
         core.branchSessionLock(global, branch);
         verify(branch).lock(false, true);
-        when(branch.getApplicationData()).thenReturn("invalid-json");
+        when(branch.getApplicationData()).thenReturn(malformedJson);
         core.branchSessionLock(global, branch);
         verify(branch).lock(true, false);
         when(branch.lock(true, false)).thenReturn(false);

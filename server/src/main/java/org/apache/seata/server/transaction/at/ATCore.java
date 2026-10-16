@@ -26,7 +26,7 @@ import org.apache.seata.core.rpc.RemotingServer;
 import org.apache.seata.server.coordinator.AbstractCore;
 import org.apache.seata.server.session.BranchSession;
 import org.apache.seata.server.session.GlobalSession;
-import tools.jackson.core.exc.JacksonIOException;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
@@ -70,7 +70,7 @@ public class ATCore extends AbstractCore {
                 if (clientSkipCheckLock instanceof Boolean) {
                     skipCheckLock = (boolean) clientSkipCheckLock;
                 }
-            } catch (JacksonIOException e) {
+            } catch (JacksonException e) {
                 LOGGER.error("failed to get application data: {}", e.getMessage(), e);
             }
         }
