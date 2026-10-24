@@ -17,6 +17,7 @@
 name: "CodeQL"
 
 on:
+  workflow_dispatch:
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ 2.x, develop ]
@@ -57,7 +58,19 @@ jobs:
           distribution: 'zulu'
           java-version: 25
 
-      - run: ./mvnw -T 4C clean install -DskipTests
+      - name: Select and verify fork dependency source
+        timeout-minutes: 25
+        if: github.repository == 'spnettec/seata'
+        id: dependency-source
+        env:
+          YOFC_MAVEN_USERNAME: ${{ secrets.YOFC_MAVEN_USERNAME }}
+          YOFC_MAVEN_PASSWORD: ${{ secrets.YOFC_MAVEN_PASSWORD }}
+        run: python3 .github/scripts/select_maven_source.py
+
+      - name: Build with Maven
+        env:
+          CI_MAVEN_SETTINGS: ${{ steps.dependency-source.outputs.settings }}
+        run: ./mvnw ${CI_MAVEN_SETTINGS:+-s "$CI_MAVEN_SETTINGS"} -T 4C clean install -DskipTests
 
       # step 3
       - name: "Perform CodeQL Analysis"
