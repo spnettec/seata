@@ -186,9 +186,9 @@
                                 <goal>run</goal>
                             </goals>
                             <configuration>
-                                <tasks>
+                                <target>
                                     <copy overwrite="true" file="${project.basedir}/config/agent.config" tofile="${agent-config.dir}/agent.config" />
-                                </tasks>
+                                </target>
                             </configuration>
                         </execution>
                     </executions>
